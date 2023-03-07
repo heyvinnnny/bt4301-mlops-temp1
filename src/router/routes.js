@@ -12,12 +12,31 @@ import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
 import Login from "@/pages/Login.vue";
 
+// const routes = new Router({
+//   routes: [
+//     {
+//       path: "/",
+//       name: "login",
+//       components { default: Login }
+//     }
+//   ]
+// })
+
+//Currently the default background is the Dashboard Layout.
+//Login should have a different layout and is also the first page to the application (?)
+//Need to configure Login page first
+
 const routes = [
   {
     path: "/",
     component: DashboardLayout,
     redirect: "/dashboard",
     children: [
+      {
+        path: "login",
+        name: "login",
+        component: Login
+      },
       {
         path: "dashboard",
         name: "dashboard",
@@ -32,11 +51,6 @@ const routes = [
         path: "notifications",
         name: "notifications",
         component: Notifications,
-      },
-      {
-        path: "login",
-        name: "login",
-        component: Login,
       },
       {
         path: "icons",
