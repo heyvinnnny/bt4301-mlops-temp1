@@ -5,6 +5,7 @@ import PaperTable from "./PaperTable.vue";
 import Button from "./Button";
 
 import Card from "./Cards/Card.vue";
+import LoginCard from "./Cards/LoginCard.vue";
 import ChartCard from "./Cards/ChartCard.vue";
 import StatsCard from "./Cards/StatsCard.vue";
 
@@ -13,6 +14,7 @@ import SidebarPlugin from "./SidebarPlugin/index";
 let components = {
   FormGroupInput,
   Card,
+  LoginCard,
   ChartCard,
   StatsCard,
   PaperTable,
@@ -25,6 +27,7 @@ export default components;
 export {
   FormGroupInput,
   Card,
+  LoginCard,
   ChartCard,
   StatsCard,
   PaperTable,
