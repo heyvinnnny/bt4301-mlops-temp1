@@ -1,54 +1,91 @@
 <template>
-    <md-card class="md-card-login" :class="{ 'md-card-hidden': cardHidden }">
-      <md-card-header :class="getClass(headerColor)">
-        <slot name="title"></slot>
-        <div class="social-line">
-          <slot name="buttons"></slot>
-        </div>
-      </md-card-header>
-  
-      <md-card-content>
-        <slot name="inputs"></slot>
-      </md-card-content>
-  
-      <md-card-actions>
-        <slot name="footer"></slot>
-      </md-card-actions>
-  
-      <div>
-        <slot name="description"></slot>
-        <slot name="end"></slot>
+  <div class="login-card">
+    <h2>Login</h2>
+    <form @submit.prevent="login">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" v-model="email" required>
       </div>
-    </md-card>
-  </template>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" v-model="password" required>
+      </div>
+      <button type="submit">Login</button>
+    </form>
+    <div v-if="error" class="error-message">{{ error }}</div>
+  </div>
+</template>
   
-  <script>
-  export default {
-    name: "login-card",
-    props: {
-      headerColor: {
-        type: String,
-        default: ""
-      }
-    },
-    data() {
-      return {
-        cardHidden: true
-      };
-    },
-    beforeMount() {
-      setTimeout(this.showCard, 400);
-    },
-    methods: {
-      showCard: function() {
-        this.cardHidden = false;
-      },
-      getClass: function(headerColor) {
-        return "md-card-header-" + headerColor + "";
+<script>
+import firebase from "@/uifire.js";
+import "firebase/compat/auth";
+import * as firebaseui from "firebaseui";
+import "firebaseui/dist/firebaseui.css";
+
+export default {
+  data() {
+    return {
+      email: '',
+      password: '',
+      error: null
+    }
+  },
+  methods: {
+    async login() {
+      try {
+        await firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+        this.$emit('authenticated')
+        this.$toast.success("Welcome to DataPower");
+        this.$router.push('/dashboard')
+      } catch (error) {
+        this.$toast.error(error.message);
       }
     }
-  };
+  }
+}
   </script>
   
-  <style lang="css"></style>
+  <style scoped>
+  .login-card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="email"],
+input[type="password"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button[type="submit"] {
+  display: block;
+  background-color: #3490dc;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+  </style>
   

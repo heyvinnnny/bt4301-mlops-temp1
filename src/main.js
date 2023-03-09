@@ -1,24 +1,25 @@
-/*!
-
- =========================================================
- * Vue Paper Dashboard - v1.0.1
- =========================================================
-
- * Product Page: http://www.creative-tim.com/product/paper-dashboard
- * Copyright 2023 Creative Tim (http://www.creative-tim.com)
- * Licensed under MIT (https://github.com/creativetimofficial/paper-dashboard/blob/master/LICENSE.md)
-
- =========================================================
-
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
- */
 import Vue from "vue";
 import App from "./App";
 import router from "./router/index";
+import firebase from "@/uifire.js";
+import 'firebase/auth'
+import "firebase/compat/auth";
+import "firebaseui/dist/firebaseui.css";
+import firebaseConfig from './firebaseConfig.js'
+import VueToast from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
+
+Vue.use(VueToast);
+
+// import firebaseApp from "./firebase.js";
+// import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import PaperDashboard from "./plugins/paperDashboard";
 import "vue-notifyjs/themes/default.css";
+
+firebase.initializeApp(firebaseConfig)
+
+Vue.config.productionTip = false
 
 Vue.use(PaperDashboard);
 

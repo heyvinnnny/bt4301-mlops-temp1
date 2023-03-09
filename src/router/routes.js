@@ -1,4 +1,5 @@
 import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
+import { createRouter, createWebHistory } from 'vue-router'
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
 
@@ -32,11 +33,6 @@ const routes = [
     component: DashboardLayout,
     redirect: "/dashboard",
     children: [
-      {
-        path: "login",
-        name: "login",
-        component: Login
-      },
       {
         path: "dashboard",
         name: "dashboard",
@@ -74,7 +70,19 @@ const routes = [
       },
     ],
   },
+  //Create a new route component for login since it users a different default layout
   { path: "*", component: NotFound },
+  {
+    path: "/login",
+    component: Login,
+    children: [
+      {
+        path: "",
+        name: "login",
+        component: Login,
+      },
+    ],
+  },
 ];
 
 /**

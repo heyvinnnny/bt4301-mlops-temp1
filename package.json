@@ -22,7 +22,8 @@
     "vue": "^2.7.14",
     "vue-clickaway": "2.2.2",
     "vue-notifyjs": "0.3.0",
-    "vue-router": "3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-toast-notification": "^0.6.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^5.0.8",

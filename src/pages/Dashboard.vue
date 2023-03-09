@@ -87,6 +87,9 @@
 import { StatsCard, ChartCard } from "@/components/index";
 import Chartist from "chartist";
 export default {
+  mounted() {
+    this.$toast.success("Welcome to DataPower");
+  },
   components: {
     StatsCard,
     ChartCard,
