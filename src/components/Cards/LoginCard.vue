@@ -18,10 +18,82 @@
   
 <script>
 import firebase from "@/uifire.js";
+import db from "@/main.js";
 import "firebase/compat/auth";
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDocs, getFirestore, collection } from "firebase/firestore";
 
+//https://softauthor.com/firebase-vuejs-role-based-authentication-authorization/
+
+// export default {
+//   data() {
+//     return {
+//       email: '',
+//       password: '',
+//       access: ''
+//     }
+//   },
+//   methods: {
+//     async login() {
+//       try {
+//         const db = getFirestore(firebase);
+//         const querySnapshot = await getDocs(collection(db, 'login'));
+//         querySnapshot.forEach((doc) => {
+//           if (doc.data().email === this.email && doc.data().password === this.password) {
+//             this.access = doc.data().access;
+//           }
+//         });
+//         if (this.access === 'Admin') {
+//           this.$router.push('/dashboard')
+//         } else if (this.access === 'Executive') {
+//           this.$router.push('/dashboard')
+//         } else {
+//           this.$router.push('/dashboard')
+//         }
+//       } catch (error) {
+//         this.$toast.error(error.message);
+//       }
+//     }
+//   }
+// }
+
+
+// This method keeps having timeout, cannot connect to Firebase. Need to evaluate
+// export default {
+//   data() {
+//     return {
+//       email: '',
+//       password: '',
+//       error: null
+//     }
+//   },
+//   methods: {
+//     async login() {
+//       try {
+//         const auth = getAuth();
+//         const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password);
+//         const user = userCredential.user;
+//         const db = getFirestore();
+//         const userData = await getDoc(doc(db, 'users', user.uid));
+//         const access = userData.get('access')
+//         // Redirect the user to the appropriate dashboard based on their access level
+//         if (access === 'Admin') {
+//           this.$router.push('/dashboard')
+//         } else if (access === 'Executive') {
+//           this.$router.push('/dashboard')
+//         } else {
+//           this.$router.push('/dashboard')
+//         }
+//       } catch (error) {
+//         this.$toast.error(error.message);
+//       }
+//     }
+//   }
+// }
+
+//authentication only version without any access controls
 export default {
   data() {
     return {

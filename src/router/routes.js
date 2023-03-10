@@ -12,6 +12,7 @@ import Maps from "@/pages/Maps.vue";
 import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
 import Login from "@/pages/Login.vue";
+import Register from "@/pages/Register.vue";
 
 // const routes = new Router({
 //   routes: [
@@ -31,7 +32,7 @@ const routes = [
   {
     path: "/",
     component: DashboardLayout,
-    redirect: "/dashboard",
+    redirect: "/login",
     children: [
       {
         path: "dashboard",
@@ -73,6 +74,17 @@ const routes = [
   //Create a new route component for login since it users a different default layout
   { path: "*", component: NotFound },
   {
+    path: "/register",
+    component: Register,
+    children: [
+      {
+        path: "",
+        name: "register",
+        component: Register,
+      },
+    ],
+  },
+  {
     path: "/login",
     component: Login,
     children: [
@@ -83,6 +95,7 @@ const routes = [
       },
     ],
   },
+  
 ];
 
 /**
