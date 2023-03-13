@@ -33,7 +33,7 @@ Vue.use(PaperDashboard);
 //   render: (h) => h(App),
 // }).$mount("#app");
 
-let app;
+let app
 const auth = getAuth();
 const user = auth.currentUser;
 onAuthStateChanged(auth, user => {

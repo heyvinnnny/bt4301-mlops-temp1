@@ -1,6 +1,6 @@
 <template>
     <div class="register-view">
-      <RegisterCard />
+      <RegisterCard @authenticated="handleAuthenticated" />
     </div>
 </template>
   
@@ -11,12 +11,16 @@
   import * as firebaseui from "firebaseui";
   import "firebaseui/dist/firebaseui.css";
   
+  
   export default {
   components: {
     RegisterCard
   },
   methods: {
-   
+    handleAuthenticated() {
+      // redirect the user to the home page or some other authenticated page
+      this.$router.push('/dashboard')
+    }
   }
 }
 </script>

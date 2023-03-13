@@ -1,5 +1,5 @@
 <template>
-    <div class="register-form">
+    <div class="register-form" id="app">
       <form @submit.prevent="register">
         <div>
           <label>Name</label>
@@ -26,17 +26,15 @@
           </select>
         </div>
         <button type="submit">Register</button>
+        
       </form>
     </div>
+
+    
 </template>
-  
+
 <script>
-import { ref } from 'vue';
-import "firebase/compat/auth";
-import "firebaseui/dist/firebaseui.css";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, getDocs, addDoc, getFirestore, collection } from "firebase/firestore";
-  
+import { MongoClient } from 'mongodb';
 
 //able to input user details into firebase but there is some issues with validation (e.g. no message prompt)
 export default {
@@ -53,37 +51,95 @@ export default {
         return
       }
 
-      try {
-        const auth = getAuth();
-        const db = getFirestore();
-        const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value)
-        const user = userCredential.user
+      // Connection URL
+      const url = 'mongodb://localhost:27017';
 
-        //adding info works well (for authentication only)
-        await addDoc(collection(db, 'users'), {
-          name: name.value,
-          email: email.value,
-          password: password.value,
-          access: access.value,
-          uid: user.uid
-        })
-        //this.$toast.success("You have registered successfully!");
+      // Database Name
+      const dbName = 'bt4301-mlops';
 
-        //this is not working
-        this.$router.push('/dashboard')
-        alert('Registration successful!')
-        
-      } catch (error) {
-        // error do prompt though
-        //this.$toast.error(error.message);
-        alert('Registration failed. Please try again.')
-      }
-    }
+      // Create a new MongoClient
+      const client = new MongoClient(url);
 
+      client.connect(function(err) {
+        console.log("Connected successfully to server");
+
+        const db = client.db(dbName);
+
+        // Get the collection
+        const collection = db.collection('users');
+
+        // Insert data into the collection
+        collection.insertOne({ name: name, email: email, password: password, access: access }, function(err, result) {
+          console.log("Inserted document into the collection");
+          client.close();
+        });
+      });
     return { name, email, password, confirmPassword, access, register }
+    }
   }
 }
+
+// import { ref } from 'vue';
+// import "firebase/compat/auth";
+// import "firebaseui/dist/firebaseui.css";
+// import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+// import { doc, getDocs, addDoc, getFirestore, collection } from "firebase/firestore";
+// import router from '../../router';
+  
+
+// //able to input user details into firebase but there is some issues with validation (e.g. no message prompt)
+// export default {
+//   setup() {
+//     const name = ref('')
+//     const email = ref('')
+//     const password = ref('')
+//     const confirmPassword = ref('')
+//     const access = ref('')
+
+//     const register = async () => {
+//       if (password.value !== confirmPassword.value) {
+//         alert('Passwords do not match')
+//         return
+//       }
+
+//       try {
+//         const auth = getAuth();
+//         const db = getFirestore();
+//         const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value)
+//         const user = userCredential.user
+
+//         alert('Registration successful!')
+//         //this.$toast.success("Welcome to DataPower");
+//         router.push('/login')
+        
+        
+
+//         //adding info works well (for authentication only)
+//         await addDoc(collection(db, 'users'), {
+//           name: name.value,
+//           email: email.value,
+//           password: password.value,
+//           access: access.value,
+//           uid: user.uid,
+//         })
+//         //this.$toast.success("You have registered successfully!");
+        
+//         //this is not working
+//         //this.$router.push('/login')
+        
+        
+//       } catch (error) {
+//         // error do prompt though
+//         //this.$toast.error(error.message);
+//         alert('Registration failed. Please try again.')
+//       }
+//     }
+
+//     return { name, email, password, confirmPassword, access, register }
+//   }
+// }
 </script>
+
 
 <style scoped>
 .register-form {
