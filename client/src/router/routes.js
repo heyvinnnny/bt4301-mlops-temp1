@@ -14,6 +14,7 @@ import TableList from "@/pages/TableList.vue";
 
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
+import ForgetPassword from "@/pages/ForgetPassword.vue";
 
 const routes = [
   {
@@ -71,8 +72,17 @@ const routes = [
       },
     ],
   },
-
-  
+  {
+    path: "/forgetpassword",
+    component: ForgetPassword,
+    children: [
+      {
+        path: "forgetpassword",
+        name: "forgetpassword",
+        component: ForgetPassword,
+      },
+    ],
+  },
   {
     path: "/login",
     component: Login,

@@ -1,5 +1,44 @@
 <template>
-  <div class="login-card">
+<div id="app">
+
+<div class="login-page">
+   <transition name="fade">
+      <div class="wallpaper-login"></div>
+   </transition>
+   <div class="wallpaper-register"></div>
+
+   <div class="container">
+      <div class="row">
+         <div class="col-lg-4 col-md-6 col-sm-8 mx-auto">
+            <div v-if="!registerActive" class="card login" >
+               <h3 style="text-align:center;"><b>Login to DataPower</b></h3>
+               <form @submit.prevent="login" class="card login" >
+               <div class="form-group">
+                  <input v-model="email" type="email" class="form-control" placeholder="Email" required>
+                  <input v-model="password" type="password" class="form-control" placeholder="Password" required>
+                  
+                  <button type="submit" class="btn btn-primary">Login</button>
+                  <br>
+                  
+                  <!-- May not need this line bcause users are not expected to create by themselves
+                    <p style="padding-top:20px;">Don't have an account? <router-link to="/register">Register</router-link> </p>
+                    -->
+                  
+                  <p style="padding-top:20px"><router-link to="/forgetpassword">Forget your password?</router-link></p>
+                </div>
+              </form>
+            </div>
+
+
+         </div>
+      </div>
+
+   </div>
+</div>
+
+</div>
+
+  <!-- <div class="login-card">
     <h2>Login</h2>
     <form @submit.prevent="login">
       <div class="form-group">
@@ -13,7 +52,7 @@
       <button type="submit">Login</button>
       {{ error }}
     </form>
-  </div>
+  </div> -->
 </template>
   
 <script>
@@ -103,46 +142,57 @@ export default {
   </script>
   
   <style scoped>
-  .login-card {
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 5px;
-  max-width: 400px;
-  margin: 0 auto;
+  p {
+	 line-height: 1rem;
+}
+ .card {
+	 padding: 20px;
+}
+ .form-group input {
+	 margin-bottom: 20px;
+}
+ .login-page {
+	 align-items: center;
+	 display: flex;
+	 height: 100vh;
+}
+ .login-page .wallpaper-login {
+	 background: url(https://cdn-gcp.new.marutitech.com/robot_humanoid_using_tablet_computer_big_data_analytic_1_94eab7101e.jpg) no-repeat center center;
+	 background-size: cover;
+	 height: 100%;
+	 position: absolute;
+	 width: 100%;
+}
+ .login-page .fade-enter-active, .login-page .fade-leave-active {
+	 transition: opacity 0.5s;
+}
+ .login-page .fade-enter, .login-page .fade-leave-to {
+	 opacity: 0;
 }
 
-.form-group {
-  margin-bottom: 20px;
+ .login-page h1 {
+	 margin-bottom: 1.5rem;
 }
-
-label {
-  display: block;
-  margin-bottom: 5px;
+ .error {
+	 animation-name: errorShake;
+	 animation-duration: 0.3s;
 }
-
-input[type="email"],
-input[type="password"] {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-button[type="submit"] {
-  display: block;
-  background-color: #3490dc;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-}
-
-.error-message {
-  color: red;
-  margin-top: 10px;
+ @keyframes errorShake {
+	 0% {
+		 transform: translateX(-25px);
+	}
+	 25% {
+		 transform: translateX(25px);
+	}
+	 50% {
+		 transform: translateX(-25px);
+	}
+	 75% {
+		 transform: translateX(25px);
+	}
+	 100% {
+		 transform: translateX(0);
+	}
 }
   </style>
   

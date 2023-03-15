@@ -1,7 +1,5 @@
 <template>
-    <div class="register-view">
       <RegisterCard @authenticated="handleAuthenticated" />
-    </div>
 </template>
   
   <script>
@@ -22,10 +20,4 @@
 </script>
 
 <style scoped>
-.register-view {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
 </style>

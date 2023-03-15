@@ -1,7 +1,5 @@
 <template>
-    <div class="login-view">
       <LoginCard @authenticated="handleAuthenticated" />
-    </div>
 </template>
   
   <script>
@@ -21,10 +19,4 @@
 </script>
 
 <style scoped>
-.login-view {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
 </style>

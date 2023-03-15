@@ -7,6 +7,7 @@ import Button from "./Button";
 import Card from "./Cards/Card.vue";
 import LoginCard from "./Cards/LoginCard.vue";
 import RegisterCard from "./Cards/RegisterCard.vue";
+import ForgetPasswordCard from "./Cards/ForgetPasswordCard.vue";
 import ChartCard from "./Cards/ChartCard.vue";
 import StatsCard from "./Cards/StatsCard.vue";
 
@@ -17,6 +18,7 @@ let components = {
   Card,
   LoginCard,
   RegisterCard,
+  ForgetPasswordCard,
   ChartCard,
   StatsCard,
   PaperTable,
@@ -31,6 +33,7 @@ export {
   Card,
   LoginCard,
   RegisterCard,
+  ForgetPasswordCard,
   ChartCard,
   StatsCard,
   PaperTable,
