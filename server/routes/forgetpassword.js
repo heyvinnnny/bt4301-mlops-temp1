@@ -7,7 +7,7 @@ const nodemailer = require('nodemailer');
 const User = require('../models/user');
 const PasswordResetToken = require('../models/passwordResetToken');
 
-router.post('/forgot-password', async (req, res) => {
+router.post('/forgotpassword', async (req, res) => {
     try {
       const { email } = req.body;
   

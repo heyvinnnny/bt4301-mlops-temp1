@@ -5,6 +5,7 @@ import VueToast from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
 import PaperDashboard from "./plugins/paperDashboard";
 import "vue-notifyjs/themes/default.css";
+import VueSweetalert2 from 'vue-sweetalert2';
 
 
 Vue.use(VueToast);
@@ -12,6 +13,8 @@ Vue.use(VueToast);
 Vue.config.productionTip = false
 
 Vue.use(PaperDashboard);
+
+Vue.use(VueSweetalert2);
 
 /* eslint-disable no-new */
 // new Vue({

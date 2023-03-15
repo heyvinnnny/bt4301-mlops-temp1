@@ -197,7 +197,7 @@ app.post('/register', (req, res, next) => {
 // });
 
 //forget password
-app.post('/forgotpass', async (req, res) => {
+app.post('/forgotpassword', async (req, res) => {
   try {
     const { email } = req.body;
 

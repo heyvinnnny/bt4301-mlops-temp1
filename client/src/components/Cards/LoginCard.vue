@@ -10,7 +10,7 @@
    <div class="container">
       <div class="row">
          <div class="col-lg-4 col-md-6 col-sm-8 mx-auto">
-            <div v-if="!registerActive" class="card login" >
+            <div class="card login" >
                <h3 style="text-align:center;"><b>Login to DataPower</b></h3>
                <form @submit.prevent="login" class="card login" >
                <div class="form-group">

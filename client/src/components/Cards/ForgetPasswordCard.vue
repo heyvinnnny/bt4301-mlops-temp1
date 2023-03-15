@@ -7,7 +7,7 @@
             <label class="form-label" for="email">Email:</label>
             <input v-model="email" class="form-input" type="email" name="email" placeholder="Enter your email" required="">
           </div>
-          <button type="submit" class="btn btn-primary">Reset Password</button>
+          <button type="submit" @clicked= "forgetPassword()" class="btn btn-primary">Reset Password</button>
         </form>
         <div class="form-text">
           <p>Remember your password? <router-link to="/login">Login Now!</router-link></p>
@@ -28,7 +28,7 @@ export default {
   methods: {
     async forgotPassword() {
       try {
-        const response = await fetch('http://localhost:3000/forgetpass', {
+        const response = await fetch('http://localhost:3000/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -40,6 +40,13 @@ export default {
       } catch (error) {
         console.log(error)
       }
+
+    //   await swal.fire({
+    //   icon: 'success',
+    //   title: 'Email Sent',
+    //   text: 'Please check your email to reset your password.',
+    //   confirmButtonText: 'OK'
+    // });
     }
   }
 }
