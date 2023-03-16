@@ -2,12 +2,12 @@
     <div class="login">
       <div class="form-container">
         <h1 class="form-title">Forgot Password</h1>
-        <form @submit.prevent="forgotPassword">
+        <form @submit.prevent="forgetpassword">
           <div class="form-group">
             <label class="form-label" for="email">Email:</label>
             <input v-model="email" class="form-input" type="email" name="email" placeholder="Enter your email" required="">
           </div>
-          <button type="submit" @clicked= "forgetPassword()" class="btn btn-primary">Reset Password</button>
+          <button type="submit" class="btn btn-primary">Reset Password</button>
         </form>
         <div class="form-text">
           <p>Remember your password? <router-link to="/login">Login Now!</router-link></p>
@@ -23,33 +23,24 @@ export default {
   data() {
     return {
       email: '',
-    }
+      message: '',
+      error: ''
+    };
   },
   methods: {
-    async forgotPassword() {
-      try {
-        const response = await fetch('http://localhost:3000/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email: this.email })
+    forgetpassword() {
+      axios.post('http://localhost:3000/forgetpassword', { email: this.email })
+        .then(res => {
+          console.log("then");
+          this.error = '';
         })
-        const data = await response.json()
-        console.log(data.message)
-      } catch (error) {
-        console.log(error)
-      }
-
-    //   await swal.fire({
-    //   icon: 'success',
-    //   title: 'Email Sent',
-    //   text: 'Please check your email to reset your password.',
-    //   confirmButtonText: 'OK'
-    // });
+        .catch(err => {
+          this.message = '';
+          console.log("catch");
+        });
     }
   }
-}
+};
 </script>
   
 <style scoped>

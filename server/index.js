@@ -6,20 +6,26 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 //const loginRoute = require('./routes/login');
 const User = require('./models/user');
-const PasswordResetToken = require('./models/passwordResetToken');
+const passwordResetToken = require('./models/passwordResetToken');
 const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-
-
+const async = require('async');
+const morgan = require('morgan');
 const app = express();
+
+
+app.use(morgan('combined'));
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: '*' // replace with your client-side URL
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+require('dotenv').config();
 
 // Routes
 //app.use('/api/register', registerRoute);
@@ -31,7 +37,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Connect to MongoDB Atlas 
 //Local MongoDB URI: mongodb://localhost:27017/mlops
 //Need to install MongoDB first
-mongoose.connect('mongodb://localhost:27017/mlops', {
+
+mongoose.connect('mongodb+srv://bt4301group1:bt4301@mlops.mxl46jm.mongodb.net/mlops?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
@@ -99,9 +106,6 @@ mongoose.connect('mongodb://localhost:27017/mlops', {
 //   });
 // });
 
-// Use the register router for /api/register requests
-//app.use(registerRoute);
-//app.use(loginRoute);
 
 //login
 app.post('/login', (req, res, next) => {
@@ -168,39 +172,8 @@ app.post('/register', (req, res, next) => {
     })
 })
 
-//register 2
-
-// app.post('/register', async (req, res) => {
-//   try {
-//     const { name, email, password, confirmPassword, access } = req.body;
-
-//     // Check if user with same email already exists
-//     const userExists = await User.findOne({ email });
-//     if (userExists) {
-//       return res.status(400).json({ message: 'User already exists' });
-//     }
-
-//     // Check if passwords match
-//     if (password !== confirmPassword) {
-//       return res.status(400).json({ message: 'Passwords do not match' });
-//     }
-
-//     // Hash password
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     // Create new user
-//     const newUser = new User({ name, email, password: hashedPassword, access });
-//     const savedUser = await newUser.save();
-
-//     res.status(201).json({ message: 'User registered successfully' });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: 'Internal server error' });
-//   }
-// });
-
 //forget password
-// app.post('/forgotpassword', async (req, res) => {
+// app.post('/forgetpassword', async (req, res) => {
 //   try {
 //     const { email } = req.body;
 
@@ -247,7 +220,149 @@ app.post('/register', (req, res, next) => {
 //   }
 // });
 
-//forget password 2
+//forget password 2 (email can finally send)
+app.post('/forgetpassword', (req, res, next) => {
+  async.waterfall([
+    (done) => {
+      crypto.randomBytes(20, (err, buf) => {
+        let token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    (token, done) => {
+      User.findOne({ email: req.body.email })
+        .then(user => {
+          if (!user) {
+            return res.status(404).json({
+              title: 'user not found',
+              error: 'user not found with that email address'
+            });
+          }
+
+          const resetToken = new passwordResetToken({
+            _userId: user._id,
+            token: token
+          });
+  
+          resetToken.save()
+          .then(() => {
+            done(null, token, user);
+          })
+          .catch((err) => {
+            done(err);
+          });
+        });
+    },
+    (token, user, done) => {
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: 'bt4301.mlops1@gmail.com',
+          pass: 'kvbrfhqsmebvtptn',
+        },
+        });
+
+      let mailOptions = {
+        to: user.email,
+        from: process.env.EMAIL_USER,
+        subject: 'Password Reset Request',
+        text: 'You are receiving this email because you (or someone else) has requested a password reset for your account.\n\n' +
+          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+          'http://' + req.headers.host + '/resetpassword/' + token + '\n\n' +
+          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+      };
+
+      transporter.sendMail(mailOptions, (err) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            title: 'error',
+            error: 'an error occurred while sending the email'
+          });
+        }
+        return res.status(200).json({
+          title: 'success',
+          message: 'an email has been sent to ' + user.email + ' with further instructions'
+        });
+      });
+    }
+  ], (err) => {
+    if (err) {
+      return next(err);
+    }
+  });
+});
+
+
+//reset password
+// Route for resetting password
+app.post('/resetpassword', (req, res) => {
+  const token = req.body.token;
+  const newPassword = req.body.newPassword;
+  const confirmNewPassword = req.body.confirmNewPassword;
+
+  // Check if password and confirm password match
+  if (newPassword !== confirmNewPassword) {
+    return res.status(400).json({
+      title: 'Passwords do not match',
+      error: 'Please make sure your passwords match'
+    });
+  }
+
+  // Find the reset token in the database
+  passwordResetToken.findOne({ token: token })
+    .then(resetToken => {
+      // Check if reset token exists and is not expired
+      if (!resetToken || resetToken.isExpired()) {
+        return res.status(400).json({
+          title: 'Invalid token',
+          error: 'Your reset password token is invalid or has expired. Please try again.'
+        });
+      }
+
+      // Find the user associated with the reset token
+      User.findOne({ _id: resetToken._userId })
+        .then(user => {
+          if (!user) {
+            return res.status(404).json({
+              title: 'User not found',
+              error: 'We were unable to find a user for this token.'
+            });
+          }
+
+          // Hash the new password
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newPassword, salt, (err, hash) => {
+              if (err) {
+                return res.status(500).json({
+                  title: 'Error hashing password',
+                  error: err
+                });
+              }
+
+              // Update the user's password in the database
+              user.password = hash;
+              user.save()
+                .then(() => {
+                  // Delete the reset token from the database
+                  passwordResetToken.findOneAndDelete({ token: token })
+                    .then(() => {
+                      return res.status(200).json({
+                        title: 'Password reset success',
+                        message: 'Your password has been successfully reset'
+                      });
+                    });
+                });
+            });
+          });
+        });
+    });
+});
+
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;
