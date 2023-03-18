@@ -14,12 +14,19 @@ const nodemailer = require('nodemailer');
 const async = require('async');
 const morgan = require('morgan');
 const app = express();
+const ejs = require('ejs');
+const path = require('path');
+const moment = require('moment-timezone');
+moment.tz.setDefault('Asia/Singapore');
 
 
 app.use(morgan('combined'));
 
+app.set('view engine', 'ejs');
+//app.set('views', path.join(__dirname, 'client'));
+//app.set('views', path.join(__dirname, '../client/src'));
 // Middleware
-app.use(express.json());
+//app.use(express.json());
 app.use(cors({
   origin: '*' // replace with your client-side URL
 }));
@@ -271,7 +278,7 @@ app.post('/forgetpassword', (req, res, next) => {
         subject: 'Password Reset Request',
         text: 'You are receiving this email because you (or someone else) has requested a password reset for your account.\n\n' +
           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://' + req.headers.host + '/resetpassword/' + token + '\n\n' +
+          'http://' + req.headers.host + '/resetpassword/' + user._id + '/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
 
@@ -297,71 +304,221 @@ app.post('/forgetpassword', (req, res, next) => {
 });
 
 
-//reset password
+//reset password 1
 // Route for resetting password
-app.post('/resetpassword', (req, res) => {
-  const token = req.body.token;
-  const newPassword = req.body.newPassword;
-  const confirmNewPassword = req.body.confirmNewPassword;
+// app.post('/resetpassword', (req, res) => {
+//   const token = req.body.token;
+//   const newPassword = req.body.newPassword;
+//   const confirmNewPassword = req.body.confirmNewPassword;
 
-  // Check if password and confirm password match
-  if (newPassword !== confirmNewPassword) {
-    return res.status(400).json({
-      title: 'Passwords do not match',
-      error: 'Please make sure your passwords match'
+//   // Check if password and confirm password match
+//   if (newPassword !== confirmNewPassword) {
+//     return res.status(400).json({
+//       title: 'Passwords do not match',
+//       error: 'Please make sure your passwords match'
+//     });
+//   }
+
+//   // Find the reset token in the database
+//   passwordResetToken.findOne({ token: token })
+//     .then(resetToken => {
+//       // Check if reset token exists and is not expired
+//       if (!resetToken || resetToken.isExpired()) {
+//         return res.status(400).json({
+//           title: 'Invalid token',
+//           error: 'Your reset password token is invalid or has expired. Please try again.'
+//         });
+//       }
+
+//       // Find the user associated with the reset token
+//       User.findOne({ _id: resetToken._userId })
+//         .then(user => {
+//           if (!user) {
+//             return res.status(404).json({
+//               title: 'User not found',
+//               error: 'We were unable to find a user for this token.'
+//             });
+//           }
+
+//           // Hash the new password
+//           bcrypt.genSalt(10, (err, salt) => {
+//             bcrypt.hash(newPassword, salt, (err, hash) => {
+//               if (err) {
+//                 return res.status(500).json({
+//                   title: 'Error hashing password',
+//                   error: err
+//                 });
+//               }
+
+//               // Update the user's password in the database
+//               user.password = hash;
+//               user.save()
+//                 .then(() => {
+//                   // Delete the reset token from the database
+//                   passwordResetToken.findOneAndDelete({ token: token })
+//                     .then(() => {
+//                       return res.status(200).json({
+//                         title: 'Password reset success',
+//                         message: 'Your password has been successfully reset'
+//                       });
+//                     });
+//                 });
+//             });
+//           });
+//         });
+//     });
+// });
+
+//For clicking onto the email link
+// res.render(path.join(__dirname, '../client/src/pages/ResetPassword.vue'), { token: req.params.token });
+// res.render('resetpassword', { token: req.params.token });
+// app.get('/resetpassword/:userId/:token', (req, res, next) => {
+//   passwordResetToken.findOne({ userId: req.params.userId, token: req.params.token })
+//     .then((resetToken) => {
+//       if (!resetToken) {
+//         return res.status(404).json({
+//           title: 'invalid token',
+//           error: 'invalid or expired password reset token'
+//         });
+//       }
+
+//       // Render reset password page with token parameter
+//       res.render('resetpassword', { userId: req.params.userId, token: req.params.token });
+//       //res.redirect(`/resetpassword/${user._id}?token=${req.params.token}`);
+      
+//     })
+//     .catch((err) => {
+//       return next(err);
+//     });
+// });
+
+//testing ver 
+app.get('/resetpassword/:id/:token', async (req, res, next) => {
+  try {
+    const token = await passwordResetToken.findOne({
+      _userId: req.params.id,
+      token: req.params.token
+    });
+
+    if (!token) {
+      return res.status(404).json({
+        title: 'error',
+        error: 'invalid or expired password reset token'
+      });
+    }
+
+    //res.render('ResetPassword', { token: token.token, userId: token._userId }); //Render: Has error with the view engine. 
+    res.redirect(`/resetpassword/${user._id}?token=${req.params.token}`); //Redirect: Always show error on invalid or expired password token
+  } catch (err) {
+    return res.status(500).json({
+      title: 'error',
+      error: 'an error occurred while finding the token'
     });
   }
+});
 
-  // Find the reset token in the database
-  passwordResetToken.findOne({ token: token })
-    .then(resetToken => {
-      // Check if reset token exists and is not expired
-      if (!resetToken || resetToken.isExpired()) {
-        return res.status(400).json({
-          title: 'Invalid token',
-          error: 'Your reset password token is invalid or has expired. Please try again.'
-        });
-      }
-
-      // Find the user associated with the reset token
-      User.findOne({ _id: resetToken._userId })
-        .then(user => {
-          if (!user) {
+//Reset Password 2 (should be working)
+app.get('/resetpassword', (req, res, next) => {
+  async.waterfall([
+    (done) => {
+      passwordResetToken.findOne({ token: req.params.token })
+        .then((resetToken) => {
+          if (!resetToken) {
             return res.status(404).json({
-              title: 'User not found',
-              error: 'We were unable to find a user for this token.'
+              title: 'invalid token',
+              error: 'invalid or expired password reset token'
             });
           }
 
-          // Hash the new password
-          bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(newPassword, salt, (err, hash) => {
-              if (err) {
-                return res.status(500).json({
-                  title: 'Error hashing password',
-                  error: err
+          User.findOne({ _id: resetToken._userId })
+            .then((user) => {
+              if (!user) {
+                return res.status(404).json({
+                  title: 'user not found',
+                  error: 'user not found with that email address'
                 });
               }
 
-              // Update the user's password in the database
-              user.password = hash;
+              const { password, confirm_password } = req.body;
+
+              if (!password || !confirm_password) {
+                return res.status(400).json({
+                  title: 'missing password field',
+                  error: 'both password fields are required'
+                });
+              }
+
+              if (password !== confirm_password) {
+                return res.status(400).json({
+                  title: 'password mismatch',
+                  error: 'passwords do not match'
+                });
+              }
+
+              const hashedPassword = bcrypt.hashSync(password, 10);
+              user.password = hashedPassword;
               user.save()
                 .then(() => {
-                  // Delete the reset token from the database
-                  passwordResetToken.findOneAndDelete({ token: token })
+                  resetToken.delete()
                     .then(() => {
-                      return res.status(200).json({
-                        title: 'Password reset success',
-                        message: 'Your password has been successfully reset'
-                      });
+                      done(null, user);
+                    })
+                    .catch((err) => {
+                      done(err);
                     });
+                })
+                .catch((err) => {
+                  done(err);
                 });
+            })
+            .catch((err) => {
+              done(err);
             });
-          });
+        })
+        .catch((err) => {
+          done(err);
         });
-    });
-});
+    },
+    (user, done) => {
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: 'bt4301.mlops1@gmail.com',
+          pass: 'kvbrfhqsmebvtptn',
+        },
+      });
 
+      let mailOptions = {
+        to: user.email,
+        from: process.env.EMAIL_USER,
+        subject: 'Password Reset Confirmation',
+        text: 'Hello,\n\n' +
+          'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+      };
+
+      transporter.sendMail(mailOptions, (err) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            title: 'error',
+            error: 'An error occurred while sending the email'
+          });
+        }
+        return res.status(200).json({
+          title: 'success',
+          message: 'Your password has been reset successfully'
+        });
+      });
+    }
+  ], (err) => {
+    if (err) {
+      return next(err);
+    }
+  });
+});
 
 
 // Start the server

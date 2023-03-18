@@ -1,12 +1,22 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import routes from "./routes";
-Vue.use(VueRouter);
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import routes from './routes'
+import ResetPassword from '@/pages/ResetPassword.vue'
 
-// configure router
+Vue.use(VueRouter)
+
 const router = new VueRouter({
-  routes, // short for routes: routes
+  mode: 'history', // set the router mode to use HTML5 history API
+  base: process.env.BASE_URL, // set the base URL of the Vue app
+  routes,
   linkActiveClass: "active",
-});
+  routes: [
+    {
+      path: '/resetpassword/:id/:token',
+      name: 'resetpassword',
+      component: ResetPassword
+    }
+  ]
+})
 
-export default router;
+export default router

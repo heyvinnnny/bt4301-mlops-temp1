@@ -8,6 +8,7 @@ import Card from "./Cards/Card.vue";
 import LoginCard from "./Cards/LoginCard.vue";
 import RegisterCard from "./Cards/RegisterCard.vue";
 import ForgetPasswordCard from "./Cards/ForgetPasswordCard.vue";
+import ResetPasswordCard from "./Cards/ResetPasswordCard.vue";
 import ChartCard from "./Cards/ChartCard.vue";
 import StatsCard from "./Cards/StatsCard.vue";
 
@@ -19,6 +20,7 @@ let components = {
   LoginCard,
   RegisterCard,
   ForgetPasswordCard,
+  ResetPasswordCard,
   ChartCard,
   StatsCard,
   PaperTable,
@@ -34,6 +36,7 @@ export {
   LoginCard,
   RegisterCard,
   ForgetPasswordCard,
+  ResetPasswordCard,
   ChartCard,
   StatsCard,
   PaperTable,
