@@ -30,8 +30,8 @@
     <div class="row">
       <div class="col-12">
         <chart-card
-          title="Users behavior"
-          sub-title="24 Hours performance"
+          title="Loan Default Predictor (Risk Management)"
+          sub-title="DataRobot Prediction Server | Probability of Default"
           :chart-data="usersChart.data"
           :chart-options="usersChart.options"
         >
@@ -103,34 +103,27 @@ export default {
         {
           type: "warning",
           icon: "ti-server",
-          title: "Capacity",
-          value: "105GB",
+          title: "Summary",
+          value: "-",
           footerText: "Updated now",
           footerIcon: "ti-reload",
         },
         {
           type: "success",
-          icon: "ti-wallet",
-          title: "Revenue",
-          value: "$1,345",
-          footerText: "Last day",
+          icon: "ti-pulse",
+          title: "Content",
+          font:10,
+          value: "-",
+          footerText: "5 hours ago",
           footerIcon: "ti-calendar",
         },
         {
           type: "danger",
           icon: "ti-pulse",
-          title: "Errors",
-          value: "23",
+          title: "Governance",
+          value: "-",
           footerText: "In the last hour",
           footerIcon: "ti-timer",
-        },
-        {
-          type: "info",
-          icon: "ti-twitter-alt",
-          title: "Followers",
-          value: "+45",
-          footerText: "Updated now",
-          footerIcon: "ti-reload",
         },
       ],
       usersChart: {
