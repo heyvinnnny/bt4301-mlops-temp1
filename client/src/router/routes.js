@@ -15,6 +15,7 @@ import TableList from "@/pages/TableList.vue";
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
 import ForgetPassword from "@/pages/ForgetPassword.vue";
+import VersionControl from "@/pages/VersionControl.vue";
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
         path: "notifications",
         name: "notifications",
         component: Notifications,
+      },
+      {
+        path: "version-control",
+        name: "version-control",
+        component: VersionControl,
       },
       {
         path: "icons",
