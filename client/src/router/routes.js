@@ -15,7 +15,6 @@ import TableList from "@/pages/TableList.vue";
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
 import ForgetPassword from "@/pages/ForgetPassword.vue";
-import ResetPassword from "@/pages/ResetPassword.vue";
 
 const routes = [
   {
@@ -85,18 +84,6 @@ const routes = [
     ],
   },
   {
-    path: "/resetpassword",
-    component: ResetPassword,
-    props: route => ({ token: route.query.token }),
-    children: [
-      {
-        path: "resetpassword",
-        name: "resetpassword",
-        component: ResetPassword,
-      },
-    ],
-  },
-  {
     path: "/login",
     component: Login,
     children: [
@@ -110,11 +97,6 @@ const routes = [
   
 ];
 
-const router = new VueRouter({
-  mode: 'history',
-  routes
-});
-
 /**
  * Asynchronously load view (Webpack Lazy loading compatible)
  * The specified component must be inside the Views folder
@@ -124,4 +106,4 @@ function view(name) {
    return res;
 };**/
 
-export default router;
+export default routes;
