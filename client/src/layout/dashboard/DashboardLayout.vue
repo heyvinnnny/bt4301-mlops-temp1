@@ -13,6 +13,7 @@
         <sidebar-link to="/icons" name="Icons" icon="ti-pencil-alt2" />
         <sidebar-link to="/maps" name="Map" icon="ti-map" />
         <sidebar-link to="/notifications" name="Notifications" icon="ti-bell" />
+        <sidebar-link to="/version-control" name="Version Control" icon="ti-bell" />
       </template>
       <mobile-menu>
         <li class="nav-item">
