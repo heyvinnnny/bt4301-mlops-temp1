@@ -12,7 +12,11 @@
         <sidebar-link to="/typography" name="Accuracy" icon="ti-text" />
         <sidebar-link to="/icons" name="Predictions" icon="ti-pencil-alt2" />
         <sidebar-link to="/maps" name="Challengers" icon="ti-map" />
-        <sidebar-link to="/version-control" name="Version Control" icon="ti-bell" />
+        <sidebar-link
+          to="/version-control"
+          name="Version Control"
+          icon="ti-bell"
+        />
       </template>
       <mobile-menu>
         <li class="nav-item">

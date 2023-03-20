@@ -28,4 +28,10 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+</style>

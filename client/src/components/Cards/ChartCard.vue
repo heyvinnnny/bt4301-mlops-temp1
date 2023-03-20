@@ -18,11 +18,6 @@
         <div class="chart-legend">
           <slot name="legend"></slot>
         </div>
-        <hr />
-        <div class="stats">
-          <slot name="footer"></slot>
-        </div>
-        <div class="pull-right"></div>
       </div>
     </div>
   </card>
@@ -54,7 +49,9 @@ export default {
     chartOptions: {
       type: Object,
       default: () => {
-        return {};
+        return {
+          // height: "100px",
+        };
       },
     },
     chartData: {

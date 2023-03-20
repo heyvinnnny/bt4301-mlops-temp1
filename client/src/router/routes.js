@@ -1,5 +1,5 @@
 import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
 
@@ -16,6 +16,9 @@ import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
 import ForgetPassword from "@/pages/ForgetPassword.vue";
 import VersionControl from "@/pages/VersionControl.vue";
+
+import Deployment from "@/pages/Deployment/Deployment.vue";
+import Home from "@/pages/Home.vue";
 
 const routes = [
   {
@@ -100,7 +103,28 @@ const routes = [
       },
     ],
   },
-  
+  {
+    path: "/deployment",
+    component: Deployment,
+    children: [
+      {
+        path: "deployment",
+        name: "deployment",
+        component: Deployment,
+      },
+    ],
+  },
+  {
+    path: "/home",
+    component: Home,
+    children: [
+      {
+        path: "home",
+        name: "home",
+        component: Home,
+      },
+    ],
+  },
 ];
 
 /**
