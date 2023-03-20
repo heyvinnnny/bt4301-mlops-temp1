@@ -38,7 +38,7 @@ require('dotenv').config();
 //Local MongoDB URI: mongodb://localhost:27017/mlops
 //Need to install MongoDB first
 
-mongoose.connect('mongodb+srv://bt4301group1:bt4301@mlops.mxl46jm.mongodb.net/mlops?retryWrites=true&w=majority', {
+mongoose.connect('mongodb://localhost:27017/mlops', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {

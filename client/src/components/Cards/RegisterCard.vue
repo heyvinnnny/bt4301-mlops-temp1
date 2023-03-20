@@ -17,7 +17,7 @@
             <option value="User">User</option>
             <option value="Manager">Manager</option>
           </select>
-          <button type="submit">Register</button>
+          <!-- <button type="submit">Register</button> -->
 					<input type="submit" value="SIGNUP">
 				</form>
 				<p>Have an Account? <router-link to="/login"> Login Now!</router-link></p>
