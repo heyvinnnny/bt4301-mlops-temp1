@@ -41,6 +41,7 @@
         </chart-card>
       </div>
     </div>
+    
     <div class="row">
       <div class="col-12">
         <card :title="table1.title" :subTitle="table1.subTitle">
