@@ -19,6 +19,12 @@ import VersionControl from "@/pages/VersionControl.vue";
 
 import Deployment from "@/pages/Deployment/Deployment.vue";
 import Home from "@/pages/Home.vue";
+import ServiceHealth from "@/pages/ServiceHealth.vue";
+import DataDrift from "@/pages/DataDrift.vue";
+import Accuracy from "@/pages/Accuracy.vue";
+import Predictions from "@/pages/Predictions.vue";
+import Challengers from "@/pages/Challengers.vue";
+
 
 const routes = [
   {
@@ -28,7 +34,7 @@ const routes = [
     children: [
       {
         path: "dashboard",
-        name: "dashboard",
+        name: "overview",
         component: Dashboard,
       },
       {
@@ -43,7 +49,7 @@ const routes = [
       },
       {
         path: "version-control",
-        name: "version-control",
+        name: "version control",
         component: VersionControl,
       },
       {
@@ -65,6 +71,31 @@ const routes = [
         path: "table-list",
         name: "table-list",
         component: TableList,
+      },
+      {
+        path: "servicehealth",
+        name: "service health",
+        component: ServiceHealth,
+      },
+      {
+        path: "datadrift",
+        name: "data drift",
+        component: DataDrift,
+      },
+      {
+        path: "accuracy",
+        name: "accuracy",
+        component: Accuracy,
+      },
+      {
+        path: "predictions",
+        name: "predictions",
+        component: Predictions,
+      },
+      {
+        path: "challengers",
+        name: "challengers",
+        component: Challengers,
       },
     ],
   },

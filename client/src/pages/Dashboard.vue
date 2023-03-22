@@ -19,12 +19,11 @@
             <p>{{ stats.title }}</p>
             {{ stats.value }}
           </div>
-          <div class="stats" slot="footer">
-            <i :class="stats.footerIcon"></i> {{ stats.footerText }}
-          </div>
+
         </stats-card>
       </div>
     </div>
+    <br />
 
     <!--Charts-->
     <div class="row">
@@ -83,12 +82,13 @@
     </div>
   </div>
 </template>
+
 <script>
 import { StatsCard, ChartCard } from "@/components/index";
 import Chartist from "chartist";
 export default {
   mounted() {
-    this.$toast.success("Welcome to DataPower");
+    this.$toast.success("Overview");
   },
   components: {
     StatsCard,
@@ -103,27 +103,14 @@ export default {
         {
           type: "warning",
           icon: "ti-server",
-          title: "Summary",
-          value: "-",
-          footerText: "Updated now",
-          footerIcon: "ti-reload",
+          title: "Avg Predictions / Day",
+          value: "1800",
         },
         {
-          type: "success",
+          type: "warning",
           icon: "ti-pulse",
-          title: "Content",
-          font:10,
-          value: "-",
-          footerText: "5 hours ago",
-          footerIcon: "ti-calendar",
-        },
-        {
-          type: "danger",
-          icon: "ti-pulse",
-          title: "Governance",
-          value: "-",
-          footerText: "In the last hour",
-          footerIcon: "ti-timer",
+          title: "Last Prediction",
+          value: "5 hours ago",
         },
       ],
       usersChart: {
