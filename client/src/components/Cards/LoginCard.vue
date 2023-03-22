@@ -118,7 +118,7 @@ export default {
           //if successful
           if (res.status === 200) {
             localStorage.setItem("token", res.data.token);
-            this.$router.push("/dashboard");
+            this.$router.push("/home");
           }
           // }, err => {
           //   console.log(err.response);

@@ -3,7 +3,7 @@
     <!--Stats cards-->
     <div class="row">
       <div
-        class="col-md-3 col-xl-6"
+        class="col-md-6 col-xl-4"
         v-for="stats in statsCards"
         :key="stats.title"
       >
@@ -23,6 +23,7 @@
       </div>
     </div>
     <br />
+    
     <div class="row">
       <!--Charts-->
       <div class="col-md-4 mb-4" v-for="chart in chartCards" :key="chart.title">
