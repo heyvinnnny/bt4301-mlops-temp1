@@ -78,8 +78,6 @@ const routes = [
         component: TableList,
         meta: {requireAuth: true},
       },
-<<<<<<< Updated upstream
-=======
       {
         path: "servicehealth",
         name: "service health",
@@ -134,7 +132,6 @@ const routes = [
         component: Deployment,
         meta: {requireAuth: true},
       }
->>>>>>> Stashed changes
     ],
   },
   //Create a new route component for login since it users a different default layout
