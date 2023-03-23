@@ -44,7 +44,11 @@
       <div class="col-12">
         <card :title="table1.title" :subTitle="table1.subTitle">
           <div slot="raw-content" class="table-responsive">
-            <paper-table :data="table1.data" :columns="table1.columns">
+            <paper-table
+              :data="table1.data"
+              :columns="table1.columns"
+              @row-click="handleTableRowClick"
+            >
             </paper-table>
           </div>
         </card>
@@ -146,11 +150,17 @@ export default {
       ],
       table1: {
         title: "Deployments",
-        subTitle: "Here is a subtitle for this table",
+        subTitle: "Click on the Deployment for more details.",
         columns: [...tableColumns],
         data: [...tableData],
       },
     };
+  },
+  methods: {
+    handleTableRowClick(item) {
+      console.log("Clicked row:", item);
+      this.$router.push({ path: "/dashboard" });
+    },
   },
 };
 </script>

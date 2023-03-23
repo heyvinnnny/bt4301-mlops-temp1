@@ -6,7 +6,7 @@
       </slot>
     </thead>
     <tbody>
-      <tr v-for="(item, index) in data" :key="index">
+      <tr v-for="(item, index) in data" :key="index" @click="handleRowClick(item)">
         <slot :row="item">
           <td
             v-for="(column, index) in columns"
@@ -51,6 +51,9 @@ export default {
     itemValue(item, column) {
       return item[column.toLowerCase()];
     },
+    handleRowClick(item) {
+      this.$emit('row-click', item);
+    }
   },
 };
 </script>
