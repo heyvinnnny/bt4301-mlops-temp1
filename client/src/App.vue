@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'nav-open': $sidebar.showSidebar }" class="site-wrapper">
+  <div :class="{ 'nav-open': $sidebar.showSidebar }">
     <notifications></notifications>
     <router-view></router-view>
   </div>
@@ -36,8 +36,5 @@ export default {};
     opacity: 0;
     transform: scale(1.2, 0.7);
   }
-}
-.site-wrapper {
-  padding: 20px; /* Adjust the padding value as needed */
 }
 </style>
