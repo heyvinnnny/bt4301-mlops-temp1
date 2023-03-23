@@ -34,10 +34,7 @@
             <a class="dropdown-item" href="#">Another notification</a>
           </drop-down>
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="ti-settings"></i>
-              <p>Settings</p>
-            </a>
+            <router-link class="nav-link" to="/userprofile">Profile</router-link>
           </li>
         </ul>
       </div>

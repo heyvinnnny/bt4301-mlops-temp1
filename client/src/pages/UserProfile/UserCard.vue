@@ -7,25 +7,23 @@
       <div class="author">
         <img
           class="avatar border-white"
-          src="@/assets/img/faces/face-2.jpg"
+          :src="createGravatarUrl(user.email)"
           alt="..."
         />
         <h4 class="title">
-          Chet Faker
+          {{ user.name }}
           <br />
           <a href="#">
-            <small>@chetfaker</small>
+          <small>@{{ user.username }}</small>
           </a>
-        </h4>
-      </div>
-      <p class="description text-center">
-        "I like the way you work it
-        <br />
-        No diggity <br />
-        I wanna bag it up"
-      </p>
+          </h4>
+        </div>
+      <br>
+      <br>
+      <br>
     </div>
     <hr />
+
     <div class="text-center">
       <div class="row">
         <div
@@ -44,9 +42,15 @@
   </card>
 </template>
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
+      user: {
+        name: "",
+        email: "",
+      },
       details: [
         {
           title: "12",
@@ -63,7 +67,29 @@ export default {
       ],
     };
   },
+  async created() {
+    try {
+      const token = localStorage.getItem("token");
+
+    // Include the token in the Authorization header
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const res = await axios.get("http://localhost:3000/users/me", config);
+      this.user = res.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
   methods: {
+      createGravatarUrl(email) {
+      const gravatarBaseUrl = "https://www.gravatar.com/avatar/";
+      const md5 = require("md5");
+      const emailHash = md5(email.trim().toLowerCase());
+      return `${gravatarBaseUrl}${emailHash}?d=identicon`;
+    },
     getClasses(index) {
       var remainder = index % 3;
       if (remainder === 0) {

@@ -18,7 +18,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: ['User', 'Manager']
-  }
+  },
+  status: { type: String, required: true, enum: ['Approved', 'Rejected', 'Pending'] },
+  createdAt: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('User', userSchema);
