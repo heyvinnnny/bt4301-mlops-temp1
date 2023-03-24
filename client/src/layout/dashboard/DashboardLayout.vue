@@ -2,6 +2,7 @@
   <div class="wrapper">
     <side-bar>
       <template slot="links">
+        <sidebar-link to="/home" name="Home" icon="ti-panel" />
         <sidebar-link to="/dashboard" name="Overview" icon="ti-panel" />
         <sidebar-link to="/stats" name="Service Health" icon="ti-user" />
         <sidebar-link
@@ -15,6 +16,11 @@
         <sidebar-link
           to="/version-control"
           name="Version Control"
+          icon="ti-bell"
+        />
+        <sidebar-link
+          to="/performancemonitoring"
+          name="Performance Monitor"
           icon="ti-bell"
         />
       </template>

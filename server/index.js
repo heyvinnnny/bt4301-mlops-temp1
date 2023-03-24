@@ -63,8 +63,15 @@ app.post('/login', async (req, res) => {
       },
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ token });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3h' });
+    res.status(200).json({ token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        access: user.access
+        // Include any other necessary fields
+      }, });
 
   } catch (err) {
     console.error(err);
@@ -142,6 +149,28 @@ app.get('/users/pending', auth, async (req, res) => {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
+});
+
+app.put('/users/approval/:userId', auth, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { status } = req.body;
+
+    if (!['Approved', 'Rejected'].includes(status)) {
+      return res.status(400).json({ msg: 'Invalid status' });
+    }
+
+    const user = await User.findByIdAndUpdate(userId, { status }, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+    }
 });
 
 
@@ -231,15 +260,18 @@ app.put('/resetpassword', auth, async (req, res) => {
 
 app.get('/users/me', auth, async (req, res) => {
   try {
-    // The user object is already attached to the request by the auth middleware
     const user = req.user;
-    res.json(user);
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      // add other necessary fields
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 });
-
 
 
 

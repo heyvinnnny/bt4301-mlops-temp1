@@ -1,6 +1,9 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
+      <div class="navbar-toggler-bar" v-if="loggedInUserName">
+      <p>Hello, {{ loggedInUserName }}</p>
+    </div>
       <a class="navbar-brand" href="#">{{ routeName }}</a>
       <button
         class="navbar-toggler navbar-burger"
@@ -9,6 +12,9 @@
         :aria-expanded="$sidebar.showSidebar"
         aria-label="Toggle navigation"
       >
+      
+
+
         <span class="navbar-toggler-bar"></span>
         <span class="navbar-toggler-bar"></span>
         <span class="navbar-toggler-bar"></span>
@@ -36,6 +42,9 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/userprofile">Profile</router-link>
           </li>
+          <li class="nav-item">
+            <button @click="logout" class="nav-link" style="border:0px">Logout</button>
+          </li>
         </ul>
       </div>
     </div>
@@ -48,13 +57,29 @@ export default {
       const { name } = this.$route;
       return this.capitalizeFirstLetter(name);
     },
-  },
+
+    loggedInUserName() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return null;
+    }
+
+    // Retrieve user information from a store or local storage
+    // This example assumes you have stored the user object in local storage as a JSON string
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user ? user.name : null;
+      },
+    },
   data() {
     return {
       activeNotifications: false,
     };
   },
   methods: {
+    logout() {
+      localStorage.removeItem('token');
+      this.$router.push('/login');
+    },
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },

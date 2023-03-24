@@ -31,6 +31,7 @@
     "firebaseui": "^0.600.0",
     "firestore": "^1.1.6",
     "fs": "^0.0.1-security",
+    "jquery": "^3.6.4",
     "md5": "^2.3.0",
     "mongoclient": "^1.0.3",
     "mongodb": "^5.1.0",
@@ -51,6 +52,7 @@
     "zlib": "^1.0.5"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.16",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/cli-service": "^5.0.8",

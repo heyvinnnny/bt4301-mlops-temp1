@@ -56,7 +56,13 @@ export default {
   methods: {
     async approveUser(userId) {
       try {
-        await axios.put(`http://localhost:3000/users/approval/${userId}`, { status: 'Approved' });
+        const token = localStorage.getItem('token');
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        await axios.put(`http://localhost:3000/users/approval/${userId}`, { status: 'Approved' }, config);
         this.updateUserStatus(userId, 'Approved');
       } catch (err) {
         console.error(err);
@@ -64,7 +70,13 @@ export default {
     },
     async rejectUser(userId) {
       try {
-        await axios.put(`http://localhost:3000/users/approval/${userId}`, { status: 'Rejected' });
+        const token = localStorage.getItem('token');
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        await axios.put(`http://localhost:3000/users/approval/${userId}`, { status: 'Rejected' }, config);
         this.updateUserStatus(userId, 'Rejected');
       } catch (err) {
         console.error(err);

@@ -10,6 +10,7 @@ import RegisterCard from "./Cards/RegisterCard.vue";
 import ForgetPasswordCard from "./Cards/ForgetPasswordCard.vue";
 import ResetPasswordCard from "./Cards/ResetPasswordCard.vue";
 import ManagerApproval from "./Cards/ManagerApproval.vue";
+import ActivityLogCard from "./Cards/ActivityLogCard.vue";
 import ChartCard from "./Cards/ChartCard.vue";
 import StatsCard from "./Cards/StatsCard.vue";
 
@@ -23,6 +24,7 @@ let components = {
   ForgetPasswordCard,
   ResetPasswordCard,
   ManagerApproval,
+  ActivityLogCard,
   ChartCard,
   StatsCard,
   PaperTable,
@@ -40,6 +42,7 @@ export {
   ForgetPasswordCard,
   ResetPasswordCard,
   ManagerApproval,
+  ActivityLogCard,
   ChartCard,
   StatsCard,
   PaperTable,

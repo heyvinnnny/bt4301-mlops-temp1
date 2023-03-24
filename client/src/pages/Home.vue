@@ -1,6 +1,5 @@
 <template>
   <div>
-    <router-link to="/managerdashboard">Click here to ManagerDashboard</router-link>
     <!--Stats cards-->
     <div class="row">
       <div
@@ -41,11 +40,6 @@
         </chart-card>
       </div>
     </div>
-<<<<<<< Updated upstream
-=======
-
-    
->>>>>>> Stashed changes
     <div class="row">
       <div class="col-12">
         <card :title="table1.title" :subTitle="table1.subTitle">

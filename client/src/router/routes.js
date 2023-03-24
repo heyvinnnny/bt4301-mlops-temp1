@@ -18,6 +18,7 @@ import ForgetPassword from "@/pages/ForgetPassword.vue";
 import ResetPassword from "@/pages/ResetPassword.vue";
 import ManagerDashboard from "@/pages/ManagerDashboard.vue";
 import VersionControl from "@/pages/VersionControl.vue";
+import PerformanceMonitoring from "@/pages/PerformanceMonitoring.vue";
 
 import Deployment from "@/pages/Deployment/Deployment.vue";
 import Home from "@/pages/Home.vue";
@@ -78,38 +79,38 @@ const routes = [
         component: TableList,
         meta: {requireAuth: true},
       },
+      // {
+      //   path: "servicehealth",
+      //   name: "servicehealth",
+      //   component: ServiceHealth,
+      //   meta: {requireAuth: true},
+      // },
+      // {
+      //   path: "datadrift",
+      //   name: "data drift",
+      //   component: DataDrift,
+      //   meta: {requireAuth: true},
+      // },
+      // {
+      //   path: "accuracy",
+      //   name: "accuracy",
+      //   component: Accuracy,
+      //   meta: {requireAuth: true},
+      // },
+      // {
+      //   path: "predictions",
+      //   name: "predictions",
+      //   component: Predictions,
+      //   meta: {requireAuth: true},
+      // },
+      // {
+      //   path: "challengers",
+      //   name: "challengers",
+      //   component: Challengers,
+      //   meta: {requireAuth: true},
+      // },
       {
-        path: "servicehealth",
-        name: "service health",
-        component: ServiceHealth,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "datadrift",
-        name: "data drift",
-        component: DataDrift,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "accuracy",
-        name: "accuracy",
-        component: Accuracy,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "predictions",
-        name: "predictions",
-        component: Predictions,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "challengers",
-        name: "challengers",
-        component: Challengers,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "home",
+        path: "/home",
         name: "home",
         component: Home,
         meta: {requireAuth: true},
@@ -121,13 +122,19 @@ const routes = [
         meta: {requireAuth: true},
       },
       {
-        path: "/managerdashboard",
+        path: "managerdashboard",
         name: "managerdashboard",
         component: ManagerDashboard,
         meta: {requireAuth: true},
       },
       {
-        path: "/deployment",
+        path: "performancemonitoring",
+        name: "performancemonitoring",
+        component: PerformanceMonitoring,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "deployment",
         name: "deployment",
         component: Deployment,
         meta: {requireAuth: true},
