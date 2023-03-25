@@ -31,7 +31,7 @@
       return {
         code: "",
         errors: [],
-        selectedLanguage: "cpp",
+        selectedLanguage: "python",
       };
     },
     computed: {
@@ -44,18 +44,18 @@
             };
           case "python":
             return {
-              compiler: "cpython-head",
-              options: "",
+              compiler: "pypy-3.7-v7.3.4",
+              options: "-Wall -Wextra",
             };
           case "java":
             return {
-              compiler: "openjdk-head",
-              options: "",
+              compiler: "openjdk-jdk-15.0.3+2",
+              options: "-Wall -Wextra",
             };
           case "javascript":
             return {
-              compiler: "nodejs-head",
-              options: "",
+              compiler: "nodejs-16.14.0",
+              options: "-Wall -Wextra",
             };
           default:
             return {
