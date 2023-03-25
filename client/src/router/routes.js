@@ -19,6 +19,7 @@ import ResetPassword from "@/pages/ResetPassword.vue";
 import ManagerDashboard from "@/pages/ManagerDashboard.vue";
 import VersionControl from "@/pages/VersionControl.vue";
 import PerformanceMonitoring from "@/pages/PerformanceMonitoring.vue";
+import CodeLinting from "@/pages/CodeLinting.vue";
 
 import Deployment from "@/pages/Deployment/Deployment.vue";
 import Home from "@/pages/Home.vue";
@@ -138,6 +139,18 @@ const routes = [
         name: "deployment",
         component: Deployment,
         meta: {requireAuth: true},
+      },
+      {
+        path: "resetpassword",
+        name: "resetpassword",
+        component: ResetPassword,
+        meta: {requireAuth: true}
+      },
+      {
+        path: "codelinting",
+        name: "codelinting",
+        component: CodeLinting,
+        meta: {requireAuth: true}
       }
     ],
   },
@@ -162,17 +175,6 @@ const routes = [
         path: "forgetpassword",
         name: "forgetpassword",
         component: ForgetPassword,
-      },
-    ],
-  },
-  {
-    path: "/resetpassword",
-    component: ResetPassword,
-    children: [
-      {
-        path: "resetpassword",
-        name: "resetpassword",
-        component: ResetPassword,
       },
     ],
   },

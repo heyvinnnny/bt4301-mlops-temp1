@@ -23,6 +23,11 @@
           name="Performance Monitor"
           icon="ti-bell"
         />
+        <sidebar-link
+          to="/codelinting"
+          name="Code Linting"
+          icon="ti-bell"
+        />
       </template>
       <mobile-menu>
         <li class="nav-item">

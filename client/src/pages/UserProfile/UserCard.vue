@@ -133,7 +133,7 @@ export default {
                     <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" ></div>
                 </div>
                 <div class="mt-5 text-center"><router-link class="btn btn-primary profile-button" to="/managerdashboard">Manager Dashboard</router-link></div>
-                <div class="mt-5 text-center"><router-link class="btn btn-primary profile-button" to="/resetdashboard">Reset Password</router-link></div>
+                <div class="mt-5 text-center"><router-link class="btn btn-primary profile-button" to="/resetpassword">Reset Password</router-link></div>
             </div>
         </div>
     </div>
