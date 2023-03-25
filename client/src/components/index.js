@@ -4,6 +4,11 @@ import DropDown from "./Dropdown.vue";
 import PaperTable from "./PaperTable.vue";
 import Button from "./Button";
 
+//Chart
+import Timeline from "./Timeline";
+import TimeSeriesChart from "./TimeSeriesChart";
+
+
 import Card from "./Cards/Card.vue";
 import LoginCard from "./Cards/LoginCard.vue";
 import RegisterCard from "./Cards/RegisterCard.vue";
@@ -29,7 +34,10 @@ let components = {
   StatsCard,
   PaperTable,
   DropDown,
-  SidebarPlugin,
+  TimeSeriesChart,
+  Timeline,
+  SidebarPlugin
+  
 };
 
 export default components;
@@ -48,5 +56,7 @@ export {
   PaperTable,
   DropDown,
   Button,
-  SidebarPlugin,
+  TimeSeriesChart,
+  Timeline,
+  SidebarPlugin
 };

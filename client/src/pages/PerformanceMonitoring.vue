@@ -1,46 +1,53 @@
 <template>
-    <div>
-      <!--Stats cards-->
-      <div class="row">
-        <div
-          class="col-md-3 col-xl-6"
-          v-for="stats in statsCards"
-          :key="stats.title"
-        >
-          <stats-card>
-            <div
-              class="icon-big text-center"
-              :class="`icon-${stats.type}`"
-              slot="header"
-            >
-              <i :class="stats.icon"></i>
-            </div>
-            <div class="numbers" slot="content">
-              <p>{{ stats.title }}</p>
-              {{ stats.value }}
-            </div>
-          </stats-card>
-        </div>
+  <div class="container">
+    <h1>Service Health</h1>
+    <h3>Track this deployment's latency, throughput, and error rate.</h3>
+
+    <div class="controls">
+      <h6 style="margin-top:7px">Model: </h6>
+      <select v-model="selectedModel">
+        <option v-for="model in models" :key="model.id" :value="model.value">{{ model.text }}</option>
+      </select>
+
+      <h6 style="margin-top:7px">Resolution: </h6>
+      <select v-model="selectedResolution">
+        <option v-for="resolution in resolutions" :key="resolution.id" :value="resolution.value">{{ resolution.text }}</option>
+      </select>
+
+
+      <button icon="ti-bell" @click="refreshData">
+        Refresh
+      </button>
+
+      <button icon="ti-bell" @click="resetData">
+        Reset
+      </button>
+    </div>
+
+    <timeline v-model="timelineValue" />
+
+    <div class="row">
+    <div class="col-md-2-4" v-for="box in boxes" :key="box.id">
+      <div class="box" style="height:150px">
+        <template v-if="box.id === 4 || box.id === 5">
+          <select v-model="box.statistic">
+            <option value="Median">Median</option>
+            <option value="Mode">Mode</option>
+            <option value="Mean">Mean</option>
+          </select>
+          <span style="font-weight:bold; text-align:center;">{{ box.statistic }}{{ box.title }}</span>
+        </template>
+        <template v-else>
+          <h5 style="font-weight:bold; text-align:center;">{{ box.title }}</h5>
+        </template>
+        <p style="font-size:x-large">{{ box.value }}</p>
       </div>
-      <br />
-      <div class="row">
-        <!--Charts-->
-        <div class="col-md-4 mb-4" v-for="chart in chartCards" :key="chart.title">
-          <chart-card
-            :title="chart.title"
-            :chart-data="chart.chartData"
-            :chart-type="chart.chartType"
-            class="h-100"
-          >
-            <div slot="legend">
-              <i class="fa fa-circle text-info"></i> Passing
-              <i class="fa fa-circle text-danger"></i> Risk
-              <i class="fa fa-circle text-warning"></i> Failing
-            </div>
-          </chart-card>
-        </div>
-      </div>
-      <div class="row">
+    </div>
+  </div>
+
+    <!-- <time-series-chart :chart-data="timeSeriesChartData" :options="chartOptions" /> -->
+
+    <div class="row">
         <div class="col-12">
         <chart-card
           title="Loan Default Predictor (Risk Management)"
@@ -59,61 +66,26 @@
         </chart-card>
       </div>
       </div>
-    </div>
-  </template>
-  
-  <script>
-  import { StatsCard, ChartCard } from "@/components/index";
-  import { PaperTable } from "@/components";
-  
-  import Chartist from "chartist";
-  
-  const tableColumns = [
-    "Id",
-    "Name",
-    "Importance",
-    "Predictions",
-    "Last Prediction",
-  ];
-  const tableData = [
-    {
-      id: 1,
-      name: "Employee Churn",
-      importance: "High",
-      predictions: "208k",
-      lastPrediction: "a few seconds ago",
-    },
-    {
-      id: 2,
-      name: "Sales Cycle Length",
-      importance: "Critical",
-      predictions: "102k",
-      lastPrediction: "a few seconds ago",
-    },
-    {
-      id: 3,
-      name: "User Success",
-      importance: "Moderate",
-      predictions: "8k",
-      lastPrediction: "a few seconds ago",
-    },
-  ];
-  
-  export default {
-    mounted() {
-      this.$toast.success("Welcome to DataPower");
-    },
-    components: {
-      StatsCard,
-      ChartCard,
-      PaperTable,
-    },
-    /**
-     * Chart data used to render stats, charts. Should be replaced with server data
-     */
-    data() {
-      return {
-        usersChart: {
+  </div>
+</template>
+
+<script>
+import { ChartCard } from "@/components/index";
+import { TimeSeriesChart }  from "@/components/index";
+import { Timeline }  from "@/components/index";
+
+import Chartist from "chartist";
+
+export default {
+  components: {
+    Timeline,
+    TimeSeriesChart,
+    ChartCard,
+
+  },
+  data() {
+    return {
+      usersChart: {
         data: {
           labels: [
             "9:00AM",
@@ -146,56 +118,130 @@
           showPoint: false,
         },
       },
-        statsCards: [
+      selectedModel: "",
+      models: [
+        { text: "Model 1", value: "model1", id: 1 },
+        { text: "Model 2", value: "model2", id: 2 },
+      ],
+      selectedResolution: "",
+      resolutions: [
+        { text: "Monthly", value: "monthly", id: 1 },
+        { text: "Quarterly", value: "quarterly", id: 2 },
+        { text: "Yearly", value: "yearly", id: 3 },
+      ],
+      boxes: [
+      { id: 1, title: "Total Predictions", value: 12345 },
+      { id: 2, title: "Total Requests", value: 4567 },
+      { id: 3, title: "Request over ms", value: 123 },
+      { id: 4, title: " Response Time (ms)", statistic: "Median", value: 250 },
+      { id: 5, title: " Execution Time (ms)", statistic: "Median", value: 200 },
+      { id: 6, title: "Median Peak Load (calls/minute)", value: 3500 },
+      { id: 7, title: "Data Error Rate", value: 1.5 },
+      { id: 8, title: "System Error Rate", value: 0.8 },
+      { id: 9, title: "Consumers", value: 120 },
+      { id: 10, title: "Cache Hit Rate", value: 75.3 },
+      ],
+      timelineValue: [],
+      timeSeriesChartData: {
+        labels: [
+          "2019-08-05",
+          "2019-08-12",
+          "2019-08-19",
+          "2019-08-26",
+          "2019-09-02",
+        ],
+        datasets: [
           {
-            type: "warning",
-            icon: "ti-server",
-            title: "Active Deployments",
-            value: "72",
-          },
-          {
-            type: "success",
-            icon: "ti-calendar",
-            title: "Predictions",
-            value: "1,345",
+            label: "Total Predictions",
+            data: [1200, 1850, 2500, 3200, 4100],
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1,
+            fill: false,
+            lineTension: 0,
           },
         ],
-        chartCards: [
-          {
-            title: "Service Health Summary",
-            chartType: "Pie",
-            chartData: {
-              labels: ["62%", "32%", "6%"],
-              series: [62, 32, 6],
-            },
-          },
-          {
-            title: "Data Drift Summary",
-            chartType: "Pie",
-            chartData: {
-              labels: ["62%", "32%", "6%"],
-              series: [62, 32, 6],
-            },
-          },
-          {
-            title: "Accuracy Summary",
-            chartType: "Pie",
-            chartData: {
-              labels: ["62%", "32%", "6%"],
-              series: [62, 32, 6],
-            },
-          },
-        ],
-        table1: {
-          title: "Deployments",
-          subTitle: "Here is a subtitle for this table",
-          columns: [...tableColumns],
-          data: [...tableData],
-        },
-      };
+      },
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    };
+  },
+  methods: {
+    refreshData() {
+      console.log("Refreshing data...");
     },
-  };
-  </script>
-  
-  <style></style>
-  
+    resetData() {
+      console.log("Resetting data...");
+    },
+  },
+};
+</script>
+
+<style scoped>
+/* Add styles for your components here */
+.container {
+  font-family: "Arial", sans-serif;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.controls > * {
+  margin-right: 0.5rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.col-md-2 {
+  flex: 0 0 auto;
+  width: calc(100% / 5);
+  padding-left: 15px;
+  padding-right: 15px;
+  box-sizing: border-box;
+}
+
+.col-md-2-4 {
+  flex: 0 0 20%;
+  max-width: 20%;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  height: 100%;
+}
+
+.box h5,
+.box select {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.box p {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  justify-content: center;
+}
+</style>

@@ -1,73 +1,95 @@
 <template>
-<div id="profile-description">
-            <div class="text show-more-height">
-                Some random text 
-                <br /><br />
-                At Cobalt we help people and businesses throughout the world realize their full potential. <br />
-                We make this simple mission come to life every day through our passion to create technologies <br><br>and develop products that touch just about every kind of customer.
-            </div>
-            <div class="show-more">(Show More)</div>
-</div><!-- [End] #profile-description -->
+  <div class="activity-log">
+    <h3 style="font-weight:bold;">Governance</h3>
+
+    <div class="log-entry">
+      <div class="main-info">
+        <p>Deployment Created</p>
+        <p>{{ createDate }}</p>
+        <p>{{ creatorEmail }}</p>
+      </div>
+
+      <div class="main-info">
+        <p>Applied</p>
+        <p>{{ appliedDate }}</p>
+        <p>{{ appliedByEmail }}</p>
+      </div>
+
+      <p>Indication of new deployment was created.</p>
+
+      <button @click="toggleDetails">
+        {{ showMore ? "Show more details" : "Show less details" }}
+      </button>
+
+      <div v-if="!showMore" class="extended-info">
+        <div class="updated-request">
+          <h4>Updated requested</h4>
+          <p>Reviewed by {{ reviewerEmail }} on {{ reviewDate }}</p>
+          <p>Comments</p>
+        </div>
+
+        <div class="approval-request">
+          <h4>Approval Requested</h4>
+          <p>Changes: Telling user that new deployment was created</p>
+          <p>Changed by {{ changedByEmail }} on {{ changedDate }}</p>
+        </div>
+
+        <div class="reviewers">
+          <h4>Reviewers</h4>
+          <p>{{ reviewerName }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import $ from 'jquery';
-
 export default {
   data() {
     return {
-      showMore: false,
-      showMoreText: '(Show More)'
-    }
+      showMore: true,
+      createDate: "2022-10-01",
+      creatorEmail: "creator@example.com",
+      appliedDate: "2022-10-02",
+      appliedByEmail: "applied@example.com",
+      reviewerEmail: "reviewer@example.com",
+      reviewDate: "2022-10-03",
+      changedByEmail: "changer@example.com",
+      changedDate: "2022-10-04",
+      reviewerName: "John Doe",
+    };
   },
   methods: {
-    toggleShowMore() {
+    toggleDetails() {
       this.showMore = !this.showMore;
-      this.showMoreText = this.showMore ? '(Show Less)' : '(Show More)';
-    }
+    },
   },
-  mounted() {
-    $('.show-more').click(() => {
-      this.toggleShowMore();
-    });
-  }
-}
+};
 </script>
 
-
 <style scoped>
-#profile-description {
-  max-width: 400px; 
-  margin-top: 50px; 
-  position:relative;
-}
-#profile-description .text {
-/*   width: 660px;  */
-  margin-bottom: 5px; 
-  color: #777; 
-  padding: 0 15px; 
-  position:relative; 
-  font-family: Arial; 
-  font-size: 14px; 
-  display: block;
-}
-#profile-description .show-more {
-/*   width: 690px;  */
-  color: #777; 
-  position:relative; 
-  font-size: 12px; 
-  padding-top: 5px; 
-  height: 20px; 
-  text-align: center; 
-  background: #f1f1f1; 
-  cursor: pointer;
-}
-#profile-description .show-more:hover { 
-    color: #1779dd;
-}
-#profile-description .show-more-height { 
-  height: 65px; 
-  overflow:hidden; 
+.activity-log {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
 }
 
+.log-entry {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
+
+.main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.extended-info {
+  margin-top: 15px;
+}
 </style>
