@@ -40,6 +40,12 @@
                       >Forget your password?</router-link
                     >
                   </p>
+
+                  <p style="padding-top: 20px">
+                    <router-link to="/register"
+                      >Register Now!</router-link
+                    >
+                  </p>
                 </div>
               </form>
             </div>

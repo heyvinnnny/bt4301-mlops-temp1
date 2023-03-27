@@ -15,7 +15,11 @@ import TableList from "@/pages/TableList.vue";
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
 import ForgetPassword from "@/pages/ForgetPassword.vue";
+import ResetPassword from "@/pages/ResetPassword.vue";
+import ManagerDashboard from "@/pages/ManagerDashboard.vue";
 import VersionControl from "@/pages/VersionControl.vue";
+import PerformanceMonitoring from "@/pages/PerformanceMonitoring.vue";
+import CodeLinting from "@/pages/CodeLinting.vue";
 
 import Deployment from "@/pages/Deployment/Deployment.vue";
 import Home from "@/pages/Home.vue";
@@ -29,49 +33,101 @@ import Challengers from "@/pages/Challengers.vue";
 const routes = [
   {
     path: "/",
+    mode: 'history',
     component: DashboardLayout,
     redirect: "/login",
+    meta: {requireAuth: true},
     children: [
       {
         path: "dashboard",
         name: "overview",
         component: Dashboard,
+        meta: {requireAuth: true},
       },
       {
         path: "stats",
         name: "stats",
         component: UserProfile,
+        meta: {requireAuth: true},
       },
       {
         path: "notifications",
         name: "notifications",
         component: Notifications,
+        meta: {requireAuth: true},
       },
       {
         path: "version-control",
         name: "version control",
         component: VersionControl,
+        meta: {requireAuth: true},
       },
       {
         path: "icons",
         name: "icons",
         component: Icons,
+        meta: {requireAuth: true},
       },
       {
         path: "maps",
         name: "maps",
         component: Maps,
+        meta: {requireAuth: true},
       },
       {
         path: "typography",
         name: "typography",
         component: Typography,
+        meta: {requireAuth: true},
       },
       {
         path: "table-list",
         name: "table-list",
         component: TableList,
+        meta: {requireAuth: true},
       },
+      {
+        path: "/home",
+        name: "home",
+        component: Home,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "userprofile",
+        name: "userprofile",
+        component: UserProfile,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "managerdashboard",
+        name: "managerdashboard",
+        component: ManagerDashboard,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "performancemonitoring",
+        name: "performancemonitoring",
+        component: PerformanceMonitoring,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "deployment",
+        name: "deployment",
+        component: Deployment,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "resetpassword",
+        name: "resetpassword",
+        component: ResetPassword,
+        meta: {requireAuth: true}
+      },
+      {
+        path: "codelinting",
+        name: "codelinting",
+        component: CodeLinting,
+        meta: {requireAuth: true}
+      }
       {
         path: "servicehealth",
         name: "service health",
@@ -134,29 +190,9 @@ const routes = [
       },
     ],
   },
-  {
-    path: "/deployment",
-    component: Deployment,
-    children: [
-      {
-        path: "deployment",
-        name: "deployment",
-        component: Deployment,
-      },
-    ],
-  },
-  {
-    path: "/home",
-    component: Home,
-    children: [
-      {
-        path: "home",
-        name: "home",
-        component: Home,
-      },
-    ],
-  },
+ 
 ];
+
 
 /**
  * Asynchronously load view (Webpack Lazy loading compatible)

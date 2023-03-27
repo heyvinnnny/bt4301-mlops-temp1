@@ -1,79 +1,67 @@
 <template>
-    <div>
-      <h2>Reset Password</h2>
-      <div v-if="!showForm">
-        <p>A password reset email has been sent to your email address. Please follow the instructions in the email to reset your password.</p>
-        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+  <div>
+    <h1>Change Password</h1>
+    <form @submit.prevent="resetpassword">
+      <div>
+        <label for="oldPassword">Old Password:</label>
+        <input type="password" id="oldPassword" v-model="oldPassword" required />
       </div>
-      <div v-else>
-        <form @submit.prevent="resetpassword">
-          <p>Email: {{ email }}</p>
-          <label for="password">New Password:</label>
-          <input type="password" id="password" v-model="password" required>
-          <label for="confirmPassword">Confirm Password:</label>
-          <input type="password" id="confirmPassword" v-model="confirmPassword" required>
-          <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-          <button type="submit">Reset Password</button>
-        </form>
+      <div>
+        <label for="newPassword">New Password:</label>
+        <input type="password" id="newPassword" v-model="newPassword" required />
       </div>
-    </div>
+      <div>
+        <label for="confirmPassword">Confirm New Password:</label>
+        <input type="password" id="confirmPassword" v-model="confirmPassword" required />
+      </div>
+      <button type="submit">Change Password</button>
+    </form>
+  </div>
   </template>
   
   <script>
-  export default {
-    data() {
-      return {
-        showForm: true,
-        email: '',
-        password: '',
-        confirmPassword: '',
-        errorMessage: ''
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    };
+  },
+  methods: {
+    async resetpassword() {
+      if (this.newPassword !== this.confirmPassword) {
+        alert('New passwords do not match');
+        return;
       }
-    },
-    mounted() {
-      // get the email from the query parameters or local storage
-      const searchParams = new URLSearchParams(window.location.search)
-      const email = searchParams.get('email') || localStorage.getItem('resetEmail')
-      if (email) {
-        this.email = email
-        localStorage.setItem('resetEmail', email)
-      } else {
-        this.showForm = false
-      }
-    },
-    methods: {
-      resetpassword() {
-        if (this.password !== this.confirmPassword) {
-          this.errorMessage = "Passwords don't match"
-          return
-        }
-  
-        const data = {
-          email: this.email,
-          password: this.password
-        }
-  
-        // make API request to reset password
-        fetch('http://localhost:3000/resetpassword', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
+
+      const token = localStorage.getItem('token');
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      try {
+        await axios.put(
+          'http://localhost:3000/resetpassword',
+          {
+            oldPassword: this.oldPassword,
+            newPassword: this.newPassword,
           },
-          body: JSON.stringify(data)
-        })
-          .then(response => {
-            if (response.ok) {
-              this.showForm = false
-              localStorage.removeItem('resetEmail')
-            } else {
-              this.errorMessage = 'An error occurred while resetting your password. Please try again.'
-            }
-          })
-          .catch(() => {
-            this.errorMessage = 'An error occurred while resetting your password. Please try again.'
-          })
+          config
+        );
+        alert('Password updated successfully');
+        this.$router.push('/dashboard');
+      } catch (err) {
+        console.error(err);
+        alert('Error updating password');
       }
-    }
-  }
-  </script>
+    },
+  },
+};
+</script>
   

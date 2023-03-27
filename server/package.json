@@ -6,7 +6,9 @@
     "dev": "concurrently \"npm run start:server\" \"npm run start:client\""
   },
   "dependencies": {
+    "async": "^3.2.4",
     "async.waterfall": "^0.5.2",
+    "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -16,6 +18,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.1.0",
     "mongoose": "^7.0.1",
+    "morgan": "^1.10.0",
     "nodemailer": "^6.9.1",
     "waterfall": "^3.0.1"
   },
