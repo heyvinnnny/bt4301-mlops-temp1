@@ -19,134 +19,168 @@
             <p>{{ stats.title }}</p>
             {{ stats.value }}
           </div>
-          <div class="stats" slot="footer">
-            <i :class="stats.footerIcon"></i> {{ stats.footerText }}
-          </div>
         </stats-card>
+      </div>      
+    </div>
+    <br />
+
+    <div class="row">
+      <div class="col-md-6 col-xl-12">
+        <card :title="table1.title">
+          <div slot="raw-content" class="table-responsive">
+            <paper-table :data="table1.data" :columns="table1.columns" display:flex>
+            </paper-table>
+          </div>
+        </card>
       </div>
     </div>
+    <br />
+    
+    <div class="row">
+      <div class="col-md-6 col-xl-12">
+        <card :title="table2.title">
+          <div slot="raw-content" class="table-responsive">
+            <paper-table :data="table2.data" :columns="table2.columns" display:flex>
+            </paper-table>
+          </div>
+        </card>
+      </div>
+    </div>
+    <br />
+
+    <div class="row">
+      <div class="col-md-6 col-xl-12">
+        <card :title="table3.title">
+          <div slot="raw-content" class="table-responsive">
+            <paper-table :data="table3.data" :columns="table3.columns" display:flex>
+            </paper-table>
+          </div>
+        </card>
+      </div>
+    </div>
+    <br />
 
     <!--Charts-->
     <div class="row">
-      <div class="col-12">
+      <div class="col-10">
         <chart-card
           title="Loan Default Predictor (Risk Management)"
           sub-title="DataRobot Prediction Server | Probability of Default"
           :chart-data="usersChart.data"
           :chart-options="usersChart.options"
         >
-          <span slot="footer">
-            <i class="ti-reload"></i> Updated 3 minutes ago
-          </span>
-          <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Open
-            <i class="fa fa-circle text-danger"></i> Click
-            <i class="fa fa-circle text-warning"></i> Click Second Time
-          </div>
-        </chart-card>
-      </div>
-
-      <div class="col-md-6 col-12">
-        <chart-card
-          title="Email Statistics"
-          sub-title="Last campaign performance"
-          :chart-data="preferencesChart.data"
-          chart-type="Pie"
-        >
-          <span slot="footer">
-            <i class="ti-timer"></i> Campaign set 2 days ago</span
-          >
-          <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Open
-            <i class="fa fa-circle text-danger"></i> Bounce
-            <i class="fa fa-circle text-warning"></i> Unsubscribe
-          </div>
-        </chart-card>
-      </div>
-
-      <div class="col-md-6 col-12">
-        <chart-card
-          title="2015 Sales"
-          sub-title="All products including Taxes"
-          :chart-data="activityChart.data"
-          :chart-options="activityChart.options"
-        >
-          <span slot="footer">
-            <i class="ti-check"></i> Data information certified
-          </span>
-          <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Tesla Model S
-            <i class="fa fa-circle text-warning"></i> BMW 5 Series
-          </div>
         </chart-card>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import { StatsCard, ChartCard } from "@/components/index";
+import { PaperTable } from "@/components";
 import Chartist from "chartist";
+const tableColumns = [
+  "Name",
+  "Description",
+  "Endpoint",
+  "Importance",
+];
+const tableColumns2 = [
+  "Custom Model",
+  "Custom Environment",
+  "Build Environment",
+  "Target Type",
+];
+const tableColumns3 = [
+  "Model Replaced",
+  "Waiting for Review",
+];
+const tableData = [
+  {
+    name: "Loan Default Predictor (Risk Management)",
+    description: "Loan default model for the bank",
+    endpoint: "https://datarobot-mlops.dynamic.orm.datarobot.com",
+    importance: "Moderate",
+  },
+];
+const tableData2 = [
+  {
+    custommodel: "Probability of Default (Risk management) - Random Forest 2020",
+    customenvironment: "Python 3 Scikit-Learn Drop-In (v4)",
+    buildenvironment: "Python",
+    targettype: "binary",
+  },
+];
+const tableData3 = [
+  {
+    modelreplaced: "August 19 2020",
+    waitingforreview: "yes",
+  },
+];
 export default {
   mounted() {
-    this.$toast.success("Welcome to DataPower");
+    this.$toast.success("Overview");
   },
   components: {
     StatsCard,
     ChartCard,
+    PaperTable,
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
    */
   data() {
     return {
+      table1: {
+        title: "Summary",
+        columns: [...tableColumns],
+        data: [...tableData],
+      },
+      table2: {
+        title: "Content",
+        columns: [...tableColumns2],
+        data: [...tableData2],
+      },
+      table3: {
+        title: "Governance",
+        columns: [...tableColumns2],
+        data: [...tableData2],
+      },
       statsCards: [
         {
           type: "warning",
           icon: "ti-server",
-          title: "Summary",
-          value: "-",
-          footerText: "Updated now",
-          footerIcon: "ti-reload",
+          title: "Avg Predictions / Day",
+          value: "1800",
         },
         {
-          type: "success",
+          type: "warning",
           icon: "ti-pulse",
-          title: "Content",
-          font:10,
-          value: "-",
-          footerText: "5 hours ago",
-          footerIcon: "ti-calendar",
-        },
-        {
-          type: "danger",
-          icon: "ti-pulse",
-          title: "Governance",
-          value: "-",
-          footerText: "In the last hour",
-          footerIcon: "ti-timer",
+          title: "Last Prediction",
+          value: "5 hours ago",
         },
       ],
       usersChart: {
         data: {
           labels: [
-            "9:00AM",
             "12:00AM",
+            "3:00AM",
+            "6:00AM",
+            "9:00AM",
+            "12:00PM",
             "3:00PM",
             "6:00PM",
             "9:00PM",
-            "12:00PM",
-            "3:00AM",
-            "6:00AM",
           ],
           series: [
-            [287, 385, 490, 562, 594, 626, 698, 895, 952],
-            [67, 152, 193, 240, 387, 435, 535, 642, 744],
-            [23, 113, 67, 108, 190, 239, 307, 410, 410],
+            [1, 0, 1, 1, 1, 0, 0, 1],
+            // [67, 152, 193, 240, 387, 435, 535, 642, 744],
+            // [23, 113, 67, 108, 190, 239, 307, 410, 410],
           ],
         },
         options: {
           low: 0,
-          high: 1000,
+          high: 1,
           showArea: true,
           height: "245px",
           axisX: {
@@ -158,42 +192,6 @@ export default {
           showLine: true,
           showPoint: false,
         },
-      },
-      activityChart: {
-        data: {
-          labels: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "Mai",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-          ],
-          series: [
-            [542, 543, 520, 680, 653, 753, 326, 434, 568, 610, 756, 895],
-            [230, 293, 380, 480, 503, 553, 600, 664, 698, 710, 736, 795],
-          ],
-        },
-        options: {
-          seriesBarDistance: 10,
-          axisX: {
-            showGrid: false,
-          },
-          height: "245px",
-        },
-      },
-      preferencesChart: {
-        data: {
-          labels: ["62%", "32%", "6%"],
-          series: [62, 32, 6],
-        },
-        options: {},
       },
     };
   },

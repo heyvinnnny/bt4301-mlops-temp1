@@ -23,6 +23,12 @@ import CodeLinting from "@/pages/CodeLinting.vue";
 
 import Deployment from "@/pages/Deployment/Deployment.vue";
 import Home from "@/pages/Home.vue";
+import ServiceHealth from "@/pages/ServiceHealth.vue";
+import DataDrift from "@/pages/DataDrift.vue";
+import Accuracy from "@/pages/Accuracy.vue";
+import Predictions from "@/pages/Predictions.vue";
+import Challengers from "@/pages/Challengers.vue";
+
 
 const routes = [
   {
@@ -34,7 +40,7 @@ const routes = [
     children: [
       {
         path: "dashboard",
-        name: "dashboard",
+        name: "overview",
         component: Dashboard,
         meta: {requireAuth: true},
       },
@@ -52,7 +58,7 @@ const routes = [
       },
       {
         path: "version-control",
-        name: "version-control",
+        name: "version control",
         component: VersionControl,
         meta: {requireAuth: true},
       },
@@ -80,36 +86,6 @@ const routes = [
         component: TableList,
         meta: {requireAuth: true},
       },
-      // {
-      //   path: "servicehealth",
-      //   name: "servicehealth",
-      //   component: ServiceHealth,
-      //   meta: {requireAuth: true},
-      // },
-      // {
-      //   path: "datadrift",
-      //   name: "data drift",
-      //   component: DataDrift,
-      //   meta: {requireAuth: true},
-      // },
-      // {
-      //   path: "accuracy",
-      //   name: "accuracy",
-      //   component: Accuracy,
-      //   meta: {requireAuth: true},
-      // },
-      // {
-      //   path: "predictions",
-      //   name: "predictions",
-      //   component: Predictions,
-      //   meta: {requireAuth: true},
-      // },
-      // {
-      //   path: "challengers",
-      //   name: "challengers",
-      //   component: Challengers,
-      //   meta: {requireAuth: true},
-      // },
       {
         path: "/home",
         name: "home",
@@ -152,6 +128,31 @@ const routes = [
         component: CodeLinting,
         meta: {requireAuth: true}
       }
+      {
+        path: "servicehealth",
+        name: "service health",
+        component: ServiceHealth,
+      },
+      {
+        path: "datadrift",
+        name: "data drift",
+        component: DataDrift,
+      },
+      {
+        path: "accuracy",
+        name: "accuracy",
+        component: Accuracy,
+      },
+      {
+        path: "predictions",
+        name: "predictions",
+        component: Predictions,
+      },
+      {
+        path: "challengers",
+        name: "challengers",
+        component: Challengers,
+      },
     ],
   },
   //Create a new route component for login since it users a different default layout
