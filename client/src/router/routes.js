@@ -24,6 +24,8 @@ import DataDrift from "@/pages/DataDrift.vue";
 import Accuracy from "@/pages/Accuracy.vue";
 import Predictions from "@/pages/Predictions.vue";
 import Challengers from "@/pages/Challengers.vue";
+import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
+import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
 
 
 const routes = [
@@ -97,6 +99,16 @@ const routes = [
         name: "challengers",
         component: Challengers,
       },
+      {
+        path: "updateCurrentModel",
+        name: "updateCurrentModel",
+        component: UpdateCurrentModel,
+      },
+      {
+        path: "pendingChangeRequest",
+        name: "pendingChangeRequest",
+        component: PendingChangeRequest,
+      },
     ],
   },
   //Create a new route component for login since it users a different default layout
@@ -153,6 +165,28 @@ const routes = [
         path: "home",
         name: "home",
         component: Home,
+      },
+    ],
+  },
+  {
+    path: "/updateCurrentModel",
+    component: UpdateCurrentModel,
+    children: [
+      {
+        path: "updateCurrentModel",
+        name: "updateCurrentModel",
+        component: UpdateCurrentModel,
+      },
+    ],
+  },
+  {
+    path: "/pendingChangeRequest",
+    component: PendingChangeRequest,
+    children: [
+      {
+        path: "pendingChangeRequest",
+        name: "pendingChangeRequest",
+        component: PendingChangeRequest,
       },
     ],
   },
