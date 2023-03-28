@@ -23,23 +23,20 @@ export default {
   data() {
     return {
       email: '',
-      message: '',
-      error: ''
     };
   },
   methods: {
-    forgetpassword() {
-      axios.post('http://localhost:3000/forgetpassword', { email: this.email })
-        .then(res => {
-          console.log("then");
-          this.error = '';
-        })
-        .catch(err => {
-          this.message = '';
-          console.log("catch");
-        });
-    }
-  }
+    async forgetpassword() {
+      try {
+        await axios.post('http://localhost:3000/forgetpassword', { email: this.email });
+        alert('A new password has been sent to your email');
+        this.$router.push('/login');
+      } catch (err) {
+        console.error(err);
+        alert('An error occurred while resetting your password');
+      }
+    },
+  },
 };
 </script>
   

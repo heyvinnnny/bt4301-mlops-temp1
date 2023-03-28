@@ -10,7 +10,9 @@
   components: {
     LoginCard
   },
+  
   methods: {
+    
     handleAuthenticated() {
       // redirect the user to the home page or some other authenticated page
     }
