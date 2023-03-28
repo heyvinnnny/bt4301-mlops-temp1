@@ -129,7 +129,7 @@ const routes = [
         name: "codelinting",
         component: CodeLinting,
         meta: {requireAuth: true}
-      }
+      },
       {
         path: "servicehealth",
         name: "service health",
