@@ -117,6 +117,7 @@ const tableData3 = [
     waitingforreview: "yes",
   },
 ];
+
 export default {
   mounted() {
     this.$toast.success("Overview");
