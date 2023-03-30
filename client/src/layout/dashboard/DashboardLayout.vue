@@ -18,6 +18,11 @@
           name="Version Control"
           icon="ti-server"
         />
+        <sidebar-link
+          to="/code-upload"
+          name="Code Upload"
+          icon="ti-server"
+        />
       </template>
       <mobile-menu>
         <li class="nav-item">

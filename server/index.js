@@ -16,6 +16,7 @@ const morgan = require('morgan');
 const app = express();
 
 
+
 app.use(morgan('combined'));
 
 // Middleware
@@ -361,6 +362,22 @@ app.post('/resetpassword', (req, res) => {
         });
     });
 });
+
+
+const Version = require('./models/version');
+
+const createVersionDocument = async () => {
+  const newVersion = new Version({
+    title: 'Example Title',
+    description: 'Example Text',
+    text: '1.0.0',
+  });
+
+  await newVersion.save();
+};
+
+createVersionDocument();
+
 
 
 
