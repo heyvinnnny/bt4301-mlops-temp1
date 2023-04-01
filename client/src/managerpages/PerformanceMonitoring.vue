@@ -77,13 +77,11 @@ import { Timeline }  from "@/components/index";
 import Chartist from "chartist";
 
 export default {
-  mounted() {
-    this.$toast.success("Performance Monitor");
-  },
   components: {
     Timeline,
     TimeSeriesChart,
     ChartCard,
+
   },
   data() {
     return {

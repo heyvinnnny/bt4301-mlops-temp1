@@ -27,7 +27,7 @@
         <sidebar-link
           to="/codelinting"
           name="Code Linting"
-          icon="ti-bell"
+          icon="ti-blackboard"
         />
       </template>
       <mobile-menu>

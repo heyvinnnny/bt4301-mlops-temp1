@@ -27,9 +27,6 @@
   
   export default {
     name: "CodeLinting",
-    mounted() {
-    this.$toast.success("Code Linting");
-    },
     data() {
       return {
         code: "",

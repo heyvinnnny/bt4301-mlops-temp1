@@ -155,7 +155,7 @@ const tableData3 = [
 
 export default {
   mounted() {
-    this.$toast.success("Challengers");
+    this.$toast.success("Overview");
   },
   components: {
     StatsCard,
