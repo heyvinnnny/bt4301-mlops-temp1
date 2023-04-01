@@ -12,6 +12,9 @@ const async = require('async');
 const morgan = require('morgan');
 const app = express();
 const auth = require('./middleware/auth');
+const fs = require('fs')
+const path = require('path')
+const fileUpload = require('express-fileupload');
 
 app.use(morgan('combined'));
 
@@ -273,7 +276,38 @@ app.get('/users/me', auth, async (req, res) => {
   }
 });
 
+// middle ware
+app.use(express.static('mlModel')); //to access the files in public folder
+app.use(cors()); // it enables all cors requests
+app.use(fileUpload());
 
+// file upload api
+app.post('/upload', (req, res) => {
+
+  if (!req.files) {
+      return res.status(500).send({ msg: "file is not found" })
+  }
+      // accessing the file
+      const jsonFile = req.files.jsonFile;
+      const binaryFile = req.files.binaryFile;
+    
+      // move the files to the public directory
+      jsonFile.mv(`${__dirname}/mlModel/${jsonFile.name}`, function (err) {
+        if (err) {
+          console.log(err);
+          return res.status(500).send({ msg: "Error occured" });
+        }
+    
+        binaryFile.mv(`${__dirname}/mlModel/${binaryFile.name}`, function (err) {
+          if (err) {
+            console.log(err);
+            return res.status(500).send({ msg: "Error occured" });
+          }
+    
+          return res.send({ msg: "Files uploaded successfully" });
+        });
+      });
+})
 
 // Start the server
 const PORT = process.env.PORT || 3000;
