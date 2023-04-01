@@ -31,6 +31,8 @@ import Challengers from "@/pages/Challengers.vue";
 import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
 
+import ManagerAccuracy from "@/managerpages/Accuracy.vue";
+
 
 const routes = [
   {
