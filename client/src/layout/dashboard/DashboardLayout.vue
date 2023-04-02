@@ -29,6 +29,11 @@
           name="Code Linting"
           icon="ti-blackboard"
         />
+        <sidebar-link
+          to="/codeporting"
+          name="Code Porting"
+          icon="ti-bell"
+        />
       </template>
       <mobile-menu>
         <li class="nav-item">
