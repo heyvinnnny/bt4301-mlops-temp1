@@ -8,172 +8,140 @@
       <select v-model="selectedModel">
         <option v-for="model in models" :key="model.id" :value="model.value">{{ model.text }}</option>
       </select>
-
-      <h6 style="margin-top:7px">Resolution: </h6>
-      <select v-model="selectedResolution">
-        <option v-for="resolution in resolutions" :key="resolution.id" :value="resolution.value">{{ resolution.text }}</option>
-      </select>
-
-
-      <button icon="ti-bell" @click="refreshData">
-        Refresh
-      </button>
-
-      <button icon="ti-bell" @click="resetData">
-        Reset
-      </button>
     </div>
-
-    <timeline v-model="timelineValue" />
 
     <div class="row">
-    <div class="col-md-2-4" v-for="box in boxes" :key="box.id">
-      <div class="box" style="height:150px">
-        <template v-if="box.id === 4 || box.id === 5">
-          <select v-model="box.statistic">
-            <option value="Median">Median</option>
-            <option value="Mode">Mode</option>
-            <option value="Mean">Mean</option>
-          </select>
-          <span style="font-weight:bold; text-align:center;">{{ box.statistic }}{{ box.title }}</span>
-        </template>
-        <template v-else>
-          <h5 style="font-weight:bold; text-align:center;">{{ box.title }}</h5>
-        </template>
-        <p style="font-size:x-large">{{ box.value }}</p>
+      <div class="col-md-4" v-for="box in boxes" :key="box.id">
+        <div class="box">
+          <h5>{{ box.title }}</h5>
+          <p>{{ box.value }}</p>
+        </div>
       </div>
     </div>
+
+    <div class="performance-monitoring">
+    <chart-card
+      :title="'Total Predictions Over Time'"
+      :subTitle="'Performance Monitoring'"
+    >
+    <time-series-chart :model="selectedModel"/>
+    </chart-card>
   </div>
 
-    <!-- <time-series-chart :chart-data="timeSeriesChartData" :options="chartOptions" /> -->
-
-    <div class="row">
-        <div class="col-12">
-        <chart-card
-          title="Loan Default Predictor (Risk Management)"
-          sub-title="DataRobot Prediction Server | Probability of Default"
-          :chart-data="usersChart.data"
-          :chart-options="usersChart.options"
-        >
-          <span slot="footer">
-            <i class="ti-reload"></i> Updated 3 minutes ago
-          </span>
-          <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Open
-            <i class="fa fa-circle text-danger"></i> Click
-            <i class="fa fa-circle text-warning"></i> Click Second Time
-          </div>
-        </chart-card>
-      </div>
-      </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 import { ChartCard } from "@/components/index";
-import { TimeSeriesChart }  from "@/components/index";
-import { Timeline }  from "@/components/index";
-
+import TimeSeriesChart from "../components/TimeSeriesChart.vue";
 import Chartist from "chartist";
 
 export default {
   components: {
-    Timeline,
-    TimeSeriesChart,
     ChartCard,
+    TimeSeriesChart,
+    
+  },
+  created() {
+    
+    this.fetchPerformanceData();
+    const token = localStorage.getItem('token');  
 
+    // Include the token in the Authorization header
+        const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
   },
   data() {
     return {
-      usersChart: {
-        data: {
-          labels: [
-            "9:00AM",
-            "12:00AM",
-            "3:00PM",
-            "6:00PM",
-            "9:00PM",
-            "12:00PM",
-            "3:00AM",
-            "6:00AM",
-          ],
-          series: [
-            [287, 385, 490, 562, 594, 626, 698, 895, 952],
-            [67, 152, 193, 240, 387, 435, 535, 642, 744],
-            [23, 113, 67, 108, 190, 239, 307, 410, 410],
-          ],
-        },
-        options: {
-          low: 0,
-          high: 1000,
-          showArea: true,
-          height: "245px",
-          axisX: {
-            showGrid: false,
-          },
-          lineSmooth: Chartist.Interpolation.simple({
-            divisor: 3,
-          }),
-          showLine: true,
-          showPoint: false,
-        },
-      },
-      selectedModel: "",
+      selectedModel: 'Model 1',
       models: [
-        { text: "Model 1", value: "model1", id: 1 },
-        { text: "Model 2", value: "model2", id: 2 },
+        { id: 1, text: 'Model 1', value: 'Model 1' },
+        { id: 2, text: 'Model 2', value: 'Model 2' },
+        { id: 3, text: 'Model 3', value: 'Model 3' },
       ],
-      selectedResolution: "",
-      resolutions: [
-        { text: "Monthly", value: "monthly", id: 1 },
-        { text: "Quarterly", value: "quarterly", id: 2 },
-        { text: "Yearly", value: "yearly", id: 3 },
-      ],
-      boxes: [
-      { id: 1, title: "Total Predictions", value: 12345 },
-      { id: 2, title: "Total Requests", value: 4567 },
-      { id: 3, title: "Request over ms", value: 123 },
-      { id: 4, title: " Response Time (ms)", statistic: "Median", value: 250 },
-      { id: 5, title: " Execution Time (ms)", statistic: "Median", value: 200 },
-      { id: 6, title: "Median Peak Load (calls/minute)", value: 3500 },
-      { id: 7, title: "Data Error Rate", value: 1.5 },
-      { id: 8, title: "System Error Rate", value: 0.8 },
-      { id: 9, title: "Consumers", value: 120 },
-      { id: 10, title: "Cache Hit Rate", value: 75.3 },
-      ],
-      timelineValue: [],
-      timeSeriesChartData: {
-        labels: [
-          "2019-08-05",
-          "2019-08-12",
-          "2019-08-19",
-          "2019-08-26",
-          "2019-09-02",
-        ],
-        datasets: [
-          {
-            label: "Total Predictions",
-            data: [1200, 1850, 2500, 3200, 4100],
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgba(75, 192, 192, 1)",
-            borderWidth: 1,
-            fill: false,
-            lineTension: 0,
-          },
-        ],
-      },
-      chartOptions: {
-        responsive: true,
-        maintainAspectRatio: false,
-      },
+      boxes: [],
+      
     };
+
   },
   methods: {
-    refreshData() {
-      console.log("Refreshing data...");
-    },
-    resetData() {
-      console.log("Resetting data...");
+  async fetchPerformanceData() {
+    try {
+      const response = await axios.get('http://localhost:3000/api/performances', {
+        params: {
+          model: this.selectedModel,
+        },
+      });
+      const data = response.data;
+
+      // Initialize an empty object to store aggregated values
+      const aggregatedData = {
+        totalPredictions: 0,
+        totalRequests: 0,
+        requestOverMs: 0,
+        responseTime: 0,
+        executionTime: 0,
+        medianPeakLoad: 0,
+        dataErrorRate: 0,
+        systemErrorRate: 0,
+        consumers: 0,
+        cacheHitRate: 0,
+      };
+
+      // Iterate over the returned data and aggregate the values
+      data.forEach(metric => {
+        aggregatedData.totalPredictions += metric.totalPredictions;
+        aggregatedData.totalRequests += metric.totalRequests;
+        aggregatedData.requestOverMs += metric.requestOverMs;
+        aggregatedData.responseTime += metric.responseTime;
+        aggregatedData.executionTime += metric.executionTime;
+        aggregatedData.medianPeakLoad += metric.medianPeakLoad;
+        aggregatedData.dataErrorRate += metric.dataErrorRate;
+        aggregatedData.systemErrorRate += metric.systemErrorRate;
+        aggregatedData.consumers += metric.consumers;
+        aggregatedData.cacheHitRate += metric.cacheHitRate;
+      });
+
+      // Update the boxes array with the aggregated values
+      this.boxes = [
+        { id: 1, title: 'Total Predictions', value: aggregatedData.totalPredictions },
+        { id: 2, title: 'Total Requests', value: aggregatedData.totalRequests },
+        { id: 3, title: 'Request Over Ms', value: aggregatedData.requestOverMs },
+        { id: 4, title: 'Response Time', value: aggregatedData.responseTime },
+        { id: 5, title: 'Execution Time', value: aggregatedData.executionTime },
+        { id: 6, title: 'Median Peak Load', value: aggregatedData.medianPeakLoad },
+        { id: 7, title: 'Data Error Rate', value: aggregatedData.dataErrorRate.toFixed(2) },
+        { id: 8, title: 'System Error Rate', value: aggregatedData.systemErrorRate.toFixed(2) },
+        { id: 9, title: 'Consumers', value: aggregatedData.consumers },
+        { id: 10, title: 'Cache Hit Rate', value: aggregatedData.cacheHitRate.toFixed(2) },
+      ];
+
+    } catch (err) {
+      console.error(err);
+    }
+    // const timeSeriesLabels = [];
+    //   const timeSeriesTotalPredictions = [];
+
+    //   // Iterate over the returned data and populate the time series chart data
+    //   data.forEach(metric => {
+    //     timeSeriesLabels.push(metric.timestamp);
+    //     timeSeriesTotalPredictions.push(metric.totalPredictions);
+    //   });
+
+    //   // Update the time series chart data
+    //   this.timeSeriesChartData.labels = timeSeriesLabels;
+    //   this.timeSeriesChartData.datasets[0].data = timeSeriesTotalPredictions;
+  },
+},
+
+  
+  watch: {
+    selectedModel() {
+      this.fetchPerformanceData();
     },
   },
 };

@@ -18,7 +18,7 @@
             <td>{{ user.access }}</td>
             <td>{{ user.status }}</td>
             <td>
-              <button @click="approveUser(user._id)" v-if="user.status === 'Pending'">Approve</button>
+              <button style="margin-right:10px;" @click="approveUser(user._id)" v-if="user.status === 'Pending'">Approve</button>
               <button @click="rejectUser(user._id)" v-if="user.status === 'Pending'">Reject</button>
             </td>
           </tr>
@@ -94,27 +94,58 @@ export default {
 
 <style scoped>
 .manager-approval {
-width: 100%;
-max-width: 960px;
-margin: 0 auto;
-padding: 2rem;
+  margin: 50px auto;
+  max-width: 900px;
+}
+
+h1 {
+  color: #5C5E60;
+  font-size: 36px;
+  margin-bottom: 30px;
+  text-align:center;
+  font-weight:800;
 }
 
 table {
-width: 100%;
-border-collapse: collapse;
-margin-bottom: 2rem;
+  border-collapse: collapse;
+  width: 100%;
 }
 
-th,
-td {
-border: 1px solid #ccc;
-padding: 0.5rem;
-text-align: left;
+th, td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
 }
 
 th {
-background-color: #f2f2f2;
-font-weight: bold;
+  background-color: #f2f2f2;
+  color: #5C5E60;
+  font-weight: bold;
+  text-transform: uppercase;
 }
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+button {
+  background-color: #5C5E60;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 12px;
+  text-transform: uppercase;
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #44464a;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
 </style>

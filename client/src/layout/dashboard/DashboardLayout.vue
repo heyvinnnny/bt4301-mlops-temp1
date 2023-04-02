@@ -30,6 +30,11 @@
           name="Code Linting"
           icon="ti-bell"
         />
+        <sidebar-link
+          to="/codeporting"
+          name="Code Porting"
+          icon="ti-bell"
+        />
       </template>
       <mobile-menu>
         <li class="nav-item">
