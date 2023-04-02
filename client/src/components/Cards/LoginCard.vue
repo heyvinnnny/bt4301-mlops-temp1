@@ -40,6 +40,12 @@
                       >Forget your password?</router-link
                     >
                   </p>
+
+                  <p style="padding-top: 20px">
+                    <router-link to="/register"
+                      >Register Now!</router-link
+                    >
+                  </p>
                 </div>
               </form>
             </div>
@@ -118,7 +124,7 @@ export default {
           //if successful
           if (res.status === 200) {
             localStorage.setItem("token", res.data.token);
-            this.$router.push("/dashboard");
+            this.$router.push("/home");
           }
           // }, err => {
           //   console.log(err.response);
