@@ -4,6 +4,7 @@
 		
 		<div class="main-agileinfo">
 			<div class="agileits-top" style="background-color:#5C5E60">
+        
 				<form @submit.prevent="register">
           <div class="header">
             <h1 style="color:white; padding-bottom:25px;">DataPower Register Form</h1>
@@ -12,13 +13,18 @@
 					<input v-model="email" class="text email" type="email" name="email" placeholder="Email" required>
 					<input v-model="password" class="text" type="password" name="password" placeholder="Password" required>
 					<input v-model="confirmPassword" class="text w3lpass" type="password" name="password" placeholder="Confirm Password" required>
-          <!-- <input v-model="access" class="text" type="text" name="access" placeholder="Access" required> -->
-          <select v-model="access" class="text" type="text" name="access" placeholder="Access" required>
-            <option value="User">User</option>
-            <option value="Manager">Manager</option>
+
+          <select v-model="access" class="text" id="accesstype" name="access" required style="position: relative; display: inline-block;">
+            <option value="User" style="background-color: #f1f1f1; color: #333;">User</option>
+            <option value="Manager" style="background-color: #f1f1f1; color: #333;">Manager</option>
           </select>
-          <!-- <button type="submit">Register</button> -->
+
+
 					<input type="submit" value="SIGNUP">
+          <p style="text-align:left">Please take note that your account is subjected to approval.</p>
+          <br>
+          <p v-if="message" style="color:red">{{ message }}</p>
+          <br>
 				</form>
 				<p>Have an Account? <router-link to="/login"> Login Now!</router-link></p>
 			</div>
@@ -37,39 +43,6 @@
 			<li></li>
 		</ul>
 	</div>
-
-
-    <!-- <div class="register-form" id="app">
-      <form @submit.prevent="register">
-        <div>
-          <label>Name</label>
-          <input v-model="name" type="text" required />
-        </div>
-        <div>
-          <label>Email</label>
-          <input v-model="email" type="email" required />
-        </div>
-        <div>
-          <label>Password</label>
-          <input v-model="password" type="password" required />
-        </div>
-        <div>
-          <label>Confirm Password</label>
-          <input v-model="confirmPassword" type="password" required />
-        </div>
-        <div>
-          <label>Role</label>
-          <select v-model="access" required>
-            <option value="User">User</option>
-            <option value="Manager">Manager</option>
-          </select>
-        </div>
-      
-        <button type="submit">Register</button>
-      </form>
-    </div> -->
-
-    
 </template>
 
 <script>
@@ -82,16 +55,26 @@ export default {
       email: '',
       password: '',
       confirmPassword: '',
-      access: ''
+      access: '',
+      message:''
     };
   },
   methods: {
     async register() {
       try {
+
+        const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordPattern.test(this.password)) {
+          throw new Error('Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters');
+        }
+
         // Check that password and confirm password match
         if (this.password !== this.confirmPassword) {
           throw new Error('Passwords do not match');
         }
+
+        // Check that password meets complexity requirements
+        
 
         // Make an HTTP POST request to the backend API endpoint
         const response = await axios.post('http://localhost:3000/register', {
@@ -102,8 +85,13 @@ export default {
         });
 
         // Show a success message to the user
-        alert(response.data.message);
-        this.$router.push('/login');
+        console.log(response.data)
+        this.message = response.data.message;
+
+        // Redirect to the login page after a delay
+        setTimeout(() => {
+          this.$router.push('/login');
+        }, 3000);
 
         // Reset the form
         this.name = '';
@@ -113,7 +101,7 @@ export default {
         this.access = 'User';
       } catch (error) {
         // Show an error message to the user
-        alert(error.message);
+        this.message = error.message;
       }
     }
   }
@@ -122,46 +110,6 @@ export default {
 
 
 <style scoped>
-/* .register-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-.register-form input {
-  padding: 10px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  border: none;
-  background-color: #f3f3f3;
-  font-size: 16px;
-  width: 300px;
-}
-
-.register-form button {
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  background-color: #0080ff;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  width: 300px;
-  transition: all 0.3s ease;
-}
-
-.register-form button:hover {
-  background-color: #0066cc;
-}
-
-.register-form .error-message {
-  color: red;
-  margin-bottom: 20px;
-  font-size: 14px;
-  text-align: center;
-} */
 .register-page {
 	 background: url(https://wallpaperaccess.com/full/1426870.png) no-repeat center center;
 	 background-size: cover;
@@ -926,80 +874,9 @@ input.checkbox:checked:after {
     padding: 1em 0 0;
   }
 }
+
+
 </style>
   
 
-   <!-- <template>
-    <div class="register-card">
-      <h2>Register</h2>
-      <form @submit.prevent="register">
-        <div class="form-group">
-          <label for="name">Name:</label>
-          <input type="text" id="name" v-model="name" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" id="email" v-model="email" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password" required>
-        </div>
-        <div class="form-group">
-          <label for="confirm-password">Confirm Password:</label>
-          <input type="password" id="confirm-password" v-model="confirmPassword" required>
-        </div>
-        <div class="form-group">
-          <label for="access">Access Role:</label>
-          <select id="access" v-model="access" required>
-            <option value="admin">Admin</option>
-            <option value="user">User</option>
-          </select>
-        </div>
-        <button type="submit" @click="() => registerUser()">Register</button>
-      </form>
-    </div>
-  </template>
   
-<script>
-import { ref } from 'vue'
-import firebase from "@/uifire.js";
-import db from "@/main.js";
-import "firebase/compat/auth";
-import * as firebaseui from "firebaseui";
-import "firebaseui/dist/firebaseui.css";
-import { doc, getDocs, getFirestore, collection } from "firebase/firestore";
-import { projectAuth, projectFirestore } from '@/main'
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-  
-export default {
-  name: 'RegisterCard',
-  data() {
-    return {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      access: 'user'
-    }
-  },
-  methods: {
-    async registerUser() {
-      try {
-        const auth = firebase.auth()
-        const { user } = await auth.createUserWithEmailAndPassword(this.email, this.password)
-        await firebase.firestore().collection('users').doc(user.uid).set({
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          access: this.access
-        })
-        this.$router.push('/login')
-      } catch (error) {
-        console.error(error)
-        alert(error.message)
-      }
-    }
-  }
-}
-  </script> -->
