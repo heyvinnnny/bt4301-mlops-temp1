@@ -38,6 +38,9 @@ import TimeSeriesChart from "../components/TimeSeriesChart.vue";
 import Chartist from "chartist";
 
 export default {
+  mounted() {
+    this.$toast.success("Performance Monitor");
+  },
   components: {
     ChartCard,
     TimeSeriesChart,

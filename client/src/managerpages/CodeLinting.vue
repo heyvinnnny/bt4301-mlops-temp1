@@ -3,9 +3,9 @@
       <h1>Code Linting</h1>
       <select v-model="selectedLanguage">
         <option value="cpp">C++</option>
-        <option value="cs">C#</option>
+        <option value="python">Python</option>
         <option value="java">Java</option>
-        <option value="C">C</option>
+        <option value="javascript">JavaScript</option>
       </select>
       <br />
       <textarea v-model="code" :placeholder="`Enter your ${selectedLanguage.toUpperCase()} code here`" rows="15" cols="80"></textarea>
@@ -27,41 +27,41 @@
   
   export default {
     name: "CodeLinting",
-    mounted() {
-    this.$toast.success("Code Linting");
-    },
     data() {
       return {
         code: "",
         errors: [],
-        selectedLanguage: "java",
+        selectedLanguage: "python",
       };
     },
     computed: {
       languageConfig() {
         switch (this.selectedLanguage) {
-          case "cpp": //can work
+          case "cpp":
             return {
               compiler: "clang-head",
               options: "-Wall -Wextra",
             };
-          case "cs": //c# works, swift can work
+          case "python":
             return {
-              compiler: "mono-6.12.0.122",
-              //compiler: "cpython-3.10.2",
+              compiler: "pypy-3.7-v7.3.4",
               options: "-Wall -Wextra",
             };
-          case "java": //can work
+          case "java":
             return {
               compiler: "openjdk-jdk-15.0.3+2",
               options: "-Wall -Wextra",
             };
-          case "c": //can work
+          case "javascript":
             return {
-              compiler: "gcc-4.9.4-c",
+              compiler: "nodejs-16.14.0",
               options: "-Wall -Wextra",
             };
-          
+          default:
+            return {
+              compiler: "",
+              options: "",
+            };
         }
       },
     },

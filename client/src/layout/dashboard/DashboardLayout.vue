@@ -3,7 +3,6 @@
     <side-bar>
       <template slot="links">
 
-        <sidebar-link to="/home" name="Home" icon="ti-panel" />
         <sidebar-link to="/home" name="Home Page" icon="ti-home" />
         <sidebar-link to="/dashboard" name="Overview" icon="ti-panel" />
         <sidebar-link to="/servicehealth" name="Service Health" icon="ti-shield" />
@@ -28,7 +27,7 @@
         <sidebar-link
           to="/codelinting"
           name="Code Linting"
-          icon="ti-bell"
+          icon="ti-blackboard"
         />
         <sidebar-link
           to="/codeporting"

@@ -30,6 +30,10 @@ import DataDrift from "@/pages/DataDrift.vue";
 import Accuracy from "@/pages/Accuracy.vue";
 import Predictions from "@/pages/Predictions.vue";
 import Challengers from "@/pages/Challengers.vue";
+import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
+import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
+
+import ManagerAccuracy from "@/managerpages/Accuracy.vue";
 
 
 const routes = [
@@ -142,6 +146,7 @@ const routes = [
         component: CodePorting,
         meta: {requireAuth: true}
       },
+
       {
         path: "servicehealth",
         name: "service health",
@@ -166,6 +171,16 @@ const routes = [
         path: "challengers",
         name: "challengers",
         component: Challengers,
+      },
+      {
+        path: "updateCurrentModel",
+        name: "updateCurrentModel",
+        component: UpdateCurrentModel,
+      },
+      {
+        path: "pendingChangeRequest",
+        name: "pendingChangeRequest",
+        component: PendingChangeRequest,
       },
     ],
   },
@@ -204,7 +219,50 @@ const routes = [
       },
     ],
   },
- 
+  {
+    path: "/deployment",
+    component: Deployment,
+    children: [
+      {
+        path: "deployment",
+        name: "deployment",
+        component: Deployment,
+      },
+    ],
+  },
+  {
+    path: "/home",
+    component: Home,
+    children: [
+      {
+        path: "home",
+        name: "home",
+        component: Home,
+      },
+    ],
+  },
+  {
+    path: "/updateCurrentModel",
+    component: UpdateCurrentModel,
+    children: [
+      {
+        path: "updateCurrentModel",
+        name: "updateCurrentModel",
+        component: UpdateCurrentModel,
+      },
+    ],
+  },
+  {
+    path: "/pendingChangeRequest",
+    component: PendingChangeRequest,
+    children: [
+      {
+        path: "pendingChangeRequest",
+        name: "pendingChangeRequest",
+        component: PendingChangeRequest,
+      },
+    ],
+  },
 ];
 
 
