@@ -30,7 +30,7 @@ export default {
 </script>
 <style>
 .card {
-  height: 100%;
+  height: 96%;
   display: flex;
   flex-direction: column;
 }

@@ -13,12 +13,22 @@
           @click="handleRowClick(item)"
         >
           <slot :row="item">
-            <td
-              v-for="(column, index) in columns"
-              :key="index"
-              v-if="hasValue(item, column)"
-            >
-              {{ itemValue(item, column) }}
+            <td v-for="(column, index) in columns" :key="index">
+              <span
+                v-if="
+                  typeof itemValue(item, column) === 'object' &&
+                  itemValue(item, column).icon &&
+                  itemValue(item, column).class
+                "
+              >
+                <i
+                  :class="[
+                    itemValue(item, column).icon,
+                    itemValue(item, column).class,
+                  ]"
+                ></i>
+              </span>
+              <span v-else>{{ itemValue(item, column) }}</span>
             </td>
           </slot>
         </tr>
