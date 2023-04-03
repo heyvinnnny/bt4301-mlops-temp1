@@ -20,7 +20,7 @@
 <script>
 import ChartCard from "./Cards/ChartCard.vue";
 import Chartist from "chartist";
-import moment from 'moment';
+//import moment from 'moment';
 
 export default {
   components: {
@@ -44,7 +44,7 @@ export default {
           type: Chartist.FixedScaleAxis,
           divisor: 5,
           labelInterpolationFnc: function (value) {
-            return moment(value).format("MMM D, YYYY");
+            //return moment(value).format("MMM D, YYYY");
           },
         },
         showPoint: true,
