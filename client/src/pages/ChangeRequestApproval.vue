@@ -28,8 +28,8 @@
       <div class="col-md-6 col-xl-12">
         <card :title="table1.title">
           <div slot="raw-content" class="table-responsive">
-            <paper-table :data="table1.data" :columns="table1.columns" display:flex>
-            </paper-table>
+              <paper-table :data="table1.data" :columns="table1.columns" display:flex>
+              </paper-table>
           </div>
         </card>
       </div>
@@ -38,21 +38,33 @@
 
     <div class="row">
       <div class="col-md-6 col-xl-12">
-        <card :title="tableDeployment.title">
+        <card :title="tableChangeRequest.title">
           <div slot="raw-content" class="table-responsive">
-
-            <a href="#" class="btn-link bold" @click="redirectAddChallenger">+ Add Challenger Model</a>
-            <paper-table :data="tableDeployment.data" :columns="tableDeployment.columns" display:flex>
-            </paper-table>
-            <div>
-              <button @click="redirectUpdateChallenger" class="btn btn-primary">Update Challenger Model</button>
-            </div>
+              <paper-table :data="tableChangeRequest.data" :columns="tableChangeRequest.columns" display:flex>
+              </paper-table>
+              <div>
+                <p style="background-color:powderblue;">Change Summary: </p>
+                <p  style = "position:relative; left:20px; top:2px;"> Model to be replaced with Probability of Default (Risk Management) - ElasticNet</p>
+                <p style="background-color:powderblue;">Approve or request updates from Owner: </p>
+                <div style = "position:relative; left:20px; top:2px;">
+                  <input type="radio" id="one" value="One" v-model="picked">
+                    <label for="one">Approve</label>
+                    <br>
+                    <input type="radio" id="two" value="Two" v-model="picked">
+                    <label for="two">Request Updates</label>
+                    <br>
+                </div> <br>
+                <p style="background-color:powderblue;">Additional Comments: </p>
+                <textarea id="freeform" name="freeform" >
+                </textarea>
+              </div>
+              <button @click="redirectPendingCR" class="btn btn-primary">Approve</button>
+              <button @click="redirectChallenger" class="btn btn-primary">Cancel</button> <br> 
           </div>
         </card>
       </div>
     </div>
     <br />
-
 
     <div class="row">
       <div class="col-md-6 col-xl-6">
@@ -63,6 +75,7 @@
           </div>
         </card>
       </div>
+
       <div class="col-md-6 col-xl-6">
         <card :title="table3.title">
           <div slot="raw-content" class="table-responsive">
@@ -72,26 +85,13 @@
         </card>
       </div>
     </div>
-    <br/>
-
-    <!--Charts-->
-    <div class="row">
-      <div class="col-md-6 col-xl-12">
-        <chart-card
-          title="Loan Default Predictor (Risk Management)"
-          sub-title="DataRobot Prediction Server | Probability of Default"
-          :chart-data="usersChart.data"
-          :chart-options="usersChart.options"
-        >
-        </chart-card>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import { StatsCard, ChartCard } from "@/components/index";
 import { PaperTable } from "@/components";
+import { Button } from "@/components";
 import Chartist from "chartist";
 const tableColumns = [
   "Name",
@@ -99,20 +99,17 @@ const tableColumns = [
   "Endpoint",
   "Importance",
 ];
-const tableColumnsDeployment = [
-  "DisplayName",
-  "Model",
-  "TrainingData",
-  "Action"
+const tableColumnsChangeRequest = [
+
 ];
 const tableColumns2 = [
-  "Model",
-  "Environment",
-  "TargetType",
+"Model",
+"Environment",
+"TargetType",
 ];
 const tableColumns3 = [
-  "ReplacementDate",
-  "Review",
+"ReplacementDate",
+"Review",
 ];
 const tableData = [
   {
@@ -122,26 +119,20 @@ const tableData = [
     importance: "Moderate",
   },
 ];
-const tableDataDeployment = [
+const tableDataChangeRequest = [
   {
-    displayname: "Loan Default Model (CHAMPION)",
-    model: "Probability of Default (Risk Management) - Random Forest 2020",
-    trainingdata: "5K_Lending_Club_Loans_",
-    action: "",
-  },
-  {
-    displayname: "Loan Default Model (Prod)",
-    model: "Probability of Default (Risk Management) - ElasticNet",
-    trainingdata: "5K_Lending_Club_Loans_",
-    action: "replace",
+    name: "Loan Default Predictor (Risk Management)",
+    description: "Loan default model for the bank",
+    endpoint: "https://datarobot-mlops.dynamic.orm.datarobot.com",
+    importance: "Moderate",
   },
 ];
 const tableData2 = [
-  {
-    model: "Probability of Default (Risk management) - Random Forest 2020",
-    environment: "Python 3 Scikit-Learn Drop-In (v4)",
-    targettype: "Binary",
-  },
+{
+  model: "Probability of Default (Risk management) - Random Forest 2020",
+  environment: "Python 3 Scikit-Learn Drop-In (v4)",
+  targettype: "Binary",
+},
 ];
 const tableData3 = [
   {
@@ -152,22 +143,23 @@ const tableData3 = [
 
 export default {
   mounted() {
-    this.$toast.success("Challengers");
+    this.$toast.success("Pending Change Request");
   },
   components: {
     StatsCard,
     ChartCard,
     PaperTable,
+    Button,
   },
   methods: {
-    redirectAddChallenger() {
+    redirectPendingCR() {
       this.$router.push({
-        path: '/version-control',
+        path: '/challengers',
       }) 
     },
-    redirectUpdateChallenger() {
+    redirectChallenger() {
       this.$router.push({
-        path: '/updateCurrentModel',
+        path: '/challengers',
       }) 
     },
   },
@@ -181,10 +173,10 @@ export default {
         columns: [...tableColumns],
         data: [...tableData],
       },
-      tableDeployment: {
-        title: "Challenger",
-        columns: [...tableColumnsDeployment],
-        data: [...tableDataDeployment],
+      tableChangeRequest: {
+        title: "Submit Review",
+      //   columns: [...tableColumnsChangeRequest],
+      //   data: [...tableDataChangeRequest],
       },
       table2: {
         title: "Content",
@@ -247,4 +239,11 @@ export default {
   },
 };
 </script>
-<style></style>
+<style scoped>
+.pendingText {
+position: relative;
+left: -500px;
+padding-left: 150px;
+text-align: center;
+color: aqua;
+}
