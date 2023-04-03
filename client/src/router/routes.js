@@ -32,8 +32,8 @@ import Predictions from "@/pages/Predictions.vue";
 import Challengers from "@/pages/Challengers.vue";
 import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
+import UploadModel from "@/pages/UploadMLModel.vue";
 import ChangeRequestApproval from "@/pages/ChangeRequestApproval"
-
 import ManagerAccuracy from "@/managerpages/Accuracy.vue";
 
 
@@ -147,7 +147,6 @@ const routes = [
         component: CodePorting,
         meta: {requireAuth: true}
       },
-
       {
         path: "servicehealth",
         name: "service health",
@@ -184,6 +183,9 @@ const routes = [
         component: PendingChangeRequest,
       },
       {
+        path: "upload",
+        name: "upload",
+        component: UploadModel,
         path: "ChangeRequestApproval",
         name: "ChangeRequestApproval",
         component: ChangeRequestApproval,
