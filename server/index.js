@@ -15,6 +15,7 @@ const auth = require('./middleware/auth');
 const fs = require('fs')
 const path = require('path')
 const fileUpload = require('express-fileupload');
+const Performance = require('./models/performanceModel');
 
 app.use(morgan('combined'));
 
@@ -38,6 +39,193 @@ mongoose.connect('mongodb://127.0.0.1:27017/mlops', {
   console.error(error);
 });
 
+//Performance Monitoring
+
+const seedData = [
+  {
+    model: "Model 1",
+    timestamp: new Date('2023-01-01T00:00:00Z'),
+    totalPredictions: 1200,
+    totalRequests: 500,
+    requestOverMs: 20,
+    responseTime: 240,
+    executionTime: 210,
+    medianPeakLoad: 3000,
+    dataErrorRate: 1.0,
+    systemErrorRate: 0.5,
+    consumers: 100,
+    cacheHitRate: 70.0
+  },
+  {
+    model: "Model 1",
+    timestamp: new Date('2023-02-01T00:00:00Z'),
+    totalPredictions: 1300,
+    totalRequests: 550,
+    requestOverMs: 25,
+    responseTime: 250,
+    executionTime: 220,
+    medianPeakLoad: 3100,
+    dataErrorRate: 1.1,
+    systemErrorRate: 0.6,
+    consumers: 110,
+    cacheHitRate: 71.0
+  },
+  {
+    model: "Model 1",
+    timestamp: new Date('2023-03-01T00:00:00Z'),
+    totalPredictions: 1000,
+    totalRequests: 550,
+    requestOverMs: 25,
+    responseTime: 250,
+    executionTime: 220,
+    medianPeakLoad: 3100,
+    dataErrorRate: 1.1,
+    systemErrorRate: 0.6,
+    consumers: 110,
+    cacheHitRate: 71.0
+  },
+  {
+    model: "Model 1",
+    timestamp: new Date('2023-04-01T00:00:00Z'),
+      totalPredictions: 1200,
+      totalRequests: 550,
+      requestOverMs: 25,
+      responseTime: 250,
+      executionTime: 220,
+      medianPeakLoad: 3100,
+      dataErrorRate: 1.1,
+      systemErrorRate: 0.6,
+      consumers: 110,
+      cacheHitRate: 71.0
+  },
+  {
+    model: "Model 1",
+    timestamp: new Date('2023-05-01T00:00:00Z'),
+      totalPredictions: 1500,
+      totalRequests: 550,
+      requestOverMs: 25,
+      responseTime: 250,
+      executionTime: 220,
+      medianPeakLoad: 3100,
+      dataErrorRate: 1.1,
+      systemErrorRate: 0.6,
+      consumers: 110,
+      cacheHitRate: 71.0
+  },
+  {
+    model: "Model 1",
+    timestamp: new Date('2023-06-01T00:00:00Z'),
+      totalPredictions: 1600,
+      totalRequests: 550,
+      requestOverMs: 25,
+      responseTime: 250,
+      executionTime: 220,
+      medianPeakLoad: 3100,
+      dataErrorRate: 1.1,
+      systemErrorRate: 0.6,
+      consumers: 110,
+      cacheHitRate: 71.0
+  },
+  {
+    model: "Model 2",
+    timestamp: new Date('2023-03-01T00:00:00Z'),
+      totalPredictions: 1400,
+      totalRequests: 600,
+      requestOverMs: 30,
+      responseTime: 260,
+      executionTime: 230,
+      medianPeakLoad: 3200,
+      dataErrorRate: 1.2,
+      systemErrorRate: 0.7,
+      consumers: 120,
+      cacheHitRate: 72.0
+  },
+  {
+    model: "Model 2",
+    timestamp: new Date('2023-04-01T00:00:00Z'),
+      totalPredictions: 1500,
+      totalRequests: 650,
+      requestOverMs: 35,
+      responseTime: 270,
+      executionTime: 240,
+      medianPeakLoad: 3300,
+      dataErrorRate: 1.3,
+      systemErrorRate: 0.8,
+      consumers: 130,
+      cacheHitRate: 73.0
+  },
+  {
+    model: "Model 3",
+    timestamp: new Date('2022-12-01T00:00:00Z'),
+    totalPredictions: 1600,
+    totalRequests: 700,
+    requestOverMs: 40,
+    responseTime: 280,
+    executionTime: 250,
+    medianPeakLoad: 3400,
+    dataErrorRate: 1.4,
+    systemErrorRate: 0.9,
+    consumers: 140,
+    cacheHitRate: 74.0
+  },
+  {
+    model: "Model 3",
+    timestamp: new Date('2023-01-01T00:00:00Z'),
+    totalPredictions: 1700,
+    totalRequests: 750,
+    requestOverMs: 45,
+    responseTime: 290,
+    executionTime: 260,
+    medianPeakLoad: 3500,
+    dataErrorRate: 1.5,
+    systemErrorRate: 1.0,
+    consumers: 150,
+    cacheHitRate: 75.0
+  }
+];
+
+Performance.countDocuments({})
+  .then((count) => {
+    if (count === 0) {
+      return Performance.insertMany(seedData);
+    }
+  })
+  .then(() => {
+    console.log('Seed data added');
+  })
+  .catch((error) => {
+    console.error('Error seeding data:', error);
+  });
+
+app.get('/api/performances', async (req, res) => {
+    const { model } = req.query;
+  
+    try {
+      const performances = await Performance.find({ model: model });
+      res.json(performances);
+      //console.log(performances)
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+});
+
+app.get('/api/performances/time', async (req, res) => {
+  const { model } = req.query;
+
+  try {
+    const performances = await Performance.find({ model: model });
+    const data = performances.map((performance) => {
+      return {
+        x: performance.timestamp,
+        y: performance.totalPredictions
+      }
+    });
+    res.json(data);
+    console.log(data)
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 
 //login to check for pending account (can login too)
@@ -62,11 +250,14 @@ app.post('/login', async (req, res) => {
     const payload = {
       user: {
       id: user._id,
-      access: user.access,
+      name: user.name,
+      password: user.password,
+      email: user.email,
+      access: user.access
       },
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3h' });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '10h' });
     res.status(200).json({ token,
       user: {
         id: user._id,
@@ -135,7 +326,7 @@ app.post('/register', async (req, res) => {
       console.log('Email sent: ' + info.response);
     });
     
-    res.status(201).json({ msg: 'User registered, pending approval' });
+    res.status(200).json({ msg: 'User registered, pending approval' });
 
   } catch (err) {
     console.error(err);
@@ -237,37 +428,59 @@ app.post('/forgetpassword', async (req, res) => {
 app.put('/resetpassword', auth, async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    const userId = req.user._id;
+    const user = req.user;
+    const { id, password } = user;
 
-    const user = await User.findById(userId);
     if (!user) {
+      console.log('User not found');
       return res.status(404).json({ msg: 'User not found' });
     }
-
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    
+    const isMatch = await bcrypt.compare(oldPassword, password);
     if (!isMatch) {
+      console.log('Incorrect old password');
       return res.status(400).json({ msg: 'Incorrect old password' });
+    }
+
+    if (!newPassword) {
+      console.log('New password is missing');
+      return res.status(400).json({ msg: 'New password is missing' });
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
-    user.password = hashedPassword;
-    await user.save();
 
+    await User.updateOne({ _id: id }, { password: hashedPassword });
+
+    console.log('Password updated successfully');
     res.status(200).json({ msg: 'Password updated successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });
-    }
+  }
 });
 
 app.get('/users/me', auth, async (req, res) => {
   try {
     const user = req.user;
+    console.log('user:', user);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    const { id, name, email, access } = user;
+
+    console.log('user.id:', id);
+    console.log('user.name:', name);
+    console.log('user.email:', email);
+    console.log('user.access:', access);
+
     res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
+      id,
+      name: name || '',
+      email: email || '',
+      access: access
       // add other necessary fields
     });
   } catch (err) {
@@ -308,6 +521,72 @@ app.post('/upload', (req, res) => {
         });
       });
 })
+// app.get('/performance', async (req, res) => {
+//   const { model, resolution } = req.query;
+
+//   let match = {};
+//   let group = {};
+
+//   switch (resolution) {
+//     case 'monthly':
+//       match = { $match: { model } };
+//       group = {
+//         $group: {
+//           _id: {
+//             year: { $year: '$timestamp' },
+//             month: { $month: '$timestamp' },
+//           },
+//           totalPredictions: { $sum: '$totalPredictions' },
+//         },
+//       };
+//       break;
+//     case 'quarterly':
+//       match = { $match: { model } };
+//       group = {
+//         $group: {
+//           _id: {
+//             year: { $year: '$timestamp' },
+//             quarter: {
+//               $subtract: [
+//                 { $month: '$timestamp' },
+//                 { $mod: [{ $month: '$timestamp' }, 3] },
+//               ],
+//             },
+//           },
+//           totalPredictions: { $sum: '$totalPredictions' },
+//         },
+//       };
+//       break;
+//     case 'yearly':
+//       match = { $match: { model } };
+//       group = {
+//         $group: {
+//           _id: { year: { $year: '$timestamp' } },
+//           totalPredictions: { $sum: '$totalPredictions' },
+//         },
+//       };
+//       break;
+//     default:
+//       break;
+//   }
+
+//   app.post('/performance', async (req, res) => {
+//     const performance = new Performance(req.body);
+  
+//     try {
+//       await performance.save();
+//       res.send(performance);
+//     } catch (err) {
+//       res.status(500).send(err);
+//     }
+//   });
+
+//   const data = await Performance.aggregate([match, group]);
+
+//   res.send(data);
+// });
+
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;

@@ -11,6 +11,7 @@ import Icons from "@/pages/Icons.vue";
 import Maps from "@/pages/Maps.vue";
 import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
+import Timeline from "../components/Timeline.vue"
 
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
@@ -20,6 +21,7 @@ import ManagerDashboard from "@/pages/ManagerDashboard.vue";
 import VersionControl from "@/pages/VersionControl.vue";
 import PerformanceMonitoring from "@/pages/PerformanceMonitoring.vue";
 import CodeLinting from "@/pages/CodeLinting.vue";
+import CodePorting from "@/pages/CodePorting.vue";
 
 import Deployment from "@/pages/Deployment/Deployment.vue";
 import Home from "@/pages/Home.vue";
@@ -31,6 +33,8 @@ import Challengers from "@/pages/Challengers.vue";
 import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
 import UploadModel from "@/pages/UploadMLModel.vue";
+import ChangeRequestApproval from "@/pages/ChangeRequestApproval"
+import ManagerAccuracy from "@/managerpages/Accuracy.vue";
 
 
 const routes = [
@@ -45,6 +49,12 @@ const routes = [
         path: "dashboard",
         name: "overview",
         component: Dashboard,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "timeline",
+        name: "timeline",
+        component: Timeline,
         meta: {requireAuth: true},
       },
       {
@@ -132,6 +142,12 @@ const routes = [
         meta: {requireAuth: true}
       },
       {
+        path: "codeporting",
+        name: "codeporting",
+        component: CodePorting,
+        meta: {requireAuth: true}
+      },
+      {
         path: "servicehealth",
         name: "service health",
         component: ServiceHealth,
@@ -170,6 +186,9 @@ const routes = [
         path: "upload",
         name: "upload",
         component: UploadModel,
+        path: "ChangeRequestApproval",
+        name: "ChangeRequestApproval",
+        component: ChangeRequestApproval,
       },
     ],
   },

@@ -3,7 +3,7 @@
       <!--Stats cards-->
       <div class="row">
         <div
-          class="col-md-6 col-xl-3"
+          class="col-md-6 col-xl-6"
           v-for="stats in statsCards"
           :key="stats.title"
         >
@@ -42,21 +42,40 @@
             <div slot="raw-content" class="table-responsive">
                 <paper-table :data="tableChangeRequest.data" :columns="tableChangeRequest.columns" display:flex>
                 </paper-table>
-                <div>
-                    <p>This deployment has pending changes. <br>
+                <div style = "position:relative; left:40px; top:2px;">
+                    <p> This deployment has pending changes. <br>
                         There are pending changes that need review. <br>
                         See details about the change in the Governance section below.</p>
-
                 </div>
-                <button @click="redirectPendingCR" class="btn btn-primary">Add Review</button>
-                <button @click="redirectChallenger" class="btn btn-primary">Dismiss action</button> <br>
+                <!-- <button @click="redirectPendingCR" class="btn btn-primary">Add Review</button>
+                <button @click="redirectChallenger" class="btn btn-primary">Dismiss action</button> <br> -->
             </div>
           </card>
         </div>
       </div>
       <br />
+
+      <div class="row">
+        <div class="col-md-6 col-xl-6">
+          <card :title="table2.title">
+            <div slot="raw-content" class="table-responsive">
+              <paper-table :data="table2.data" :columns="table2.columns" display:flex>
+              </paper-table>
+            </div>
+          </card>
+        </div>
+
+        <div class="col-md-6 col-xl-6">
+          <card :title="table3.title">
+            <div slot="raw-content" class="table-responsive">
+              <paper-table :data="table3.data" :columns="table3.columns" display:flex>
+              </paper-table>
+            </div>
+          </card>
+        </div>
+      </div>
     </div>
-  </template>
+</template>
 
   <script>
   import { StatsCard, ChartCard } from "@/components/index";
@@ -72,16 +91,15 @@
   const tableColumnsChangeRequest = [
 
   ];
-  const tableColumns2 = [
-    "Custom Model",
-    "Custom Environment",
-    "Build Environment",
-    "Target Type",
-  ];
-  const tableColumns3 = [
-    "Model Replaced",
-    "Waiting for Review",
-  ];
+const tableColumns2 = [
+  "Model",
+  "Environment",
+  "TargetType",
+];
+const tableColumns3 = [
+  "ReplacementDate",
+  "Review",
+];
   const tableData = [
     {
       name: "Loan Default Predictor (Risk Management)",
@@ -99,23 +117,22 @@
     },
   ];
   const tableData2 = [
-    {
-      custommodel: "Probability of Default (Risk management) - Random Forest 2020",
-      customenvironment: "Python 3 Scikit-Learn Drop-In (v4)",
-      buildenvironment: "Python",
-      targettype: "binary",
-    },
+  {
+    model: "Probability of Default (Risk management) - Random Forest 2020",
+    environment: "Python 3 Scikit-Learn Drop-In (v4)",
+    targettype: "Binary",
+  },
   ];
   const tableData3 = [
     {
-      modelreplaced: "August 19 2020",
-      waitingforreview: "yes",
+      replacementdate: "19 August 2020",
+      review: "Waiting to be reviewed",
     },
   ];
   
   export default {
     mounted() {
-      this.$toast.success("Overview");
+      this.$toast.success("Pending Change Request");
     },
     components: {
       StatsCard,
@@ -157,8 +174,8 @@
         },
         table3: {
           title: "Governance",
-          columns: [...tableColumns2],
-          data: [...tableData2],
+          columns: [...tableColumns3],
+          data: [...tableData3],
         },
         statsCards: [
           {
@@ -211,5 +228,12 @@
     },
   };
   </script>
-  <style></style>
+<style scoped>
+.pendingText {
+  position: relative;
+  left: -500px;
+  padding-left: 150px;
+  text-align: center;
+  color: aqua;
+}
   

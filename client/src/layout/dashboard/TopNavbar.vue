@@ -2,9 +2,13 @@
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
       <div class="navbar-toggler-bar" v-if="loggedInUserName">
-      <p>Hello, {{ loggedInUserName }}</p>
+      
     </div>
       <a class="navbar-brand" href="#">{{ routeName }}</a>
+      <p style=" font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+  color: black; margin-top:18px;">Welcome {{ user.name }}</p>
       <button
         class="navbar-toggler navbar-burger"
         type="button"
@@ -53,6 +57,14 @@
 <script>
 export default {
   computed: {
+    user: {
+      get() {
+        return JSON.parse(localStorage.getItem("user"));
+      },
+      set(user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      },
+    },
     routeName() {
       const { name } = this.$route;
       return this.capitalizeFirstLetter(name);
@@ -73,7 +85,11 @@ export default {
   data() {
     return {
       activeNotifications: false,
-    };
+      userData: {
+        name: "",
+        email: "",
+      },
+    }
   },
   methods: {
     logout() {
