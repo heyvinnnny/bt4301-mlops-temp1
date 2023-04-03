@@ -3,7 +3,7 @@
       <!--Stats cards-->
       <div class="row">
         <div
-          class="col-md-6 col-xl-3"
+          class="col-md-6 col-xl-6"
           v-for="stats in statsCards"
           :key="stats.title"
         >
@@ -45,22 +45,34 @@
                 <div>
                     <p style="background-color:powderblue;">Replace with: </p> 
 
-                    <p><b>Most Accurate Model (v3.1) - [DataRobot] Python 3 Scikit-Learn Drop-In (v4)</b></p>
+                    <p><b>Probability of Default (Risk Management) - ElasticNet</b></p>
                     <p>All features that are used in both the current model and the replacement model match in name and data type</p>
                     <div>
-                        <!-- <Dropdown title: "Select Model></Dropdown> -->
                     </div>
                     <br>
                     <p style="background-color:powderblue;">Replacement Reason: </p>
-                    <p> > Data Drift</p>
+                    <select v-model="selected">
+                      <option disabled value="">Please select one</option>
+                      <option>Accuracy</option>
+                      <option>Data Drift</option>
+                      <option>Errors</option>
+                      <option>Refreshed Schedules</option>
+                      <option>Scoring Speed</option>
+                      <option>Other</option>
+                    </select>
+                    <br>
                     <br>
                     <p style="background-color:powderblue;">Manually Apply changes?</p>
-                    <p>> Notify me when the change is approved so I can manually apply it</p>  
-                    <p>Apply the change upon approval</p>
+                    <input type="radio" id="one" value="One" v-model="picked">
+                    <label for="one">Notify me when the change is approved so I can manually apply it</label>
+                    <br>
+                    <input type="radio" id="two" value="Two" v-model="picked">
+                    <label for="two">Apply the change upon approval</label>
+                    <br>
 
                 </div>
                 <button @click="redirectPendingCR" class="btn btn-primary">Accept and Replace</button>
-                <button @click="redirectChallenger" class="btn btn-primary">Cancel</button> <br>
+                <button @click="redirectChallenger" class="btn btn-primary">Cancel</button> <br> 
             </div>
           </card>
         </div>
@@ -126,13 +138,16 @@
   
   export default {
     mounted() {
-      this.$toast.success("Overview");
+      this.$toast.success("Update Challengers model");
     },
     components: {
       StatsCard,
       ChartCard,
       PaperTable,
       Button,
+    },
+    data() {
+    selected: ''
     },
     methods: {
       redirectPendingCR() {
