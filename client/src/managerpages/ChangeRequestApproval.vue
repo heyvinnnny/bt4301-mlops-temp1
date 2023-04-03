@@ -51,7 +51,7 @@
                     <label for="one">Approve</label>
                     <br>
                     <input type="radio" id="two" value="Two" v-model="picked">
-                    <label for="two">Request Updates</label>
+                    <label for="two">Deny & request updates</label>
                     <br>
                 </div> <br>
                 <p style="background-color:powderblue;">Additional Comments: </p>

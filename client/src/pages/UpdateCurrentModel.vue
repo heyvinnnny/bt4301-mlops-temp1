@@ -1,6 +1,6 @@
 <template>
     <div>
-      <!--Stats cards-->
+      <!--Stats cards--> 
       <div class="row">
         <div
           class="col-md-6 col-xl-6"
@@ -159,6 +159,83 @@
         this.$router.push({
           path: '/challengers',
         }) 
+      },
+      async fetchPerformanceData() {
+        try {
+          const response = await axios.get('http://localhost:3000/api/Deployment', {
+            params: {
+              deployment_id: this.selectedDeployment,
+            },
+          });
+          const data = response.data;
+
+          // Initialize an empty object to store aggregated values
+          const aggregatedData = {
+            totalPredictions: 0,
+            totalRequests: 0,
+            requestOverMs: 0,
+            responseTime: 0,
+            executionTime: 0,
+            medianPeakLoad: 0,
+            dataErrorRate: 0,
+            systemErrorRate: 0,
+            consumers: 0,
+            cacheHitRate: 0,
+            //
+            "deployment_name": "",
+            "importance": "",
+            "service": 0,
+            "drift": 0,
+            "accuracy": 0,
+            "num_predictions": 0,
+            "created_at": "",
+            "date_now": "",
+            "last_prediction": "",
+            "manager_email": "",
+            "manager_name": "",
+            "user_email": "",
+            "user_name": "",
+            "model_version": "",
+            "environment_version": "",
+            "deployment_status": "",
+            "testing_status": "",
+            "deployed": false,
+            "approval_status": "",
+            "replacement_reason": "",
+            "manually_apply_changes": true
+          };
+
+          // Iterate over the returned data and aggregate the values
+          data.forEach(metric => {
+            aggregatedData.totalPredictions += metric.totalPredictions;
+            aggregatedData.totalRequests += metric.totalRequests;
+            aggregatedData.requestOverMs += metric.requestOverMs;
+            aggregatedData.responseTime += metric.responseTime;
+            aggregatedData.executionTime += metric.executionTime;
+            aggregatedData.medianPeakLoad += metric.medianPeakLoad;
+            aggregatedData.dataErrorRate += metric.dataErrorRate;
+            aggregatedData.systemErrorRate += metric.systemErrorRate;
+            aggregatedData.consumers += metric.consumers;
+            aggregatedData.cacheHitRate += metric.cacheHitRate;
+          });
+
+          // Update the boxes array with the aggregated values
+          this.boxes = [
+            { id: 1, title: 'Total Predictions', value: aggregatedData.totalPredictions },
+            { id: 2, title: 'Total Requests', value: aggregatedData.totalRequests },
+            { id: 3, title: 'Request Over Ms', value: aggregatedData.requestOverMs },
+            { id: 4, title: 'Response Time', value: aggregatedData.responseTime },
+            { id: 5, title: 'Execution Time', value: aggregatedData.executionTime },
+            { id: 6, title: 'Median Peak Load', value: aggregatedData.medianPeakLoad },
+            { id: 7, title: 'Data Error Rate', value: aggregatedData.dataErrorRate.toFixed(2) },
+            { id: 8, title: 'System Error Rate', value: aggregatedData.systemErrorRate.toFixed(2) },
+            { id: 9, title: 'Consumers', value: aggregatedData.consumers },
+            { id: 10, title: 'Cache Hit Rate', value: aggregatedData.cacheHitRate.toFixed(2) },
+          ];
+
+        } catch (err) {
+          console.error(err);
+        }
       },
     },
     /**

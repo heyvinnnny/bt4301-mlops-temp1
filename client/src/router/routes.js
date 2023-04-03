@@ -32,8 +32,8 @@ import Predictions from "@/pages/Predictions.vue";
 import Challengers from "@/pages/Challengers.vue";
 import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
-import ChangeRequestApproval from "@/pages/ChangeRequestApproval"
 
+import ChangeRequestApproval from "@/managerpages/ChangeRequestApproval"
 import ManagerAccuracy from "@/managerpages/Accuracy.vue";
 
 
