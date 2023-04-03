@@ -1,0 +1,24 @@
+version: '3.3'
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile 
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_URI=mongodb://database:27017/mlops
+    depends_on:
+      - database
+  database:
+    image: mongo
+    ports:
+      - "27018:27017"
