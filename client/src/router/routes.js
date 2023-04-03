@@ -186,6 +186,8 @@ const routes = [
         path: "upload",
         name: "upload",
         component: UploadModel,
+      },
+      {
         path: "ChangeRequestApproval",
         name: "ChangeRequestApproval",
         component: ChangeRequestApproval,
