@@ -253,7 +253,7 @@ app.post('/login', async (req, res) => {
       name: user.name,
       password: user.password,
       email: user.email,
-      access: user.access
+      access: user.access,
       },
     };
 
@@ -263,7 +263,7 @@ app.post('/login', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        access: user.access
+        access: user.access,
         // Include any other necessary fields
       }, });
 

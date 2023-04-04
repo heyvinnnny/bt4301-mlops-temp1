@@ -38,6 +38,9 @@ import UploadModel from "@/pages/UploadMLModel.vue";
 import ChangeRequestApproval from "@/managerpages/ChangeRequestApproval"
 import ManagerAccuracy from "@/managerpages/Accuracy.vue";
 
+//Manager Pages
+import ManagerHome from "@/managerpages/ManagerHome.vue";
+
 
 const routes = [
   {
@@ -57,6 +60,13 @@ const routes = [
         path: "timeline",
         name: "timeline",
         component: Timeline,
+        meta: {requireAuth: true},
+      },
+      //managerhome
+      {
+        path: "managerhome",
+        name: "managerhome",
+        component: ManagerHome,
         meta: {requireAuth: true},
       },
       {
