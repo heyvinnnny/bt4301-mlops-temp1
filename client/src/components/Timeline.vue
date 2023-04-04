@@ -1,88 +1,91 @@
 <template>
-  <chart-card
-    :title="'Timeline Chart'"
-    :subTitle="'Events over Time'"
-    :chart-type="'Line'"
-    :chart-data="chartData"
-    :chart-options="chartOptions"
-  >
-    <template v-slot:legend>
-      <ul>
-        <li v-for="legendItem in legendItems" :key="legendItem.label">
-          <span :style="{ backgroundColor: legendItem.color }"></span>
-          {{ legendItem.label }}
-        </li>
-      </ul>
-    </template>
-  </chart-card>
+  <div>
+    <label for="modelSelect">Select Model:</label>
+    <select id="modelSelect" v-model="selectedModel" @change="getPerformances">
+      <option v-for="model in models" :key="model" :value="model">{{ model }}</option>
+    </select>
+    <canvas id="myChart"></canvas>
+  </div>
 </template>
 
 <script>
-import ChartCard from "./Cards/ChartCard.vue";
-import Chartist from "chartist";
-//import moment from 'moment';
+import axios from 'axios';
+import Chart from 'chart.js/auto';
 
 export default {
-  components: {
-    ChartCard,
-  },
   data() {
     return {
-      chartData: {
-        labels: ["2023-01-01", "2023-02-01", "2023-03-01", "2023-04-01"],
-        series: [
-          [
-            { meta: "Event A", value: 10 },
-            { meta: "Event A", value: 20 },
-            { meta: "Event B", value: 5 },
-            { meta: "Event C", value: 15 },
-          ],
-        ],
-      },
-      chartOptions: {
-        axisX: {
-          type: Chartist.FixedScaleAxis,
-          divisor: 5,
-          labelInterpolationFnc: function (value) {
-            //return moment(value).format("MMM D, YYYY");
-          },
-        },
-        showPoint: true,
-        lineSmooth: false,
-      },
-      legendItems: [
-        { label: "Event A", color: "#5C6BC0" },
-        { label: "Event B", color: "#66BB6A" },
-        { label: "Event C", color: "#FFA726" },
-      ],
-    };
+      models: [],
+      selectedModel: null,
+      performances: [],
+      myChart: null
+    }
   },
-};
+  mounted() {
+    this.getModels();
+  },
+  methods: {
+    getModels() {
+      axios.get('http://localhost:3000/api/perftime')
+        .then(response => {
+          this.models = response.data;
+          if (this.models.length > 0) {
+            this.selectedModel = this.models[0];
+            this.getPerformances();
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    getPerformances() {
+      axios.get(`http://localhost:3000/api/perftime/${this.selectedModel}`)
+        .then(response => {
+          this.performances = response.data;
+          this.updateChart();
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    updateChart() {
+      if (this.myChart) {
+        this.myChart.destroy();
+      }
+
+      var data = {
+        labels: this.performances.map(p => p.timestamp),
+        datasets: [
+          {
+            label: "Total Predictions",
+            data: this.performances.map(p => p.totalPredictions),
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+          }
+        ]
+      };
+
+      var ctx = document.getElementById('myChart').getContext('2d');
+      this.myChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+  }
+}
 </script>
 
-<style>
-.chart-legend {
-  display: flex;
-  justify-content: center;
-}
-
-.chart-legend ul {
-  display: flex;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-.chart-legend li {
-  align-items: center;
-  display: flex;
-  margin-right: 20px;
-}
-
-.chart-legend li span {
-  display: inline-block;
-  height: 10px;
-  margin-right: 5px;
-  width: 10px;
-}
-</style>
+<style></style>
