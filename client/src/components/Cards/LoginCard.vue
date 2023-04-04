@@ -83,7 +83,7 @@ export default {
                   if (access === "User") {
                     this.$router.push("/home");
                   } else if (access === "Manager") {
-                    this.$router.push("/managerhome");
+                    this.$router.push("/mgrhome");
                   }
             //this.$router.push("/home");
           }

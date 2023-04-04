@@ -7,11 +7,6 @@ import NotFound from "@/pages/NotFoundPage.vue";
 import Dashboard from "@/pages/Dashboard.vue";
 import UserProfile from "@/pages/UserProfile.vue";
 import Notifications from "@/pages/Notifications.vue";
-import Icons from "@/pages/Icons.vue";
-import Maps from "@/pages/Maps.vue";
-import Typography from "@/pages/Typography.vue";
-import TableList from "@/pages/TableList.vue";
-import Timeline from "../components/Timeline.vue"
 
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
@@ -27,8 +22,6 @@ import Deployment from "@/pages/Deployment/Deployment.vue";
 import Home from "@/pages/Home.vue";
 import ServiceHealth from "@/pages/ServiceHealth.vue";
 import DataDrift from "@/pages/DataDrift.vue";
-import Accuracy from "@/pages/Accuracy.vue";
-import Predictions from "@/pages/Predictions.vue";
 import Challengers from "@/pages/Challengers.vue";
 import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
@@ -36,10 +29,9 @@ import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
 import UploadModel from "@/pages/UploadMLModel.vue";
 
 import ChangeRequestApproval from "@/managerpages/ChangeRequestApproval"
-import ManagerAccuracy from "@/managerpages/Accuracy.vue";
 
 //Manager Pages
-import ManagerHome from "@/managerpages/ManagerHome.vue";
+import MgrHome from "@/managerpages/MgrHome.vue";
 
 
 const routes = [
@@ -56,17 +48,11 @@ const routes = [
         component: Dashboard,
         meta: {requireAuth: true},
       },
-      {
-        path: "timeline",
-        name: "timeline",
-        component: Timeline,
-        meta: {requireAuth: true},
-      },
       //managerhome
       {
-        path: "managerhome",
-        name: "managerhome",
-        component: ManagerHome,
+        path: "mgrhome",
+        name: "manager home",
+        component: MgrHome,
         meta: {requireAuth: true},
       },
       {
@@ -85,30 +71,6 @@ const routes = [
         path: "version-control",
         name: "version control",
         component: VersionControl,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "icons",
-        name: "icons",
-        component: Icons,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "maps",
-        name: "maps",
-        component: Maps,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "typography",
-        name: "typography",
-        component: Typography,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "table-list",
-        name: "table-list",
-        component: TableList,
         meta: {requireAuth: true},
       },
       {
@@ -131,7 +93,7 @@ const routes = [
       },
       {
         path: "performancemonitoring",
-        name: "performancemonitoring",
+        name: "performance monitoring",
         component: PerformanceMonitoring,
         meta: {requireAuth: true},
       },
@@ -149,13 +111,13 @@ const routes = [
       },
       {
         path: "codelinting",
-        name: "codelinting",
+        name: "code linting",
         component: CodeLinting,
         meta: {requireAuth: true}
       },
       {
         path: "codeporting",
-        name: "codeporting",
+        name: "code porting",
         component: CodePorting,
         meta: {requireAuth: true}
       },
@@ -168,16 +130,6 @@ const routes = [
         path: "datadrift",
         name: "data drift",
         component: DataDrift,
-      },
-      {
-        path: "accuracy",
-        name: "accuracy",
-        component: Accuracy,
-      },
-      {
-        path: "predictions",
-        name: "predictions",
-        component: Predictions,
       },
       {
         path: "challengers",
