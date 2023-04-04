@@ -5,14 +5,11 @@
 
         <sidebar-link to="/home" name="Home Page" icon="ti-home" />
         <sidebar-link to="/dashboard" name="Overview" icon="ti-panel" />
-        <sidebar-link to="/servicehealth" name="Service Health" icon="ti-shield" />
         <sidebar-link
           to="/datadrift"
           name="Data Drift"
           icon="ti-signal"
         />
-        <sidebar-link to="/accuracy" name="Accuracy" icon="ti-target" />
-        <sidebar-link to="/predictions" name="Predictions" icon="ti-stats-up" />
         <sidebar-link to="/challengers" name="Challengers" icon="ti-layout-grid4-alt" />
         <sidebar-link
           to="/version-control"
