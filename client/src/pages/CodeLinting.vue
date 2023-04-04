@@ -2,7 +2,7 @@
     <div>
       <h1>Code Linting</h1>
       <select v-model="selectedLanguage">
-        <option value="cpp">C++</option>
+        <option value="cpp">Haskell</option>
         <option value="cs">C#</option>
         <option value="java">Java</option>
         <option value="C">C</option>
@@ -42,7 +42,7 @@
         switch (this.selectedLanguage) {
           case "cpp": //can work
             return {
-              compiler: "clang-head",
+              compiler: "ghc-9.0.1",
               options: "-Wall -Wextra",
             };
           case "cs": //c# works, swift can work
@@ -56,10 +56,10 @@
               compiler: "openjdk-jdk-15.0.3+2",
               options: "-Wall -Wextra",
             };
-          case "c": //can work
+          case "C": //can work
             return {
-              compiler: "gcc-4.9.4-c",
-              options: "-Wall -Wextra",
+              compiler: "gcc-12.1.0-c",
+              options: "",
             };
           
         }

@@ -5,10 +5,10 @@
       
     </div>
       <a class="navbar-brand" href="#">{{ routeName }}</a>
-      <p style=" font-size: 16px;
+      <!-- <p style=" font-size: 16px;
   font-weight: bold;
   margin-right: 10px;
-  color: black; margin-top:18px;">Welcome {{ user.name }}</p>
+  color: black; margin-top:18px;">Welcome {{ user.name }}</p> -->
       <button
         class="navbar-toggler navbar-burger"
         type="button"
