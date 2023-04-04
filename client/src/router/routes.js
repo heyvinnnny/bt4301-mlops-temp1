@@ -22,6 +22,7 @@ import VersionControl from "@/pages/VersionControl.vue";
 import PerformanceMonitoring from "@/pages/PerformanceMonitoring.vue";
 import CodeLinting from "@/pages/CodeLinting.vue";
 import CodePorting from "@/pages/CodePorting.vue";
+import DeploymentUpload from "@/pages/DeploymentUpload.vue";
 
 import Deployment from "@/pages/Deployment/Deployment.vue";
 import Home from "@/pages/Home.vue";
@@ -69,6 +70,12 @@ const routes = [
         path: "notifications",
         name: "notifications",
         component: Notifications,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "deployment-upload",
+        name: "deployment-upload",
+        component: DeploymentUpload,
         meta: {requireAuth: true},
       },
       {

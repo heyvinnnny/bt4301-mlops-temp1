@@ -34,6 +34,7 @@
           name="Code Porting"
           icon="ti-bell"
         />
+        <sidebar-link to="/deployment-upload" name="Deployment Upload" icon="ti-bell" />
       </template>
       <mobile-menu>
         <li class="nav-item">
