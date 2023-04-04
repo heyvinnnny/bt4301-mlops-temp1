@@ -1,5 +1,6 @@
 import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
-import { createRouter, createWebHistory } from "vue-router";
+import MgrDashboardLayout from "@/layout/dashboard/MgrDashboardLayout.vue";
+
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
 
@@ -25,16 +26,78 @@ import DataDrift from "@/pages/DataDrift.vue";
 import Challengers from "@/pages/Challengers.vue";
 import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
-
 import UploadModel from "@/pages/UploadMLModel.vue";
-
-import ChangeRequestApproval from "@/managerpages/ChangeRequestApproval"
 
 //Manager Pages
 import MgrHome from "@/managerpages/MgrHome.vue";
+import ChangeRequestApproval from "@/managerpages/ChangeRequestApproval"
+import MgrChallengers from "@/managerpages/MgrChallengers.vue";
+import MgrCodeLinting from "@/managerpages/MgrCodeLinting.vue";
+import MgrCodePorting from "@/managerpages/MgrCodePorting.vue";
+import MgrDataDrift from "@/managerpages/MgrDataDrift.vue";
+import MgrDashboard from "@/managerpages/MgrDashboard.vue";
+import MgrPerformanceMonitoring from "@/managerpages/MgrPerformanceMonitoring.vue";
+import MgrVersionControl from "@/managerpages/MgrVersionControl.vue";
 
 
 const routes = [
+  {
+    path: "/",
+    mode: 'history',
+    component: MgrDashboardLayout,
+    redirect: "/login",
+    meta: {requireAuth: true},
+    children: [
+      {
+        path: "mgrhome",
+        name: "manager home",
+        component: MgrHome,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrchallengers",
+        name: "manager challengers",
+        component: MgrChallengers,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrcodelinting",
+        name: "manager code linting",
+        component: MgrCodeLinting,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrcodeporting",
+        name: "manager code porting",
+        component: MgrCodePorting,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrdatadrift",
+        name: "manager data drift",
+        component: MgrDataDrift,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrdashboard",
+        name: "manager dashboard",
+        component: MgrDashboard,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrperformancemonitoring",
+        name: "manager performance monitoring",
+        component: MgrPerformanceMonitoring,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrversioncontrol",
+        name: "manager version control",
+        component: MgrVersionControl,
+        meta: {requireAuth: true},
+      },
+    ],
+  },
   {
     path: "/",
     mode: 'history',
@@ -46,13 +109,6 @@ const routes = [
         path: "dashboard",
         name: "overview",
         component: Dashboard,
-        meta: {requireAuth: true},
-      },
-      //managerhome
-      {
-        path: "mgrhome",
-        name: "manager home",
-        component: MgrHome,
         meta: {requireAuth: true},
       },
       {
@@ -83,12 +139,6 @@ const routes = [
         path: "userprofile",
         name: "userprofile",
         component: UserProfile,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "managerdashboard",
-        name: "managerdashboard",
-        component: ManagerDashboard,
         meta: {requireAuth: true},
       },
       {
