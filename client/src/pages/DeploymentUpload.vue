@@ -3,11 +3,11 @@
     <h1>Upload Model Files</h1>
     <form @submit.prevent="submitForm">
       <div class="form-group">
-        <label for="model-bin">Model bin:</label>
+        <label for="model-bin">Weights (bin):</label>
         <input type="file" class="form-control" id="model-bin" @change="modelBin = $event.target.files[0]" required>
       </div>
       <div class="form-group">
-        <label for="model-json">Model json:</label>
+        <label for="model-json">Model (json):</label>
         <input type="file" class="form-control" id="model-bin" @change="modelBin = $event.target.files[0]" required>
       </div>
       <div class="form-group">
