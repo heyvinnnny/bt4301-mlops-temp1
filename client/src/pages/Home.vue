@@ -45,7 +45,7 @@
         <card :title="table1.title" :subTitle="table1.subTitle">
           <div slot="raw-content" class="table-responsive">
             <paper-table
-              :data="table1.data"
+              :data="deployments"
               :columns="table1.columns"
               @row-click="handleTableRowClick"
             >
@@ -62,16 +62,33 @@ import { StatsCard, ChartCard } from "@/components/index";
 import { PaperTable } from "@/components";
 
 import Chartist from "chartist";
+import axios from "axios";
+
+const mongoose = require("mongoose");
 
 const tableColumns = [
-  "Id",
-  "Name",
-  "Importance",
-  "Service",
-  "Drift",
-  "Accuracy",
-  "Predictions",
-  "Last Prediction",
+  "deployment_id",
+  "deployment_name",
+  "importance",
+  "service",
+  "drift",
+  "accuracy",
+  "num_predictions",
+  "created_at",
+  "date_now",
+  "last_prediction",
+  "manager_email",
+  "manager_name",
+  "user_email",
+  "user_name",
+  "model_version",
+  "environment_version",
+  "deployment_status",
+  "testing_status",
+  "deployed",
+  "approval_status",
+  "replacement_reason",
+  "manually_apply_changes",
 ];
 const tableData = [
   {
@@ -107,9 +124,6 @@ const tableData = [
 ];
 
 export default {
-  mounted() {
-    this.$toast.success("Welcome to DataPower");
-  },
   components: {
     StatsCard,
     ChartCard,
@@ -126,18 +140,6 @@ export default {
           icon: "ti-server",
           title: "Active Deployments",
           value: "72",
-        },
-        {
-          type: "success",
-          icon: "ti-calendar",
-          title: "Predictions",
-          value: "1,345",
-        },
-        {
-          type: "success",
-          icon: "ti-calendar",
-          title: "Predictions",
-          value: "1,345",
         },
         {
           type: "success",
@@ -176,9 +178,18 @@ export default {
         title: "Deployments",
         subTitle: "Click on the Deployment for more details.",
         columns: [...tableColumns],
-        data: [...tableData],
       },
+      deployments: [],
     };
+  },
+  async created() {
+    try {
+      const response = await axios.get("http://localhost:3000/api/deployments");
+      this.deployments = response.data;
+    } catch (error) {
+      console.error(error);
+      alert("Error fetching data from the API: " + error.message);
+    }
   },
   methods: {
     handleTableRowClick(item) {
