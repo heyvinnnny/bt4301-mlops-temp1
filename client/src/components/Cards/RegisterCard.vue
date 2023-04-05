@@ -1,124 +1,248 @@
 <template>
-	<div class="main-w3layouts wrapper register-page">
-    
-		
-		<div class="main-agileinfo">
-			<div class="agileits-top" style="background-color:#5C5E60">
-        
-				<form @submit.prevent="register">
+  <div class="main-w3layouts wrapper register-page">
+    <div class="main-agileinfo">
+      <div class="agileits-top" style="background-color: #5c5e60">
+        <form @submit.prevent="register">
           <div class="header">
-            <h1 style="color:white; padding-bottom:25px;">DataPower Register Form</h1>
+            <h1 style="color: white; padding-bottom: 25px">
+              DataPower Register Form
+            </h1>
           </div>
-					<input v-model="name" class="text" type="text" name="Name" placeholder="Name" required>
-					<input v-model="email" class="text email" type="email" name="email" placeholder="Email" required>
-					<input v-model="password" class="text" type="password" name="password" placeholder="Password" required>
-					<input v-model="confirmPassword" class="text w3lpass" type="password" name="password" placeholder="Confirm Password" required>
+          <input
+            v-model="name"
+            class="text"
+            type="text"
+            name="Name"
+            placeholder="Name"
+            required
+          />
+          <input
+            v-model="email"
+            class="text email"
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+          />
+          <input
+            v-model="password"
+            class="text"
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+          <input
+            v-model="confirmPassword"
+            class="text w3lpass"
+            type="password"
+            name="password"
+            placeholder="Confirm Password"
+            required
+          />
 
-          <select v-model="access" class="text" id="accesstype" name="access" required style="position: relative; display: inline-block;">
-            <option value="User" style="background-color: #f1f1f1; color: #333;">User</option>
-            <option value="Manager" style="background-color: #f1f1f1; color: #333;">Manager</option>
+          <select
+            v-model="access"
+            class="text"
+            id="accesstype"
+            name="access"
+            required
+            style="position: relative; display: inline-block"
+          >
+            <option value="User" style="background-color: #f1f1f1; color: #333">
+              User
+            </option>
+            <option
+              value="Manager"
+              style="background-color: #f1f1f1; color: #333"
+            >
+              Manager
+            </option>
           </select>
 
-
-					<input type="submit" value="SIGNUP">
-          <p style="text-align:left">Please take note that your account is subjected to approval.</p>
-          <br>
-          <p v-if="message" style="color:red">{{ message }}</p>
-          <br>
-				</form>
-				<p>Have an Account? <router-link to="/login"> Login Now!</router-link></p>
-			</div>
-		</div>
-		<!-- //copyright -->
-		<ul class="colorlib-bubbles">
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-		</ul>
-	</div>
+          <input type="submit" value="SIGNUP" />
+          <p style="text-align: left">
+            Please take note that your account is subjected to approval.
+          </p>
+          <br />
+          <p v-if="message" style="color: red">{{ message }}</p>
+          <br />
+        </form>
+        <p>
+          Have an Account? <router-link to="/login"> Login Now!</router-link>
+        </p>
+      </div>
+    </div>
+    <!-- //copyright -->
+    <ul class="colorlib-bubbles">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      access: '',
-      message:''
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      access: "",
+      message: "",
     };
   },
   methods: {
     async register() {
       try {
-
-        const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const passwordPattern =
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordPattern.test(this.password)) {
-          throw new Error('Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters');
+          throw new Error(
+            "Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters"
+          );
         }
 
         // Check that password and confirm password match
         if (this.password !== this.confirmPassword) {
-          throw new Error('Passwords do not match');
+          throw new Error("Passwords do not match");
         }
 
         // Check that password meets complexity requirements
-        
 
         // Make an HTTP POST request to the backend API endpoint
-        const response = await axios.post('http://localhost:3000/register', {
+        const response = await axios.post("http://localhost:3000/register", {
           name: this.name,
           email: this.email,
           password: this.password,
-          access: this.access
+          access: this.access,
         });
 
         // Show a success message to the user
-        console.log(response.data)
+        console.log(response.data);
         this.message = response.data.message;
 
         // Redirect to the login page after a delay
         setTimeout(() => {
-          this.$router.push('/login');
+          this.$router.push("/login");
         }, 3000);
 
         // Reset the form
-        this.name = '';
-        this.email = '';
-        this.password = '';
-        this.confirmPassword = '';
-        this.access = 'User';
+        this.name = "";
+        this.email = "";
+        this.password = "";
+        this.confirmPassword = "";
+        this.access = "User";
       } catch (error) {
         // Show an error message to the user
         this.message = error.message;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
-
 <style scoped>
 .register-page {
-	 background: url(https://wallpaperaccess.com/full/1426870.png) no-repeat center center;
-	 background-size: cover;
-	 height: 100%;
-	 position: absolute;
-	 width: 100%;
+  background: url(https://wallpaperaccess.com/full/1426870.png) no-repeat center
+    center;
+  background-size: cover;
+  height: 100%;
+  position: absolute;
+  width: 100%;
 }
 
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, dl, dt, dd, ol, nav ul, nav li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+dl,
+dt,
+dd,
+ol,
+nav ul,
+nav li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
   margin: 0;
   padding: 0;
   border: 0;
@@ -127,22 +251,37 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   vertical-align: baseline;
 }
 
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
   display: block;
 }
 
-ol, ul {
+ol,
+ul {
   list-style: none;
   margin: 0px;
   padding: 0px;
 }
 
-blockquote, q {
+blockquote,
+q {
   quotes: none;
 }
 
-blockquote:before, blockquote:after, q:before, q:after {
-  content: '';
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
   content: none;
 }
 
@@ -224,13 +363,13 @@ img {
 body {
   background: #76b852;
   /* fallback for old browsers */
-  background: -webkit-linear-gradient(to top, #76b852, #8DC26F);
-  background: -moz-linear-gradient(to top, #76b852, #8DC26F);
-  background: -o-linear-gradient(to top, #76b852, #8DC26F);
-  background: linear-gradient(to top, #76b852, #8DC26F);
+  background: -webkit-linear-gradient(to top, #76b852, #8dc26f);
+  background: -moz-linear-gradient(to top, #76b852, #8dc26f);
+  background: -o-linear-gradient(to top, #76b852, #8dc26f);
+  background: linear-gradient(to top, #76b852, #8dc26f);
   background-size: cover;
   background-attachment: fixed;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 h1 {
@@ -240,7 +379,7 @@ h1 {
   font-weight: 100;
   text-transform: capitalize;
   letter-spacing: 4px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 /*-- main --*/
@@ -259,7 +398,9 @@ h1 {
   padding: 3em;
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
   font-size: 0.9em;
   color: #fff;
   font-weight: 100;
@@ -276,22 +417,25 @@ input[type="text"], input[type="email"], input[type="password"] {
   background-size: 100%;
   background-repeat: no-repeat;
   color: #fff;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
-input.email, input.text.w3lpass {
+input.email,
+input.text.w3lpass {
   margin: 2em 0;
 }
 
-.text:focus, .text:valid {
+.text:focus,
+.text:valid {
   box-shadow: none;
   outline: none;
   background-position: 0 0;
 }
 
-.text:focus::-webkit-input-placeholder, .text:valid::-webkit-input-placeholder {
+.text:focus::-webkit-input-placeholder,
+.text:valid::-webkit-input-placeholder {
   color: rgba(255, 255, 255, 0.7);
-  font-size: .9em;
+  font-size: 0.9em;
   -webkit-transform: translateY(-30px);
   -moz-transform: translateY(-30px);
   -o-transform: translateY(-30px);
@@ -320,7 +464,7 @@ input.email, input.text.w3lpass {
 }
 
 input[type="submit"] {
-  font-size: .9em;
+  font-size: 0.9em;
   color: #fff;
   background: #76b852;
   outline: none;
@@ -334,12 +478,12 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-  -webkit-transition: .5s all;
-  -moz-transition: .5s all;
-  -o-transition: .5s all;
-  -ms-transition: .5s all;
-  transition: .5s all;
-  background: #8DC26F;
+  -webkit-transition: 0.5s all;
+  -moz-transition: 0.5s all;
+  -o-transition: 0.5s all;
+  -ms-transition: 0.5s all;
+  transition: 0.5s all;
+  background: #8dc26f;
 }
 
 .agileits-top p {
@@ -352,9 +496,9 @@ input[type="submit"]:hover {
 
 .agileits-top p a {
   color: #fff;
-  -webkit-transition: .5s all;
-  -moz-transition: .5s all;
-  transition: .5s all;
+  -webkit-transition: 0.5s all;
+  -moz-transition: 0.5s all;
+  transition: 0.5s all;
   font-weight: 400;
 }
 
@@ -373,7 +517,7 @@ input[type="submit"]:hover {
 }
 
 input.checkbox {
-  background: #8DC26F;
+  background: #8dc26f;
   cursor: pointer;
   width: 1.2em;
   height: 1.2em;
@@ -397,10 +541,10 @@ input.checkbox:after {
   width: 1.2em;
   height: 1.2em;
   border: 1px solid #fff;
-  -webkit-transition: .4s ease-in-out;
-  -moz-transition: .4s ease-in-out;
-  -o-transition: .4s ease-in-out;
-  transition: .4s ease-in-out;
+  -webkit-transition: 0.4s ease-in-out;
+  -moz-transition: 0.4s ease-in-out;
+  -o-transition: 0.4s ease-in-out;
+  transition: 0.4s ease-in-out;
 }
 
 input.checkbox:checked:after {
@@ -409,7 +553,7 @@ input.checkbox:checked:after {
   -o-transform: rotate(-45deg);
   -ms-transform: rotate(-45deg);
   transform: rotate(-45deg);
-  height: .5rem;
+  height: 0.5rem;
   border-color: #fff;
   border-top-color: transparent;
   border-right-color: transparent;
@@ -421,10 +565,10 @@ input.checkbox:checked:after {
   -o-transform: rotate(-45deg);
   -ms-transform: rotate(-45deg);
   transform: rotate(-45deg);
-  height: .5rem;
+  height: 0.5rem;
   border-color: transparent;
   border-right-color: transparent;
-  animation: .4s rippling .4s ease;
+  animation: 0.4s rippling 0.4s ease;
   animation-fill-mode: forwards;
 }
 
@@ -447,7 +591,7 @@ input.checkbox:checked:after {
 }
 
 .colorlibcopy-agile p {
-  font-size: .9em;
+  font-size: 0.9em;
   color: #fff;
   line-height: 1.8em;
   letter-spacing: 1px;
@@ -642,13 +786,15 @@ input.checkbox:checked:after {
 }
 
 /*-- responsive-design --*/
-@media(max-width:1440px) {
-  input[type="text"], input[type="email"], input[type="password"] {
+@media (max-width: 1440px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
     width: 94%;
   }
 }
 
-@media(max-width:1366px) {
+@media (max-width: 1366px) {
   h1 {
     font-size: 2.2em;
   }
@@ -666,25 +812,25 @@ input.checkbox:checked:after {
   }
 }
 
-@media(max-width:1280px) {
+@media (max-width: 1280px) {
   .main-agileinfo {
     width: 40%;
   }
 }
 
-@media(max-width:1080px) {
+@media (max-width: 1080px) {
   .main-agileinfo {
     width: 46%;
   }
 }
 
-@media(max-width:1024px) {
+@media (max-width: 1024px) {
   .main-agileinfo {
     width: 49%;
   }
 }
 
-@media(max-width:991px) {
+@media (max-width: 991px) {
   h1 {
     font-size: 2.4em;
   }
@@ -694,40 +840,43 @@ input.checkbox:checked:after {
   }
 }
 
-@media(max-width:900px) {
+@media (max-width: 900px) {
   .main-agileinfo {
     width: 58%;
   }
 
-  input[type="text"], input[type="email"], input[type="password"] {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
     width: 93%;
   }
 }
 
-@media(max-width:800px) {
+@media (max-width: 800px) {
   h1 {
     font-size: 2.2em;
   }
 }
 
-@media(max-width:736px) {
+@media (max-width: 736px) {
   .main-agileinfo {
     width: 62%;
   }
 }
 
-@media(max-width:667px) {
+@media (max-width: 667px) {
   .main-agileinfo {
     width: 67%;
   }
 }
 
-@media(max-width:600px) {
+@media (max-width: 600px) {
   .agileits-top {
     padding: 2.2em;
   }
 
-  input.email, input.text.w3lpass {
+  input.email,
+  input.text.w3lpass {
     margin: 1.5em 0;
   }
 
@@ -741,7 +890,7 @@ input.checkbox:checked:after {
   }
 }
 
-@media(max-width:568px) {
+@media (max-width: 568px) {
   .main-agileinfo {
     width: 75%;
   }
@@ -751,7 +900,7 @@ input.checkbox:checked:after {
   }
 }
 
-@media(max-width:480px) {
+@media (max-width: 480px) {
   h1 {
     font-size: 1.8em;
     letter-spacing: 3px;
@@ -761,7 +910,9 @@ input.checkbox:checked:after {
     padding: 1.8em;
   }
 
-  input[type="text"], input[type="email"], input[type="password"] {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
     width: 91%;
   }
 
@@ -770,7 +921,7 @@ input.checkbox:checked:after {
   }
 }
 
-@media(max-width:414px) {
+@media (max-width: 414px) {
   h1 {
     font-size: 1.8em;
     letter-spacing: 2px;
@@ -781,11 +932,13 @@ input.checkbox:checked:after {
     margin: 1.5em auto;
   }
 
-  .text:focus, .text:valid {
+  .text:focus,
+  .text:valid {
     background-position: 0 0px;
   }
 
-  .wthree-text ul li, .wthree-text ul li:nth-child(2) {
+  .wthree-text ul li,
+  .wthree-text ul li:nth-child(2) {
     display: block;
     float: none;
   }
@@ -808,7 +961,7 @@ input.checkbox:checked:after {
   }
 }
 
-@media(max-width:384px) {
+@media (max-width: 384px) {
   .main-agileinfo {
     width: 88%;
   }
@@ -818,13 +971,13 @@ input.checkbox:checked:after {
   }
 }
 
-@media(max-width:375px) {
+@media (max-width: 375px) {
   .agileits-top p {
     letter-spacing: 0px;
   }
 }
 
-@media(max-width:320px) {
+@media (max-width: 320px) {
   .main-w3layouts {
     padding: 1.5em 0 0;
   }
@@ -837,7 +990,9 @@ input.checkbox:checked:after {
     margin: 0 0 1em;
   }
 
-  input[type="text"], input[type="email"], input[type="password"] {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
     width: 89.5%;
     font-size: 0.85em;
   }
@@ -852,18 +1007,19 @@ input.checkbox:checked:after {
     margin: 1em auto;
   }
 
-  .text:focus, .text:valid {
+  .text:focus,
+  .text:valid {
     background-position: 0 0px;
   }
 
   input[type="submit"] {
     margin: 1.5em 0;
     padding: 0.8em;
-    font-size: .85em;
+    font-size: 0.85em;
   }
 
   .colorlibcopy-agile p {
-    font-size: .85em;
+    font-size: 0.85em;
   }
 
   .wthree-text label {
@@ -874,9 +1030,4 @@ input.checkbox:checked:after {
     padding: 1em 0 0;
   }
 }
-
-
 </style>
-  
-
-  
