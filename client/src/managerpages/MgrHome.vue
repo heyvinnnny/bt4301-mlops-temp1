@@ -58,9 +58,7 @@
   <script>
   import { StatsCard, ChartCard } from "@/components/index";
   import { PaperTable } from "@/components";
-  
-  
-  import Chartist from "chartist";
+
   
   const tableColumns = [
     "Id",

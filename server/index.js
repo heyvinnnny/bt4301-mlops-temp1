@@ -39,8 +39,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mlops', {
   console.error(error);
 });
 
-//Performance Monitoring
-
+//Performance Monitoring Data
 const seedData = [
   {
     model: "Model 1",
@@ -197,6 +196,40 @@ Performance.countDocuments({})
     console.error('Error seeding data:', error);
   });
 
+
+  //mgr data 
+  User.findOne({email: 'admin@datapower.com'})
+  .then((user) => {
+    if (!user) {
+      bcrypt.hash('admin', 10, function(err, hash) {
+        if (err) {
+          console.error('Error hashing password:', err);
+          return;
+        }
+        
+        User.create({
+        name: 'Admin',
+        email: 'admin@datapower.com',
+        password: hash,
+        access: 'Manager',
+        status: 'Approved'
+        }).then(() => {
+          console.log('Manager data added');
+        }).catch((err) => {
+          console.error('Error manager data:', err);
+        });
+      });
+    } else {
+      console.log('Data already exists, skipping manager');
+    }
+  })
+  .catch((err) => {
+    console.error('Error manager data:', err);
+  });
+
+
+
+
 app.get('/api/performances', async (req, res) => {
     const { model } = req.query;
   
@@ -222,6 +255,26 @@ app.get('/api/performances/time', async (req, res) => {
     });
     res.json(data);
     console.log(data)
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/perftime', async (req, res) => {
+  try {
+    const models = await Performance.distinct('model'); // get the list of available models
+    res.json(models);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/perftime/:model', async (req, res) => {
+  const model = req.params.model;
+
+  try {
+    const performances = await Performance.find({ model: model }).sort({ timestamp: 1 }); // sort by timestamp in ascending order
+    res.json(performances);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -253,7 +306,7 @@ app.post('/login', async (req, res) => {
       name: user.name,
       password: user.password,
       email: user.email,
-      access: user.access
+      access: user.access,
       },
     };
 
@@ -263,7 +316,7 @@ app.post('/login', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        access: user.access
+        access: user.access,
         // Include any other necessary fields
       }, });
 
