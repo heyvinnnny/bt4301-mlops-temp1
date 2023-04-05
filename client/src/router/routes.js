@@ -1,5 +1,6 @@
 import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
-import { createRouter, createWebHistory } from "vue-router";
+import MgrDashboardLayout from "@/layout/dashboard/MgrDashboardLayout.vue";
+
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
 
@@ -7,10 +8,6 @@ import NotFound from "@/pages/NotFoundPage.vue";
 import Dashboard from "@/pages/Dashboard.vue";
 import UserProfile from "@/pages/UserProfile.vue";
 import Notifications from "@/pages/Notifications.vue";
-import Icons from "@/pages/Icons.vue";
-import Maps from "@/pages/Maps.vue";
-import Typography from "@/pages/Typography.vue";
-import TableList from "@/pages/TableList.vue";
 
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
@@ -20,21 +17,87 @@ import ManagerDashboard from "@/pages/ManagerDashboard.vue";
 import VersionControl from "@/pages/VersionControl.vue";
 import PerformanceMonitoring from "@/pages/PerformanceMonitoring.vue";
 import CodeLinting from "@/pages/CodeLinting.vue";
+import CodePorting from "@/pages/CodePorting.vue";
 
 import Deployment from "@/pages/Deployment/Deployment.vue";
 import Home from "@/pages/Home.vue";
 import ServiceHealth from "@/pages/ServiceHealth.vue";
 import DataDrift from "@/pages/DataDrift.vue";
-import Accuracy from "@/pages/Accuracy.vue";
-import Predictions from "@/pages/Predictions.vue";
 import Challengers from "@/pages/Challengers.vue";
 import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
+import UploadModel from "@/pages/UploadMLModel.vue";
 
-import ManagerAccuracy from "@/managerpages/Accuracy.vue";
+//Manager Pages
+import MgrHome from "@/managerpages/MgrHome.vue";
+import ChangeRequestApproval from "@/managerpages/ChangeRequestApproval"
+import MgrChallengers from "@/managerpages/MgrChallengers.vue";
+import MgrCodeLinting from "@/managerpages/MgrCodeLinting.vue";
+import MgrCodePorting from "@/managerpages/MgrCodePorting.vue";
+import MgrDataDrift from "@/managerpages/MgrDataDrift.vue";
+import MgrDashboard from "@/managerpages/MgrDashboard.vue";
+import MgrPerformanceMonitoring from "@/managerpages/MgrPerformanceMonitoring.vue";
+import MgrVersionControl from "@/managerpages/MgrVersionControl.vue";
 
 
 const routes = [
+  {
+    path: "/",
+    mode: 'history',
+    component: MgrDashboardLayout,
+    redirect: "/login",
+    meta: {requireAuth: true},
+    children: [
+      {
+        path: "mgrhome",
+        name: "manager home",
+        component: MgrHome,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrchallengers",
+        name: "manager challengers",
+        component: MgrChallengers,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrcodelinting",
+        name: "manager code linting",
+        component: MgrCodeLinting,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrcodeporting",
+        name: "manager code porting",
+        component: MgrCodePorting,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrdatadrift",
+        name: "manager data drift",
+        component: MgrDataDrift,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrdashboard",
+        name: "manager dashboard",
+        component: MgrDashboard,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrperformancemonitoring",
+        name: "manager performance monitoring",
+        component: MgrPerformanceMonitoring,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrversioncontrol",
+        name: "manager version control",
+        component: MgrVersionControl,
+        meta: {requireAuth: true},
+      },
+    ],
+  },
   {
     path: "/",
     mode: 'history',
@@ -67,30 +130,6 @@ const routes = [
         meta: {requireAuth: true},
       },
       {
-        path: "icons",
-        name: "icons",
-        component: Icons,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "maps",
-        name: "maps",
-        component: Maps,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "typography",
-        name: "typography",
-        component: Typography,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "table-list",
-        name: "table-list",
-        component: TableList,
-        meta: {requireAuth: true},
-      },
-      {
         path: "/home",
         name: "home",
         component: Home,
@@ -103,14 +142,8 @@ const routes = [
         meta: {requireAuth: true},
       },
       {
-        path: "managerdashboard",
-        name: "managerdashboard",
-        component: ManagerDashboard,
-        meta: {requireAuth: true},
-      },
-      {
         path: "performancemonitoring",
-        name: "performancemonitoring",
+        name: "performance monitoring",
         component: PerformanceMonitoring,
         meta: {requireAuth: true},
       },
@@ -128,8 +161,14 @@ const routes = [
       },
       {
         path: "codelinting",
-        name: "codelinting",
+        name: "code linting",
         component: CodeLinting,
+        meta: {requireAuth: true}
+      },
+      {
+        path: "codeporting",
+        name: "code porting",
+        component: CodePorting,
         meta: {requireAuth: true}
       },
       {
@@ -141,16 +180,6 @@ const routes = [
         path: "datadrift",
         name: "data drift",
         component: DataDrift,
-      },
-      {
-        path: "accuracy",
-        name: "accuracy",
-        component: Accuracy,
-      },
-      {
-        path: "predictions",
-        name: "predictions",
-        component: Predictions,
       },
       {
         path: "challengers",
@@ -166,6 +195,16 @@ const routes = [
         path: "pendingChangeRequest",
         name: "pendingChangeRequest",
         component: PendingChangeRequest,
+      },
+      {
+        path: "upload",
+        name: "upload",
+        component: UploadModel,
+      },
+      {
+        path: "ChangeRequestApproval",
+        name: "ChangeRequestApproval",
+        component: ChangeRequestApproval,
       },
     ],
   },

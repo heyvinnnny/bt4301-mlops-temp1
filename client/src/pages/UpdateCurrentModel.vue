@@ -1,9 +1,9 @@
 <template>
     <div>
-      <!--Stats cards-->
+      <!--Stats cards--> 
       <div class="row">
         <div
-          class="col-md-6 col-xl-3"
+          class="col-md-6 col-xl-6"
           v-for="stats in statsCards"
           :key="stats.title"
         >
@@ -45,22 +45,34 @@
                 <div>
                     <p style="background-color:powderblue;">Replace with: </p> 
 
-                    <p><b>Most Accurate Model (v3.1) - [DataRobot] Python 3 Scikit-Learn Drop-In (v4)</b></p>
+                    <p><b>Probability of Default (Risk Management) - ElasticNet</b></p>
                     <p>All features that are used in both the current model and the replacement model match in name and data type</p>
                     <div>
-                        <!-- <Dropdown title: "Select Model></Dropdown> -->
                     </div>
                     <br>
                     <p style="background-color:powderblue;">Replacement Reason: </p>
-                    <p> > Data Drift</p>
+                    <select v-model="selected">
+                      <option disabled value="">Please select one</option>
+                      <option>Accuracy</option>
+                      <option>Data Drift</option>
+                      <option>Errors</option>
+                      <option>Refreshed Schedules</option>
+                      <option>Scoring Speed</option>
+                      <option>Other</option>
+                    </select>
+                    <br>
                     <br>
                     <p style="background-color:powderblue;">Manually Apply changes?</p>
-                    <p>> Notify me when the change is approved so I can manually apply it</p>  
-                    <p>Apply the change upon approval</p>
+                    <input type="radio" id="one" value="One" v-model="picked">
+                    <label for="one">Notify me when the change is approved so I can manually apply it</label>
+                    <br>
+                    <input type="radio" id="two" value="Two" v-model="picked">
+                    <label for="two">Apply the change upon approval</label>
+                    <br>
 
                 </div>
                 <button @click="redirectPendingCR" class="btn btn-primary">Accept and Replace</button>
-                <button @click="redirectChallenger" class="btn btn-primary">Cancel</button> <br>
+                <button @click="redirectChallenger" class="btn btn-primary">Cancel</button> <br> 
             </div>
           </card>
         </div>
@@ -126,13 +138,16 @@
   
   export default {
     mounted() {
-      this.$toast.success("Overview");
+      this.$toast.success("Update Challengers model");
     },
     components: {
       StatsCard,
       ChartCard,
       PaperTable,
       Button,
+    },
+    data() {
+    selected: ''
     },
     methods: {
       redirectPendingCR() {
@@ -144,6 +159,72 @@
         this.$router.push({
           path: '/challengers',
         }) 
+      },
+      async fetchPerformanceData() {
+        try {
+          const response = await axios.get('http://localhost:3000/api/Deployment', {
+            params: {
+              deployment_id: this.selectedDeployment,
+            },
+          });
+          const data = response.data;
+
+          // Initialize an empty object to store aggregated values
+          const aggregatedData = {
+            deployment_name: "",
+            importance: "",
+            service: 0,
+            drift: 0,
+            accuracy: 0,
+            num_predictions: 0,
+            created_at: "",
+            date_now: "",
+            last_prediction: "",
+            manager_email: "",
+            manager_name: "",
+            user_email: "",
+            user_name: "",
+            model_version: "",
+            environment_version: "",
+            deployment_status: "",
+            testing_status: "",
+            deployed: false,
+            approval_status: "",
+            replacement_reason: "",
+            manually_apply_changes: true
+          };
+
+          // Iterate over the returned data and aggregate the values
+          data.forEach(metric => {
+            aggregatedData.totalPredictions += metric.totalPredictions;
+            aggregatedData.totalRequests += metric.totalRequests;
+            aggregatedData.requestOverMs += metric.requestOverMs;
+            aggregatedData.responseTime += metric.responseTime;
+            aggregatedData.executionTime += metric.executionTime;
+            aggregatedData.medianPeakLoad += metric.medianPeakLoad;
+            aggregatedData.dataErrorRate += metric.dataErrorRate;
+            aggregatedData.systemErrorRate += metric.systemErrorRate;
+            aggregatedData.consumers += metric.consumers;
+            aggregatedData.cacheHitRate += metric.cacheHitRate;
+          });
+
+          // Update the boxes array with the aggregated values
+          this.boxes = [
+            { id: 1, title: 'Total Predictions', value: aggregatedData.totalPredictions },
+            { id: 2, title: 'Total Requests', value: aggregatedData.totalRequests },
+            { id: 3, title: 'Request Over Ms', value: aggregatedData.requestOverMs },
+            { id: 4, title: 'Response Time', value: aggregatedData.responseTime },
+            { id: 5, title: 'Execution Time', value: aggregatedData.executionTime },
+            { id: 6, title: 'Median Peak Load', value: aggregatedData.medianPeakLoad },
+            { id: 7, title: 'Data Error Rate', value: aggregatedData.dataErrorRate.toFixed(2) },
+            { id: 8, title: 'System Error Rate', value: aggregatedData.systemErrorRate.toFixed(2) },
+            { id: 9, title: 'Consumers', value: aggregatedData.consumers },
+            { id: 10, title: 'Cache Hit Rate', value: aggregatedData.cacheHitRate.toFixed(2) },
+          ];
+
+        } catch (err) {
+          console.error(err);
+        }
       },
     },
     /**

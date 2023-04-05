@@ -2,10 +2,10 @@
     <div>
       <h1>Code Linting</h1>
       <select v-model="selectedLanguage">
-        <option value="cpp">C++</option>
-        <option value="python">Python</option>
+        <option value="cpp">Haskell</option>
+        <option value="cs">C#</option>
         <option value="java">Java</option>
-        <option value="javascript">JavaScript</option>
+        <option value="C">C</option>
       </select>
       <br />
       <textarea v-model="code" :placeholder="`Enter your ${selectedLanguage.toUpperCase()} code here`" rows="15" cols="80"></textarea>
@@ -34,37 +34,34 @@
       return {
         code: "",
         errors: [],
-        selectedLanguage: "python",
+        selectedLanguage: "java",
       };
     },
     computed: {
       languageConfig() {
         switch (this.selectedLanguage) {
-          case "cpp":
+          case "cpp": //can work
             return {
-              compiler: "clang-head",
+              compiler: "ghc-9.0.1",
               options: "-Wall -Wextra",
             };
-          case "python":
+          case "cs": //c# works, swift can work
             return {
-              compiler: "pypy-3.7-v7.3.4",
+              compiler: "mono-6.12.0.122",
+              //compiler: "cpython-3.10.2",
               options: "-Wall -Wextra",
             };
-          case "java":
+          case "java": //can work
             return {
               compiler: "openjdk-jdk-15.0.3+2",
               options: "-Wall -Wextra",
             };
-          case "javascript":
+          case "C": //can work
             return {
-              compiler: "nodejs-16.14.0",
-              options: "-Wall -Wextra",
-            };
-          default:
-            return {
-              compiler: "",
+              compiler: "gcc-12.1.0-c",
               options: "",
             };
+          
         }
       },
     },

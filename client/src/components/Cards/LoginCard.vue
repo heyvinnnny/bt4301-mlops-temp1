@@ -31,21 +31,17 @@
                   <button type="submit" class="btn btn-primary">Login</button>
                   <br />
 
-                  <!-- May not need this line bcause users are not expected to create by themselves
-                    <p style="padding-top:20px;">Don't have an account? <router-link to="/register">Register</router-link> </p>
-                    -->
+                  
+                  <p style="padding-top:20px;">Don't have an account? <router-link to="/register">Register!</router-link> </p>
+                  
 
                   <p style="padding-top: 20px">
                     <router-link to="/forgetpassword"
                       >Forget your password?</router-link
                     >
                   </p>
-
-                  <p style="padding-top: 20px">
-                    <router-link to="/register"
-                      >Register Now!</router-link
-                    >
-                  </p>
+                  <br>
+                  <p v-if="error" class="error" id="error-message" style="color:red;">{{ error }}</p>
                 </div>
               </form>
             </div>
@@ -55,53 +51,10 @@
     </div>
   </div>
 
-  <!-- <div class="login-card">
-    <h2>Login</h2>
-    <form @submit.prevent="login">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" v-model="email" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" v-model="password" required>
-      </div>
-      <button type="submit">Login</button>
-      {{ error }}
-    </form>
-  </div> -->
+
 </template>
 
 <script>
-// import axios from 'axios';
-
-// export default {
-//   data() {
-//     return {
-//       email: '',
-//       password: '',
-//       error: ''
-//     }
-//   },
-//   methods: {
-//     async login() {
-//       try {
-//         const response = await axios.post('http://localhost:3000/login', {
-//           email: this.email,
-//           password: this.password
-//         });
-//         const { token } = response.data;
-//         localStorage.setItem('token', token);
-//         this.$router.push('/dashboard');
-//       }
-//       catch (error) {
-//         console.log(error.response)
-//         this.error = error.response.data.message;
-//       }
-//     }
-//   }
-// }
-
 import axios from "axios";
 export default {
   name: "Login",
@@ -124,40 +77,46 @@ export default {
           //if successful
           if (res.status === 200) {
             localStorage.setItem("token", res.data.token);
-            this.$router.push("/home");
-          }
-          // }, err => {
-          //   console.log(err.response);
-          //   this.error = err.response.data.error
-          // })
+            // check the user's access level
+                  const { access } = res.data.user;
 
-          //remove from here//
-        })
-        .catch((err) => {
-          if (err.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log(err.response.data);
-            console.log(err.response.status);
-            console.log(err.response.headers);
-          } else if (err.request) {
-            // The request was made but no response was received
-            // `err.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            console.log(err.request);
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log("Error", err.message);
+                  if (access === "User") {
+                    this.$router.push("/home");
+                  } else if (access === "Manager") {
+                    this.$router.push("/mgrhome");
+                  }
+            //this.$router.push("/home");
           }
-          console.log(err.config);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            this.error = "Invalid username or password. Please try again later.";
+          } if (error.response && error.response.status === 400) {
+            this.error = "Invalid username or password. Please try again later.";
+          } 
+          if (error.response && error.response.status === 403) {
+            this.error = "Your account is still subjected to approval. Please try again later.";
+          } 
         });
-      //remove from here//
     },
   },
 };
 </script>
 
 <style scoped>
+
+.error-message {
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+
 p {
   line-height: 1rem;
 }
