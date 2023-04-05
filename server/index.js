@@ -16,6 +16,7 @@ const fs = require("fs");
 const path = require("path");
 const fileUpload = require("express-fileupload");
 const Performance = require("./models/performanceModel");
+const Deployment = require("./models/deployments");
 
 app.use(morgan("combined"));
 
@@ -673,6 +674,16 @@ app.post("/upload", (req, res) => {
 //     res.status(200).json({ result: message });
 //   });
 // });
+
+app.get("/api/deployments", async (req, res) => {
+  try {
+    const deployments = await Deployment.find();
+    res.json(deployments);
+    //console.log(performances)
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 // Start the server
 const PORT = process.env.PORT || 27017;
