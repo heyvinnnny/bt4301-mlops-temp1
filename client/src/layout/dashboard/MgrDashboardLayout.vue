@@ -61,7 +61,7 @@
       </mobile-menu>
     </side-bar>
     <div class="main-panel">
-      <top-navbar></top-navbar>
+      <mgr-top-navbar></mgr-top-navbar>
 
       <dashboard-content @click.native="toggleSidebar"> </dashboard-content>
 
@@ -71,13 +71,13 @@
 </template>
 <style lang="scss"></style>
 <script>
-import TopNavbar from "./TopNavbar.vue";
+import MgrTopNavbar from "./MgrTopNavbar.vue";
 import ContentFooter from "./ContentFooter.vue";
 import DashboardContent from "./Content.vue";
 import MobileMenu from "./MobileMenu";
 export default {
   components: {
-    TopNavbar,
+    MgrTopNavbar,
     ContentFooter,
     DashboardContent,
     MobileMenu,

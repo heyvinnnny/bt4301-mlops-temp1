@@ -1,5 +1,6 @@
 import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
 import MgrDashboardLayout from "@/layout/dashboard/MgrDashboardLayout.vue";
+import MgrUserProfile from "@/pages/MgrUserProfile.vue";
 
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
@@ -7,6 +8,7 @@ import NotFound from "@/pages/NotFoundPage.vue";
 // Admin pages
 import Dashboard from "@/pages/Dashboard.vue";
 import UserProfile from "@/pages/UserProfile.vue";
+
 import Notifications from "@/pages/Notifications.vue";
 
 import Login from "@/pages/Login.vue";
@@ -53,6 +55,12 @@ const routes = [
         path: "mgrhome",
         name: "manager home",
         component: MgrHome,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgruserprofile",
+        name: "manager userprofile",
+        component: MgrUserProfile,
         meta: {requireAuth: true},
       },
       {
