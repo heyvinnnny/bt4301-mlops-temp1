@@ -1,14 +1,14 @@
 <template>
   <div>
     <h1>Upload Model Files</h1>
-    <form @submit.prevent="submitForm">
+    <form>
       <div class="form-group">
         <label for="model-bin">Weights (bin):</label>
         <input type="file" class="form-control" id="model-bin" @change="modelBin = $event.target.files[0]" required>
       </div>
       <div class="form-group">
         <label for="model-json">Model (json):</label>
-        <input type="file" class="form-control" id="model-bin" @change="modelBin = $event.target.files[0]" required>
+        <input type="file" class="form-control" id="model-json" @change="modelJson = $event.target.files[0]" required>
       </div>
       <div class="form-group">
         <label for="deployment-id">Deployment ID:</label>
@@ -58,18 +58,21 @@
       </div>
       <div class="form-group">
         <label for="env-version">Environment Version:</label>
-        <input type="text" class="form-control" id="env-version" v-model="envVersion" required>
+        <input type="text" class="form-control" id="manager-email" v-model="envVersion" required>
       </div>
       <div class="form-group">
         <label for="replacement-reason">Replacement Reason:</label>
         <textarea class="form-control" id="replacement-reason" v-model="replacementReason" required></textarea>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary" @click.prevent="submitForm">Submit</button>
     </form>
   </div>
 </template>
 
 <script>
+import fs from "fs";
+import path from "path";
+
 export default {
   data() {
     return {
@@ -91,8 +94,69 @@ export default {
   },
   methods: {
     submitForm() {
-      // add your submit form logic here
-    }
-  }
-}
+      console.log('submitForm called'); 
+      // Create the folder path based on the deployment name and model version
+      let basePath = path.join(
+        "C:",
+        "Users",
+        process.env.USERNAME,
+        "Documents",
+        "GitHub",
+        "bt4301-mlops-temp1",
+        "server",
+        "mlModel"
+      );
+      console.log('basePath:', basePath); 
+      let modelFolder = path.join(basePath, this.deploymentName);
+      let versionFolder = path.join(modelFolder, "Version", this.modelVersion);
+
+      // Check if the version folder already exists, and create it if it doesn't
+      if (!fs.existsSync(versionFolder)) {
+        fs.mkdirSync(versionFolder, { recursive: true });
+      }
+      console.log('versionFolder:', versionFolder); 
+            // Save the model and weights files to the appropriate location
+            fs.writeFileSync(path.join(versionFolder, "model.json"), this.modelJson);
+      fs.writeFileSync(path.join(versionFolder, "weights.bin"), this.modelBin);
+
+      // Save deployment information to a JSON file
+      let deploymentInfo = {
+        deploymentId: this.deploymentId,
+        deploymentName: this.deploymentName,
+        importance: this.importance,
+        dateCreated: this.dateCreated,
+        dateNow: this.dateNow,
+        managerName: this.managerName,
+        managerEmail: this.managerEmail,
+        userName: this.userName,
+        userEmail: this.userEmail,
+        modelVersion: this.modelVersion,
+        envVersion: this.envVersion,
+        replacementReason: this.replacementReason,
+      };
+      fs.writeFileSync(
+        path.join(versionFolder, "deployment.json"),
+        JSON.stringify(deploymentInfo, null, 2)
+      );
+            // Reset the form values
+            this.modelBin = "";
+      this.modelJson = "";
+      this.deploymentId = "";
+      this.deploymentName = "";
+      this.importance = "";
+      this.dateCreated = "";
+      this.dateNow = new Date().toISOString().slice(0, 10);
+      this.managerName = "";
+      this.managerEmail = "";
+      this.userName = "";
+      this.userEmail = "";
+      this.modelVersion = "";
+      this.envVersion = "";
+      this.replacementReason = "";
+      console.log('Model files uploaded successfully!'); 
+      // Show a success message to the user
+      alert("Model files uploaded successfully!");
+    },
+  },
+};
 </script>
