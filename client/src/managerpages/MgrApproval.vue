@@ -11,6 +11,9 @@ import { ActivityLogCard } from "@/components/index";
 
 
 export default {
+  mounted() {
+      this.$toast.success("Approval Dashboard");
+    },
 components: {
     ManagerApproval,
     ActivityLogCard
