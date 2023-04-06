@@ -1,15 +1,7 @@
 <template>
   <div>
-    <h1>Upload Model Files</h1>
+    <h1>Upload Deployment</h1>
     <form>
-      <div class="form-group">
-        <label for="model-bin">Weights (bin):</label>
-        <input type="file" class="form-control" id="model-bin" @change="modelBin = $event.target.files[0]" required>
-      </div>
-      <div class="form-group">
-        <label for="model-json">Model (json):</label>
-        <input type="file" class="form-control" id="model-json" @change="modelJson = $event.target.files[0]" required>
-      </div>
       <div class="form-group">
         <label for="deployment-id">Deployment ID:</label>
         <input type="text" class="form-control" id="deployment-id" v-model="deploymentId" required>
@@ -29,28 +21,8 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="date-created">Date Created:</label>
-        <input type="date" class="form-control" id="date-created" v-model="dateCreated" required>
-      </div>
-      <div class="form-group">
         <label for="date-now">Date Now:</label>
         <input type="date" class="form-control" id="date-now" v-model="dateNow" required readonly>
-      </div>
-      <div class="form-group">
-        <label for="manager-name">Manager Name:</label>
-        <input type="text" class="form-control" id="manager-name" v-model="managerName" required>
-      </div>
-      <div class="form-group">
-        <label for="manager-email">Manager Email:</label>
-        <input type="email" class="form-control" id="manager-email" v-model="managerEmail" required>
-      </div>
-      <div class="form-group">
-        <label for="user-name">User Name:</label>
-        <input type="text" class="form-control" id="user-name" v-model="userName" required>
-      </div>
-      <div class="form-group">
-        <label for="user-email">User Email:</label>
-        <input type="email" class="form-control" id="user-email" v-model="userEmail" required>
       </div>
       <div class="form-group">
         <label for="model-version">Model Version:</label>
@@ -70,23 +42,15 @@
 </template>
 
 <script>
-import fs from "fs";
-import path from "path";
+import axios from 'axios'
 
 export default {
   data() {
     return {
-      modelBin: '',
-      modelJson: '',
       deploymentId: '',
       deploymentName: '',
       importance: '',
-      dateCreated: '',
       dateNow: new Date().toISOString().slice(0, 10),
-      managerName: '',
-      managerEmail: '',
-      userName: '',
-      userEmail: '',
       modelVersion: '',
       envVersion: '',
       replacementReason: '',
@@ -94,69 +58,34 @@ export default {
   },
   methods: {
     submitForm() {
-      console.log('submitForm called'); 
-      // Create the folder path based on the deployment name and model version
-      let basePath = path.join(
-        "C:",
-        "Users",
-        process.env.USERNAME,
-        "Documents",
-        "GitHub",
-        "bt4301-mlops-temp1",
-        "server",
-        "mlModel"
-      );
-      console.log('basePath:', basePath); 
-      let modelFolder = path.join(basePath, this.deploymentName);
-      let versionFolder = path.join(modelFolder, "Version", this.modelVersion);
-
-      // Check if the version folder already exists, and create it if it doesn't
-      if (!fs.existsSync(versionFolder)) {
-        fs.mkdirSync(versionFolder, { recursive: true });
-      }
-      console.log('versionFolder:', versionFolder); 
-            // Save the model and weights files to the appropriate location
-            fs.writeFileSync(path.join(versionFolder, "model.json"), this.modelJson);
-      fs.writeFileSync(path.join(versionFolder, "weights.bin"), this.modelBin);
-
-      // Save deployment information to a JSON file
-      let deploymentInfo = {
+      const payload = {
         deploymentId: this.deploymentId,
         deploymentName: this.deploymentName,
         importance: this.importance,
-        dateCreated: this.dateCreated,
         dateNow: this.dateNow,
-        managerName: this.managerName,
-        managerEmail: this.managerEmail,
-        userName: this.userName,
-        userEmail: this.userEmail,
         modelVersion: this.modelVersion,
         envVersion: this.envVersion,
         replacementReason: this.replacementReason,
-      };
-      fs.writeFileSync(
-        path.join(versionFolder, "deployment.json"),
-        JSON.stringify(deploymentInfo, null, 2)
-      );
-            // Reset the form values
-            this.modelBin = "";
-      this.modelJson = "";
-      this.deploymentId = "";
-      this.deploymentName = "";
-      this.importance = "";
-      this.dateCreated = "";
-      this.dateNow = new Date().toISOString().slice(0, 10);
-      this.managerName = "";
-      this.managerEmail = "";
-      this.userName = "";
-      this.userEmail = "";
-      this.modelVersion = "";
-      this.envVersion = "";
-      this.replacementReason = "";
-      console.log('Model files uploaded successfully!'); 
-      // Show a success message to the user
-      alert("Model files uploaded successfully!");
+      }
+
+      axios.post('http://localhost:3000/deployments', payload)
+        .then(() => {
+          alert('Deployment information uploaded successfully!')
+          this.clearForm()
+        })
+        .catch(error => {
+          alert(`Error uploading deployment information: ${error.message}`)
+        })
     },
-  },
-};
+    clearForm() {
+      this.deploymentId = ''
+      this.deploymentName = ''
+      this.importance = ''
+      this.dateNow = new Date().toISOString().slice(0, 10)
+      this.modelVersion = ''
+      this.envVersion = ''
+      this.replacementReason = ''
+    }
+  }
+}
 </script>
