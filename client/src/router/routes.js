@@ -15,7 +15,6 @@ import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
 import ForgetPassword from "@/pages/ForgetPassword.vue";
 import ResetPassword from "@/pages/ResetPassword.vue";
-import ManagerDashboard from "@/pages/ManagerDashboard.vue";
 import VersionControl from "@/pages/VersionControl.vue";
 import PerformanceMonitoring from "@/pages/PerformanceMonitoring.vue";
 import CodeLinting from "@/pages/CodeLinting.vue";
@@ -30,10 +29,13 @@ import Challengers from "@/pages/Challengers.vue";
 import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
 import UploadModel from "@/pages/UploadMLModel.vue";
+import Timeline from "@/components/Timeline.vue";
+
 
 //Manager Pages
 import MgrHome from "@/managerpages/MgrHome.vue";
 import ChangeRequestApproval from "@/managerpages/ChangeRequestApproval"
+import MgrApproval from "@/managerpages/MgrApproval.vue";
 import MgrChallengers from "@/managerpages/MgrChallengers.vue";
 import MgrCodeLinting from "@/managerpages/MgrCodeLinting.vue";
 import MgrCodePorting from "@/managerpages/MgrCodePorting.vue";
@@ -61,6 +63,12 @@ const routes = [
         path: "mgruserprofile",
         name: "manager userprofile",
         component: MgrUserProfile,
+        meta: {requireAuth: true},
+      },
+      {
+        path: "mgrapproval",
+        name: "manager approval ",
+        component: MgrApproval,
         meta: {requireAuth: true},
       },
       {
@@ -190,6 +198,12 @@ const routes = [
         path: "servicehealth",
         name: "service health",
         component: ServiceHealth,
+      },
+      {
+        path: "/timeline",
+        name: "timeline",
+        component: Timeline,
+        meta: {requireAuth: true},
       },
       {
         path: "datadrift",
