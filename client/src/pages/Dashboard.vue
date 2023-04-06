@@ -20,7 +20,7 @@
             {{ stats.value }}
           </div>
         </stats-card>
-      </div>      
+      </div>
     </div>
     <br />
 
@@ -28,19 +28,27 @@
       <div class="col-md-6 col-xl-12">
         <card :title="table1.title">
           <div slot="raw-content" class="table-responsive">
-            <paper-table :data="table1.data" :columns="table1.columns" display:flex>
+            <paper-table
+              :data="table1.data"
+              :columns="table1.columns"
+              display:flex
+            >
             </paper-table>
           </div>
         </card>
       </div>
     </div>
     <br />
-    
+
     <div class="row">
       <div class="col-md-6 col-xl-6">
         <card :title="table2.title">
           <div slot="raw-content" class="table-responsive">
-            <paper-table :data="table2.data" :columns="table2.columns" display:flex>
+            <paper-table
+              :data="table2.data"
+              :columns="table2.columns"
+              display:flex
+            >
             </paper-table>
           </div>
         </card>
@@ -48,13 +56,17 @@
       <div class="col-md-6 col-xl-6">
         <card :title="table3.title">
           <div slot="raw-content" class="table-responsive">
-            <paper-table :data="table3.data" :columns="table3.columns" display:flex>
+            <paper-table
+              :data="table3.data"
+              :columns="table3.columns"
+              display:flex
+            >
             </paper-table>
           </div>
         </card>
       </div>
     </div>
-    <br/>
+    <br />
 
     <!--Charts-->
     <div class="row">
@@ -75,21 +87,9 @@
 import { StatsCard, ChartCard } from "@/components/index";
 import { PaperTable } from "@/components";
 import Chartist from "chartist";
-const tableColumns = [
-  "Name",
-  "Description",
-  "Endpoint",
-  "Importance",
-];
-const tableColumns2 = [
-  "Model",
-  "Environment",
-  "TargetType",
-];
-const tableColumns3 = [
-  "ReplacementDate",
-  "Review",
-];
+const tableColumns = ["Name", "Description", "Endpoint", "Importance"];
+const tableColumns2 = ["Model", "Environment", "TargetType"];
+const tableColumns3 = ["ReplacementDate", "Review"];
 const tableData = [
   {
     name: "Loan Default Predictor (Risk Management)",

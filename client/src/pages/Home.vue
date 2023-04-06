@@ -46,7 +46,7 @@
           <div slot="raw-content" class="table-responsive">
             <paper-table
               :data="deployments"
-              :columns="table1.columns"
+              :columns="formattedColumns"
               @row-click="handleTableRowClick"
             >
             </paper-table>
@@ -73,54 +73,7 @@ const tableColumns = [
   "service",
   "drift",
   "accuracy",
-  "num_predictions",
-  "created_at",
-  "date_now",
-  "last_prediction",
-  "manager_email",
-  "manager_name",
-  "user_email",
-  "user_name",
-  "model_version",
-  "environment_version",
   "deployment_status",
-  "testing_status",
-  "deployed",
-  "approval_status",
-  "replacement_reason",
-  "manually_apply_changes",
-];
-const tableData = [
-  {
-    id: 1,
-    name: "Employee Churn",
-    importance: "High",
-    service: { icon: "fa fa-circle", class: "text-warning" }, // Passing (blue)
-    drift: { icon: "fa fa-circle", class: "text-success" }, // Risk (red)
-    accuracy: { icon: "fa fa-circle", class: "text-success" }, // Failing (orange)
-    predictions: "208k",
-    lastPrediction: "a few seconds ago",
-  },
-  {
-    id: 2,
-    name: "Sales Cycle Length",
-    importance: "Critical",
-    service: { icon: "fa fa-circle", class: "text-success" }, // Passing (blue)
-    drift: { icon: "fa fa-circle", class: "text-success" }, // Risk (red)
-    accuracy: { icon: "fa fa-circle", class: "text-success" }, // Failing (orange)
-    predictions: "102k",
-    lastPrediction: "a few seconds ago",
-  },
-  {
-    id: 3,
-    name: "User Success",
-    importance: "Moderate",
-    service: { icon: "fa fa-circle", class: "text-success" }, // Passing (blue)
-    drift: { icon: "fa fa-circle", class: "text-danger" }, // Risk (red)
-    accuracy: { icon: "fa fa-circle", class: "text-warning" }, // Failing (orange)
-    predictions: "8k",
-    lastPrediction: "a few seconds ago",
-  },
 ];
 
 export default {
@@ -195,6 +148,23 @@ export default {
     handleTableRowClick(item) {
       console.log("Clicked row:", item);
       this.$router.push({ path: "/dashboard" });
+    },
+  },
+  computed: {
+    formattedColumns() {
+      const columnHeaders = {
+        deployment_id: "ID",
+        deployment_name: "Name",
+        importance: "Importance",
+        service: "Service",
+        drift: "Drift",
+        accuracy: "Accuracy",
+        deployment_status: "Deployment Status",
+      };
+      return Object.keys(columnHeaders).map((key) => ({
+        key,
+        header: columnHeaders[key],
+      }));
     },
   },
 };

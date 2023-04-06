@@ -3,7 +3,9 @@
     <table class="table" :class="tableClass">
       <thead>
         <slot name="columns">
-          <th v-for="column in columns" :key="column">{{ column }}</th>
+          <th v-for="column in columns" :key="column.key">
+            {{ column.header }}
+          </th>
         </slot>
       </thead>
       <tbody>
@@ -15,20 +17,13 @@
           <slot :row="item">
             <td v-for="(column, index) in columns" :key="index">
               <span
-                v-if="
-                  typeof itemValue(item, column) === 'object' &&
-                  itemValue(item, column).icon &&
-                  itemValue(item, column).class
-                "
+                v-if="['service', 'drift', 'accuracy'].includes(column.key)"
               >
                 <i
-                  :class="[
-                    itemValue(item, column).icon,
-                    itemValue(item, column).class,
-                  ]"
+                  :class="['circle', circleClass(itemValue(item, column.key))]"
                 ></i>
               </span>
-              <span v-else>{{ itemValue(item, column) }}</span>
+              <span v-else>{{ itemValue(item, column.key) }}</span>
             </td>
           </slot>
         </tr>
@@ -82,6 +77,12 @@ export default {
       // Navigate to the desired page
       this.$router.push({ path: "/add-deployment" });
     },
+    circleClass(value) {
+      if (value === 0) return "circle-red";
+      if (value === 1) return "circle-orange";
+      if (value === 2) return "circle-green";
+      return "";
+    },
   },
 };
 </script>
@@ -90,5 +91,23 @@ export default {
   /* Add styles for the Add Deployment button */
   margin-top: 10px;
   margin-left: 10px;
+}
+.circle {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.circle-red {
+  background-color: red;
+}
+
+.circle-orange {
+  background-color: orange;
+}
+
+.circle-green {
+  background-color: green;
 }
 </style>

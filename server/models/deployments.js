@@ -27,4 +27,4 @@ const deploymentSchema = new mongoose.Schema({
 
 const Deployment = mongoose.model("Deployment", deploymentSchema);
 
-// module.exports = Deployment;
+module.exports = Deployment;
