@@ -602,15 +602,44 @@ app.get("/api/deployments", async (req, res) => {
   try {
     const deployments = await Deployment.find();
     res.json(deployments);
-    //console.log(performances)
+    console.log(performances)
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
+
+//deploy card
+app.get('/viewdeploy', async (req, res) => {
+  try {
+    const deployments = await Deployment.find({});
+    res.status(200).json(deployments);
+  } catch (error) {
+    console.error('Error in /deployments GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
+  }
+});
+
+app.get('/viewdeploy/:id', async (req, res) => {
+  try {
+    const deployment = await Deployment.findOne({ deploymentId: req.params.id });
+
+    console.log(deployment)
+    
+    if (!deployment) {
+      return res.status(404).json({ message: 'Deployment not found' });
+    }
+    res.status(200).json(deployment);
+  } catch (error) {
+    console.error('Error in /viewdeploy/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});
+
+
 app.post('/deployments', async (req, res) => {
   console.log('Request payload:', req.body);
-  
+
   try {
     const deployment = new Deployment({
       deploymentId: req.body.deploymentId,
@@ -671,3 +700,15 @@ async function convertCodeWithGpt3(inputCode) {
   return response.choices[0].text.trim();
 }
 
+app.get('/deployments/:id', async (req, res) => {
+  try {
+    const deployment = await Deployment.findOne({ deploymentId: req.params.id });
+    if (!deployment) {
+      return res.status(404).json({ message: 'Deployment not found' });
+    }
+    res.status(200).json(deployment);
+  } catch (error) {
+    console.error('Error in /deployments/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});

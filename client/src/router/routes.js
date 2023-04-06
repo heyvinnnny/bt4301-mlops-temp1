@@ -43,6 +43,7 @@ import MgrDataDrift from "@/managerpages/MgrDataDrift.vue";
 import MgrDashboard from "@/managerpages/MgrDashboard.vue";
 import MgrPerformanceMonitoring from "@/managerpages/MgrPerformanceMonitoring.vue";
 import MgrVersionControl from "@/managerpages/MgrVersionControl.vue";
+import ViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
 
 
 const routes = [
@@ -58,7 +59,16 @@ const routes = [
         name: "manager home",
         component: MgrHome,
         meta: {requireAuth: true},
+        props:true,
       },
+      {
+        path: "/viewdeploy/:id",
+        name: "ViewDeployDetail",
+        component: ViewDeployDetail,
+        meta: {requireAuth: true},
+        props:true,
+      },
+
       {
         path: "mgruserprofile",
         name: "manager userprofile",
@@ -97,9 +107,10 @@ const routes = [
       },
       {
         path: "mgrdashboard",
-        name: "manager dashboard",
+        name: "MgrDashboard",
         component: MgrDashboard,
         meta: {requireAuth: true},
+        props: true,
       },
       {
         path: "mgrperformancemonitoring",
