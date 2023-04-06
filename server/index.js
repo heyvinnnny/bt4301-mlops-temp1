@@ -597,83 +597,6 @@ app.post("/upload", (req, res) => {
     });
   });
 });
-// app.get('/performance', async (req, res) => {
-//   const { model, resolution } = req.query;
-
-//   let match = {};
-//   let group = {};
-
-//   switch (resolution) {
-//     case 'monthly':
-//       match = { $match: { model } };
-//       group = {
-//         $group: {
-//           _id: {
-//             year: { $year: '$timestamp' },
-//             month: { $month: '$timestamp' },
-//           },
-//           totalPredictions: { $sum: '$totalPredictions' },
-//         },
-//       };
-//       break;
-//     case 'quarterly':
-//       match = { $match: { model } };
-//       group = {
-//         $group: {
-//           _id: {
-//             year: { $year: '$timestamp' },
-//             quarter: {
-//               $subtract: [
-//                 { $month: '$timestamp' },
-//                 { $mod: [{ $month: '$timestamp' }, 3] },
-//               ],
-//             },
-//           },
-//           totalPredictions: { $sum: '$totalPredictions' },
-//         },
-//       };
-//       break;
-//     case 'yearly':
-//       match = { $match: { model } };
-//       group = {
-//         $group: {
-//           _id: { year: { $year: '$timestamp' } },
-//           totalPredictions: { $sum: '$totalPredictions' },
-//         },
-//       };
-//       break;
-//     default:
-//       break;
-//   }
-
-//   app.post('/performance', async (req, res) => {
-//     const performance = new Performance(req.body);
-
-//     try {
-//       await performance.save();
-//       res.send(performance);
-//     } catch (err) {
-//       res.status(500).send(err);
-//     }
-//   });
-
-//   const data = await Performance.aggregate([match, group]);
-
-//   res.send(data);
-// });
-
-//   // Load the python model
-//   const pyshell = new PythonShell(modelPath);
-
-//   // Send the data to the python model
-//   pyshell.send(JSON.stringify(data));
-
-//   // Get the result from the python model
-//   pyshell.on("message", (message) => {
-//     console.log(message);
-//     res.status(200).json({ result: message });
-//   });
-// });
 
 app.get("/api/deployments", async (req, res) => {
   try {
@@ -685,8 +608,66 @@ app.get("/api/deployments", async (req, res) => {
   }
 });
 
+app.post('/deployments', async (req, res) => {
+  console.log('Request payload:', req.body);
+  
+  try {
+    const deployment = new Deployment({
+      deploymentId: req.body.deploymentId,
+      deploymentName: req.body.deploymentName,
+      importance: req.body.importance,
+      dateNow: req.body.dateNow,
+      modelVersion: req.body.modelVersion,
+      envVersion: req.body.envVersion,
+      replacementReason: req.body.replacementReason,
+      email: req.body.email,
+    })
+
+    console.log(deployment)
+
+    await deployment.save()
+    res.status(201).json({ message: 'Deployment information uploaded successfully!' })
+  } catch (error) {
+    res.status(500).json({ message: `Error uploading deployment information: ${error.message}` })
+  }
+})
+
+
 // Start the server
 const PORT = process.env.PORT || 27017;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+const openai = require("openai");
+
+// Set your OpenAI API key
+openai.apiKey = "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";
+
+app.post("/convert", async (req, res) => {
+  const inputCode = req.body.code;
+
+  try {
+    const convertedCode = await convertCodeWithGpt3(inputCode);
+    res.json({ convertedCode });
+  } catch (error) {
+    console.error("Error during conversion:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+async function convertCodeWithGpt3(inputCode) {
+  const prompt = `Convert the following Python code to PHP:\n\n${inputCode}\n\nPHP code:`;
+
+  const response = await openai.Completion.create({
+    engine: "davinci-codex",
+    prompt,
+    max_tokens: 100,
+    n: 1,
+    stop: null,
+    temperature: 0.5,
+  });
+
+  return response.choices[0].text.trim();
+}
+

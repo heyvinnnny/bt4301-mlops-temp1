@@ -25,6 +25,10 @@
         <input type="date" class="form-control" id="date-now" v-model="dateNow" required readonly>
       </div>
       <div class="form-group">
+        <label for="model-version">Email:</label>
+        <input type="text" class="form-control" id="email-version" v-model="user.email" disabled required>
+      </div>
+      <div class="form-group">
         <label for="model-version">Model Version:</label>
         <input type="text" class="form-control" id="model-version" v-model="modelVersion" required>
       </div>
@@ -54,30 +58,48 @@ export default {
       modelVersion: '',
       envVersion: '',
       replacementReason: '',
+      email: ""
+    }
+  },
+  computed: {
+    user: {
+      get() {
+        return JSON.parse(localStorage.getItem("user"));
+      },
+      set(user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      },
+    },
+  },
+  async created() {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const res = await axios.get("http://localhost:3000/users/me", config);
+      this.user = res.data;
+    } catch (err) {
+      console.error(err);
     }
   },
   methods: {
-    submitForm() {
-      const payload = {
-        deploymentId: this.deploymentId,
-        deploymentName: this.deploymentName,
-        importance: this.importance,
-        dateNow: this.dateNow,
-        modelVersion: this.modelVersion,
-        envVersion: this.envVersion,
-        replacementReason: this.replacementReason,
-      }
+    async submitForm() {
+      const response = await axios.post('http://localhost:3000/deployments', {
+          deploymentId: this.deploymentId,
+          deploymentName: this.deploymentName,
+          importance: this.importance,
+          dateNow: this.dateNow,
+          modelVersion: this.modelVersion,
+          envVersion: this.envVersion,
+          replacementReason: this.replacementReason,
+          email: this.user.email,
+      });
 
-      axios.post('http://localhost:3000/deployments', payload)
-        .then(() => {
-          alert('Deployment information uploaded successfully!')
-          this.clearForm()
-        })
-        .catch(error => {
-          alert(`Error uploading deployment information: ${error.message}`)
-        })
-    },
-    clearForm() {
+      console.log(response.data);
+
       this.deploymentId = ''
       this.deploymentName = ''
       this.importance = ''
@@ -85,7 +107,8 @@ export default {
       this.modelVersion = ''
       this.envVersion = ''
       this.replacementReason = ''
-    }
+      this.email = '' 
+    },
   }
 }
 </script>

@@ -1,48 +1,43 @@
 <template>
   <div>
-    <textarea v-model="inputCode"></textarea>
-    <button @click="convertCode">Convert</button>
-    <textarea v-model="outputCode"></textarea>
+    <h1>Code Converter</h1>
+    <label for="input-code">Enter your Python code:</label>
+    <textarea
+      id="input-code"
+      v-model="inputCode"
+      rows="10"
+      cols="50"
+      placeholder="Paste your Python code here"
+    ></textarea>
+
+    <button :disabled="!inputCode" @click="convertCode">Convert</button>
+
+    <div v-if="convertedCode">
+      <h2>Converted Code:</h2>
+      <pre>{{ convertedCode }}</pre>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
-      inputCode: '',
-      outputCode: ''
-    }
+      inputCode: "",
+      convertedCode: "",
+    };
   },
   methods: {
     async convertCode() {
-      const requestBody = {
-        "text": this.inputCode,
-        "from": "javascript",
-        "to": "typescript"
-      };
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      };
       try {
-        const response = await axios.post('https://www.web-code-converter.com/convert', requestBody, config);
-        this.outputCode = response.data.text;
+        const response = await axios.post("http://localhost:3000/convert", { code: this.inputCode });
+        this.convertedCode = response.data.convertedCode;
       } catch (error) {
-        console.error(error);
+        console.error("Error during conversion:", error);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
-
-<style>
-textarea {
-  width: 100%;
-  height: 150px;
-}
-</style>
