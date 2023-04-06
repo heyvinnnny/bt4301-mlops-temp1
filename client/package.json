@@ -39,6 +39,7 @@
     "firestore": "^1.1.6",
     "fs": "^0.0.1-security",
     "jquery": "^3.6.4",
+    "js-beautify": "^1.14.7",
     "md5": "^2.3.0",
     "moment": "^2.29.4",
     "mongoclient": "^1.0.3",

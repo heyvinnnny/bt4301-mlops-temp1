@@ -77,7 +77,15 @@ export default {
           //if successful
           if (res.status === 200) {
             localStorage.setItem("token", res.data.token);
-            this.$router.push("/home");
+            // check the user's access level
+                  const { access } = res.data.user;
+
+                  if (access === "User") {
+                    this.$router.push("/home");
+                  } else if (access === "Manager") {
+                    this.$router.push("/mgrhome");
+                  }
+            //this.$router.push("/home");
           }
         })
         .catch((error) => {
@@ -85,6 +93,9 @@ export default {
             this.error = "Invalid username or password. Please try again later.";
           } if (error.response && error.response.status === 400) {
             this.error = "Invalid username or password. Please try again later.";
+          } 
+          if (error.response && error.response.status === 403) {
+            this.error = "Your account is still subjected to approval. Please try again later.";
           } 
         });
     },

@@ -3,35 +3,34 @@
     <side-bar>
       <template slot="links">
 
-        <sidebar-link to="/home" name="Home Page" icon="ti-home" />
-        <sidebar-link to="/dashboard" name="Overview" icon="ti-panel" />
+        <sidebar-link to="/mgrhome" name="Manager Page" icon="ti-home" />
+        <sidebar-link to="/mgrdashboard" name="Overview" icon="ti-panel" />
         <sidebar-link
-          to="/datadrift"
+          to="/mgrdatadrift"
           name="Data Drift"
           icon="ti-signal"
         />
-        <sidebar-link to="/challengers" name="Challengers" icon="ti-layout-grid4-alt" />
+        <sidebar-link to="/mgrchallengers" name="Challengers" icon="ti-layout-grid4-alt" />
         <sidebar-link
-          to="/version-control"
+          to="/mgrversioncontrol"
           name="Version Control"
           icon="ti-server"
         />
         <sidebar-link
-          to="/performancemonitoring"
+          to="/mgrperformancemonitoring"
           name="Performance Monitor"
           icon="ti-bell"
         />
         <sidebar-link
-          to="/codelinting"
+          to="/mgrcodelinting"
           name="Code Linting"
           icon="ti-blackboard"
         />
         <sidebar-link
-          to="/codeporting"
+          to="/mgrcodeporting"
           name="Code Porting"
           icon="ti-bell"
         />
-        <sidebar-link to="/deployment-upload" name="Deployment Upload" icon="ti-bell" />
       </template>
       <mobile-menu>
         <li class="nav-item">
@@ -62,7 +61,7 @@
       </mobile-menu>
     </side-bar>
     <div class="main-panel">
-      <top-navbar></top-navbar>
+      <mgr-top-navbar></mgr-top-navbar>
 
       <dashboard-content @click.native="toggleSidebar"> </dashboard-content>
 
@@ -72,13 +71,13 @@
 </template>
 <style lang="scss"></style>
 <script>
-import TopNavbar from "./TopNavbar.vue";
+import MgrTopNavbar from "./MgrTopNavbar.vue";
 import ContentFooter from "./ContentFooter.vue";
 import DashboardContent from "./Content.vue";
 import MobileMenu from "./MobileMenu";
 export default {
   components: {
-    TopNavbar,
+    MgrTopNavbar,
     ContentFooter,
     DashboardContent,
     MobileMenu,

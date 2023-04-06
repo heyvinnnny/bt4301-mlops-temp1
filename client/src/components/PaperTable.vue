@@ -1,27 +1,51 @@
 <template>
-  <table class="table" :class="tableClass">
-    <thead>
-      <slot name="columns">
-        <th v-for="column in columns" :key="column">{{ column }}</th>
-      </slot>
-    </thead>
-    <tbody>
-      <tr v-for="(item, index) in data" :key="index">
-        <slot :row="item">
-          <td
-            v-for="(column, index) in columns"
-            :key="index"
-            v-if="hasValue(item, column)"
-          >
-            {{ itemValue(item, column) }}
-          </td>
+  <div>
+    <table class="table" :class="tableClass">
+      <thead>
+        <slot name="columns">
+          <th v-for="column in columns" :key="column">{{ column }}</th>
         </slot>
-      </tr>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(item, index) in data"
+          :key="index"
+          @click="handleRowClick(item)"
+        >
+          <slot :row="item">
+            <td v-for="(column, index) in columns" :key="index">
+              <span
+                v-if="
+                  typeof itemValue(item, column) === 'object' &&
+                  itemValue(item, column).icon &&
+                  itemValue(item, column).class
+                "
+              >
+                <i
+                  :class="[
+                    itemValue(item, column).icon,
+                    itemValue(item, column).class,
+                  ]"
+                ></i>
+              </span>
+              <span v-else>{{ itemValue(item, column) }}</span>
+            </td>
+          </slot>
+        </tr>
+      </tbody>
+    </table>
+    <p-button class="add-deployment-btn" @click.native="onAddDeploymentClick">
+      + Add Deployment
+    </p-button>
+  </div>
 </template>
 <script>
+import PButton from "./Button.vue"; // Import your custom button component
+
 export default {
+  components: {
+    PButton,
+  },
   name: "paper-table",
   props: {
     columns: Array,
@@ -51,7 +75,20 @@ export default {
     itemValue(item, column) {
       return item[column.toLowerCase()];
     },
+    handleRowClick(item) {
+      this.$emit("row-click", item);
+    },
+    onAddDeploymentClick() {
+      // Navigate to the desired page
+      this.$router.push({ path: "/add-deployment" });
+    },
   },
 };
 </script>
-<style></style>
+<style scoped>
+.add-deployment-btn {
+  /* Add styles for the Add Deployment button */
+  margin-top: 10px;
+  margin-left: 10px;
+}
+</style>
