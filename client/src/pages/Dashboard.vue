@@ -1,18 +1,5 @@
 <template>
   <div>
-    <div class="row">
-      <div class="col-12">
-        <card :title="tableC.title" :subTitle="tableC.subTitle">
-          <div slot="raw-content" class="table-responsive">
-            <paper-table
-              :data="deployments"
-              :columns="tableC.columns"
-            >
-            </paper-table>
-          </div>
-        </card>
-      </div>
-    </div>
     <!--Stats cards-->
     <div class="row">
       <div

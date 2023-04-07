@@ -689,6 +689,16 @@ app.get('/viewdeploy/:id', async (req, res) => {
   }
 });
 
+app.get("/api/deployments/:deployment_id", async (req, res) => {
+  const deployment_id = req.params.deployment_id;
+
+  try {
+    const deployment = await Deployment.findOne({ deployment_id: deployment_id }).sort({_id: 1});
+    res.json(deployment);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 app.post('/deployments', async (req, res) => {
   console.log('Request payload:', req.body);

@@ -9,7 +9,7 @@
                 <div>
                     <p class="headingwrapper">Replace with: </p> 
                     <div class="home-wrapper">
-                      <p><b>{{ this.deployments[0].deployment_name}} - {{ this.deployments[0].model_version}}</b></p>
+                      <p><b>{{ this.deployments.deployment_name}} - {{ this.deployments.model_version}}</b></p>
                       <p>All features that are used in both the current model and the replacement model match in name and data type</p>
                       <div>
                       </div>
