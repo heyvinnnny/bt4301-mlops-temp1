@@ -7,7 +7,7 @@
         <sidebar-link to="/mgrdashboard" name="Overview" icon="ti-panel" />
         <sidebar-link
           to="/mgrdatadrift"
-          name="Data Drift"
+          name="Drift Monitoring"
           icon="ti-signal"
         />
         <sidebar-link to="/mgrchallengers" name="Challengers" icon="ti-layout-grid4-alt" />

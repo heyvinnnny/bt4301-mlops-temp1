@@ -1,5 +1,5 @@
 <template>
-  <card title="Data Drift">
+  <card title="Drift Monitoring">
     <div>
       <select id="metricSelect">
         <option value="0">AUC</option>
