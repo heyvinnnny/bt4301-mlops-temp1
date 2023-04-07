@@ -17,6 +17,7 @@ const path = require("path");
 const fileUpload = require("express-fileupload");
 const Performance = require("./models/performanceModel");
 const Deployment = require("./models/deployments");
+const Model = require("./models/model")
 
 app.use(morgan("combined"));
 
@@ -572,7 +573,7 @@ app.use(cors()); // it enables all cors requests
 app.use(fileUpload());
 
 // file upload api
-app.post("/upload", (req, res) => {
+app.post("/upload", async (req, res) => {
   if (!req.files) {
     return res.status(500).send({ msg: "file is not found" });
   }
@@ -597,14 +598,25 @@ app.post("/upload", (req, res) => {
         return res.status(500).send({ msg: "Error occured" });
       }
 
-      binaryFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${binaryFile.name}`, function (err) {
-        if (err) {
-          console.log(err);
-        }
-
-        return res.send({ msg: dir });
-      });
+    binaryFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${binaryFile.name}`, function (err) {
+      if (err) {
+        console.log(err);
+      }
+      
     });
+    });
+    const model = new Model({
+      modelName: model_name,
+      modelVersion: model_version,
+      deploymentId: deployment_id,
+      // path: dir,
+      auc: 0.5,
+      gini: 0.7,
+      logloss: 0.888,
+      kolmogorov: 0.2,
+      psi: 0.4
+    })
+    await model.save()
   }catch (err) {
     console.log(err);
     return res.status(500).send({ msg: "Error occurred while processing files" });
@@ -620,7 +632,6 @@ app.post("/data", (req, res) => {
   try {
     const deployment_id =  req.body.deployment_id
     const jsonFile = req.files.test_data;
-    // console.log(deployment_id, model_name, model_version);
     //create folder if it doesnt exist
     var dir = `${__dirname}/mlModel/${deployment_id}`
     
