@@ -7,7 +7,7 @@
         <sidebar-link to="/dashboard" name="Overview" icon="ti-panel" />
         <sidebar-link
           to="/datadrift"
-          name="Data Drift"
+          name="Drift Monitoring"
           icon="ti-signal"
         />
         <sidebar-link to="/challengers" name="Challengers" icon="ti-layout-grid4-alt" />
