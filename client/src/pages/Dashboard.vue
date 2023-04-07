@@ -1,5 +1,18 @@
 <template>
   <div>
+    <div class="row">
+      <div class="col-12">
+        <card :title="tableC.title" :subTitle="tableC.subTitle">
+          <div slot="raw-content" class="table-responsive">
+            <paper-table
+              :data="deployments"
+              :columns="tableC.columns"
+            >
+            </paper-table>
+          </div>
+        </card>
+      </div>
+    </div>
     <!--Stats cards-->
     <div class="row">
       <div
@@ -75,6 +88,35 @@
 import { StatsCard, ChartCard } from "@/components/index";
 import { PaperTable } from "@/components";
 import Chartist from "chartist";
+
+import axios from "axios";
+const mongoose = require("mongoose"); 
+
+const tableColumnsC = [
+  "deployment_id",
+  "deployment_name",
+  "importance",
+  "service",
+  "drift",
+  "accuracy",
+  "num_predictions",
+  "created_at",
+  "date_now",
+  "last_prediction",
+  "manager_email",
+  "manager_name",
+  "user_email",
+  "user_name",
+  "model_version",
+  "environment_version", 
+  "deployment_status",
+  "testing_status",
+  "deployed",
+  "approval_status",
+  "replacement_reason",
+  "manually_apply_changes",
+];
+
 const tableColumns = [
   "Name",
   "Description",
@@ -92,7 +134,7 @@ const tableColumns3 = [
 ];
 const tableData = [
   {
-    name: "Loan Default Predictor (Risk Management)",
+    name: "this.deployments[0].deployment_name", 
     description: "Loan default model for the bank",
     endpoint: "https://datarobot-mlops.dynamic.orm.datarobot.com",
     importance: "Moderate",
@@ -124,8 +166,31 @@ export default {
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
    */
+  async created() {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/deployments/${this.selectedDeployment}`);
+      this.deployments = response.data;
+      const tableData = {
+        name: "this.deployments[0].deployment_name",
+        description: "Loan default model for the bank",
+        endpoint: "https://datarobot-mlops.dynamic.orm.datarobot.com",
+        importance: "Moderate",
+      };
+      console.log(this.deployments);
+    } catch (error) {
+      console.error(error);
+      alert("Error fetching data from the API: " + error.message);
+    }
+  },
   data() {
     return {
+      selectedDeployment: '9012',
+      tableC: {
+        title: "in progress lol: just to check if the data are imported",
+        subTitle: "",
+        columns: [...tableColumnsC],
+      },
+      deployments: [],
       table1: {
         title: "Summary",
         columns: [...tableColumns],

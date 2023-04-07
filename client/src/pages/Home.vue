@@ -82,7 +82,7 @@ const tableColumns = [
   "user_email",
   "user_name",
   "model_version",
-  "environment_version",
+  "environment_version", 
   "deployment_status",
   "testing_status",
   "deployed",

@@ -33,13 +33,11 @@
           </slot>
         </tr>
       </tbody>
-    </table>
-    <p-button class="add-deployment-btn" @click.native="onAddDeploymentClick">
-      + Add Deployment
-    </p-button>
+    </table> 
   </div>
 </template>
 <script>
+
 import PButton from "./Button.vue"; // Import your custom button component
 
 export default {
