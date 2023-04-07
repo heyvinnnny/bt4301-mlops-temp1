@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <side-bar>
+    <side-bar data-background-color="darkblue">
       <template slot="links">
 
         <sidebar-link to="/home" name="Home Page" icon="ti-home" />
