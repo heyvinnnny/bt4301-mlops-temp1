@@ -3,7 +3,7 @@
     <!--Stats cards-->
     <div class="row">
       <div
-        class="col-md-6 col-xl-3"
+        class="col-md-6 col-xl-6"
         v-for="stats in statsCards"
         :key="stats.title"
       >
@@ -40,15 +40,11 @@
       <div class="col-md-6 col-xl-12">
         <card :title="tableDeployment.title">
           <div slot="raw-content" class="table-responsive">
-            <button @click="redirectAddChallenger" class="btn btn-primary">Add Challenger Model</button>
+
+            <a href="#" class="btn-link bold" @click="redirectAddChallenger">+ Add Challenger Model</a>
             <paper-table :data="tableDeployment.data" :columns="tableDeployment.columns" display:flex>
             </paper-table>
             <div>
-              <p>Dummy Challenger Model 1</p>
-              <button @click="redirectUpdateChallenger" class="btn btn-primary">Update Challenger Model</button>
-            </div><br><br>
-            <div>
-              <p>Dummy Challenger Model 2</p>
               <button @click="redirectUpdateChallenger" class="btn btn-primary">Update Challenger Model</button>
             </div>
           </div>
@@ -56,9 +52,10 @@
       </div>
     </div>
     <br />
-    
+
+
     <div class="row">
-      <div class="col-md-6 col-xl-12">
+      <div class="col-md-6 col-xl-6">
         <card :title="table2.title">
           <div slot="raw-content" class="table-responsive">
             <paper-table :data="table2.data" :columns="table2.columns" display:flex>
@@ -66,11 +63,7 @@
           </div>
         </card>
       </div>
-    </div>
-    <br />
-
-    <div class="row">
-      <div class="col-md-6 col-xl-12">
+      <div class="col-md-6 col-xl-6">
         <card :title="table3.title">
           <div slot="raw-content" class="table-responsive">
             <paper-table :data="table3.data" :columns="table3.columns" display:flex>
@@ -79,11 +72,11 @@
         </card>
       </div>
     </div>
-    <br />
+    <br/>
 
     <!--Charts-->
     <div class="row">
-      <div class="col-10">
+      <div class="col-md-6 col-xl-12">
         <chart-card
           title="Loan Default Predictor (Risk Management)"
           sub-title="DataRobot Prediction Server | Probability of Default"
@@ -107,20 +100,19 @@ const tableColumns = [
   "Importance",
 ];
 const tableColumnsDeployment = [
-  "Display Name",
+  "DisplayName",
   "Model",
-  "Training Data",
+  "TrainingData",
   "Action"
 ];
 const tableColumns2 = [
-  "Custom Model",
-  "Custom Environment",
-  "Build Environment",
-  "Target Type",
+  "Model",
+  "Environment",
+  "TargetType",
 ];
 const tableColumns3 = [
-  "Model Replaced",
-  "Waiting for Review",
+  "ReplacementDate",
+  "Review",
 ];
 const tableData = [
   {
@@ -132,30 +124,35 @@ const tableData = [
 ];
 const tableDataDeployment = [
   {
-    DisplayName: "hi",
-    Model: "hi",
-    TrainingData: "hi",
-    Action:"hi",
+    displayname: "Loan Default Model (CHAMPION)",
+    model: "Probability of Default (Risk Management) - Random Forest 2020",
+    trainingdata: "5K_Lending_Club_Loans_",
+    action: "",
+  },
+  {
+    displayname: "Loan Default Model (Prod)",
+    model: "Probability of Default (Risk Management) - ElasticNet",
+    trainingdata: "5K_Lending_Club_Loans_",
+    action: "replace",
   },
 ];
 const tableData2 = [
   {
-    custommodel: "Probability of Default (Risk management) - Random Forest 2020",
-    customenvironment: "Python 3 Scikit-Learn Drop-In (v4)",
-    buildenvironment: "Python",
-    targettype: "binary",
+    model: "Probability of Default (Risk management) - Random Forest 2020",
+    environment: "Python 3 Scikit-Learn Drop-In (v4)",
+    targettype: "Binary",
   },
 ];
 const tableData3 = [
   {
-    modelreplaced: "August 19 2020",
-    waitingforreview: "yes",
+    replacementdate: "19 August 2020",
+    review: "Waiting to be reviewed",
   },
 ];
 
 export default {
   mounted() {
-    this.$toast.success("Overview");
+    this.$toast.success("Challengers");
   },
   components: {
     StatsCard,
@@ -165,7 +162,7 @@ export default {
   methods: {
     redirectAddChallenger() {
       this.$router.push({
-        path: '/addChallenger',
+        path: '/version-control',
       }) 
     },
     redirectUpdateChallenger() {
@@ -185,7 +182,7 @@ export default {
         data: [...tableData],
       },
       tableDeployment: {
-        title: "Deployment Challenger",
+        title: "Challenger",
         columns: [...tableColumnsDeployment],
         data: [...tableDataDeployment],
       },
@@ -196,8 +193,8 @@ export default {
       },
       table3: {
         title: "Governance",
-        columns: [...tableColumns2],
-        data: [...tableData2],
+        columns: [...tableColumns3],
+        data: [...tableData3],
       },
       statsCards: [
         {

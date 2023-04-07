@@ -23,6 +23,9 @@
 import axios from "axios";
 
 export default {
+  mounted() {
+    this.$toast.success("Code Porting");
+  },
   data() {
     return {
       inputCode: "",

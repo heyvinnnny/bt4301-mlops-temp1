@@ -30,6 +30,7 @@ import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
 import UploadModel from "@/pages/UploadMLModel.vue";
 import Timeline from "@/components/Timeline.vue";
+import ViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
 
 
 //Manager Pages
@@ -41,9 +42,10 @@ import MgrCodeLinting from "@/managerpages/MgrCodeLinting.vue";
 import MgrCodePorting from "@/managerpages/MgrCodePorting.vue";
 import MgrDataDrift from "@/managerpages/MgrDataDrift.vue";
 import MgrDashboard from "@/managerpages/MgrDashboard.vue";
+import MgrDeploymentUpload from "@/managerpages/MgrDeploymentUpload.vue";
 import MgrPerformanceMonitoring from "@/managerpages/MgrPerformanceMonitoring.vue";
 import MgrVersionControl from "@/managerpages/MgrVersionControl.vue";
-import ViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
+import MgrViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
 
 
 const routes = [
@@ -56,19 +58,18 @@ const routes = [
     children: [
       {
         path: "mgrhome",
-        name: "manager home",
+        name: "home",
         component: MgrHome,
         meta: {requireAuth: true},
         props:true,
       },
       {
-        path: "/viewdeploy/:id",
-        name: "ViewDeployDetail",
-        component: ViewDeployDetail,
+        path: "/mgrviewdeploy/:id",
+        name: "MgrViewDeployDetail",
+        component: MgrViewDeployDetail,
         meta: {requireAuth: true},
         props:true,
       },
-
       {
         path: "mgruserprofile",
         name: "manager userprofile",
@@ -83,44 +84,50 @@ const routes = [
       },
       {
         path: "mgrchallengers",
-        name: "manager challengers",
+        name: "challengers",
         component: MgrChallengers,
         meta: {requireAuth: true},
       },
       {
         path: "mgrcodelinting",
-        name: "manager code linting",
+        name: "code linting",
         component: MgrCodeLinting,
         meta: {requireAuth: true},
       },
       {
+        path: "mgr-deployment-upload",
+        name: "deployment upload",
+        component: MgrDeploymentUpload,
+        meta: {requireAuth: true},
+      },
+      {
         path: "mgrcodeporting",
-        name: "manager code porting",
+        name: "code porting",
         component: MgrCodePorting,
         meta: {requireAuth: true},
       },
       {
         path: "mgrdatadrift",
-        name: "manager drift monitoring",
+        name: "drift monitoring",
         component: MgrDataDrift,
         meta: {requireAuth: true},
       },
       {
         path: "mgrdashboard",
-        name: "MgrDashboard",
+        name: "Overview",
         component: MgrDashboard,
         meta: {requireAuth: true},
         props: true,
       },
       {
         path: "mgrperformancemonitoring",
-        name: "manager performance monitoring",
+        name: "performance monitoring",
         component: MgrPerformanceMonitoring,
         meta: {requireAuth: true},
       },
       {
         path: "mgrversioncontrol",
-        name: "manager version control",
+        name: "version control",
         component: MgrVersionControl,
         meta: {requireAuth: true},
       },
@@ -150,6 +157,13 @@ const routes = [
         name: "notifications",
         component: Notifications,
         meta: {requireAuth: true},
+      },
+      {
+        path: "/viewdeploy/:id",
+        name: "ViewDeployDetail",
+        component: ViewDeployDetail,
+        meta: {requireAuth: true},
+        props:true,
       },
       {
         path: "deployment-upload",
