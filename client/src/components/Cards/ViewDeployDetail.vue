@@ -82,24 +82,30 @@
       this.bin = event.target.files[0]
     },
     onUploadFile() {
-            const formData = new FormData();
-            formData.append("deployment_id", this.deployment.deploymentId);
-            formData.append("model_name", this.model_name);
-            formData.append("model_version", this.model_version);
-            formData.append("jsonFile", this.json);  // appending file
-            formData.append("binaryFile", this.bin);  // appending file
-  
-       // sending file to the backend
-        axios
-          .post("http://localhost:3000/upload", formData)
-          .then(res => {
-            // console.log("done uploading!")
-            console.log(res);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }
+      const formData = new FormData();
+      formData.append("deployment_id", this.deployment.deploymentId);
+      formData.append("model_name", this.model_name);
+      formData.append("model_version", this.model_version);
+      formData.append("jsonFile", this.json); // appending file
+      formData.append("binaryFile", this.bin); // appending file
+
+      // sending file to the backend
+      axios
+        .post("http://localhost:3000/upload", formData)
+        .then(res => {
+          // reset input fields and clear file inputs
+          this.model_name = '';
+          this.model_version = null;
+          this.json = '';
+          this.bin = '';
+
+          // reload page
+          location.reload();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
   };
   </script>
