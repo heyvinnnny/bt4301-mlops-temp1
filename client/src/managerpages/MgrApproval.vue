@@ -2,7 +2,7 @@
   <div>
     <ManagerApproval @authenticated="handleAuthenticated" />
     <ActivityLogCard></ActivityLogCard>
-    <ViewDeployCard></ViewDeployCard>
+    <MgrViewDeployCard></MgrViewDeployCard>
     
   </div>
 </template>
@@ -11,6 +11,7 @@
 import { ManagerApproval } from "@/components/index";
 import { ActivityLogCard } from "@/components/index";
 import ViewDeployCard from "../components/Cards/ViewDeployCard.vue"
+import MgrViewDeployCard from "../components/Cards/MgrViewDeployCard.vue"
 
 
 export default {
@@ -20,7 +21,8 @@ export default {
 components: {
     ManagerApproval,
     ActivityLogCard,
-    ViewDeployCard
+    ViewDeployCard,
+    MgrViewDeployCard,
 },
 methods: {
   handleAuthenticated() {
