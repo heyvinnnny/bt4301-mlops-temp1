@@ -20,7 +20,7 @@
                 <div class="row mt-3">
                     <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" disabled :value="user.email"></div>
                 </div>
-                <div class="mt-5 text-center"><router-link class="btn btn-primary profile-button" to="/managerdashboard">Manager Dashboard</router-link></div>
+                <div class="mt-5 text-center"><router-link class="btn btn-primary profile-button" to="/mgrapproval">Approval Dashboard</router-link></div>
                 <div class="mt-5 text-center"><router-link class="btn btn-primary profile-button" to="/resetpassword">Reset Password</router-link></div>
             </div>
         </div>

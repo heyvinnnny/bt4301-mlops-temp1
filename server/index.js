@@ -17,6 +17,7 @@ const path = require("path");
 const fileUpload = require("express-fileupload");
 const Performance = require("./models/performanceModel");
 const Deployment = require("./models/deployments");
+const Model = require("./models/model")
 
 app.use(morgan("combined"));
 
@@ -572,56 +573,126 @@ app.use(cors()); // it enables all cors requests
 app.use(fileUpload());
 
 // file upload api
-app.post("/upload", (req, res) => {
+app.post("/upload", async (req, res) => {
   if (!req.files) {
     return res.status(500).send({ msg: "file is not found" });
   }
   // accessing the file
-  const jsonFile = req.files.jsonFile;
-  const binaryFile = req.files.binaryFile;
-
-  // move the files to the public directory
-  jsonFile.mv(`${__dirname}/mlModel/${jsonFile.name}`, function (err) {
-    if (err) {
-      console.log(err);
-      return res.status(500).send({ msg: "Error occured" });
+  try {
+    const deployment_id =  req.body.deployment_id
+    const model_name = req.body.model_name
+    const model_version = req.body.model_version
+    const jsonFile = req.files.jsonFile;
+    const binaryFile = req.files.binaryFile;
+    // console.log(deployment_id, model_name, model_version);
+    //create folder if it doesnt exist
+    var dir = `${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}`
+    
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir, { recursive: true });
     }
-
-    binaryFile.mv(`${__dirname}/mlModel/${binaryFile.name}`, function (err) {
+    // move the files to the public directory
+    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${jsonFile.name}`, function (err) {
       if (err) {
         console.log(err);
         return res.status(500).send({ msg: "Error occured" });
       }
 
-      return res.send({ msg: "Files uploaded successfully" });
+    binaryFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${binaryFile.name}`, function (err) {
+      if (err) {
+        console.log(err);
+      }
+      
     });
-  });
+    });
+    const model = new Model({
+      modelName: model_name,
+      modelVersion: model_version,
+      deploymentId: deployment_id,
+      // path: dir,
+      auc: 0.5,
+      gini: 0.7,
+      logloss: 0.888,
+      kolmogorov: 0.2,
+      psi: 0.4
+    })
+    await model.save()
+  }catch (err) {
+    console.log(err);
+    return res.status(500).send({ msg: "Error occurred while processing files" });
+  }
+});
+
+//Upload test_data
+app.post("/data", (req, res) => {
+  if (!req.files) {
+    return res.status(500).send({ msg: "file is not found" });
+  }
+  // accessing the file
+  try {
+    const deployment_id =  req.body.deployment_id
+    const jsonFile = req.files.test_data;
+    //create folder if it doesnt exist
+    var dir = `${__dirname}/mlModel/${deployment_id}`
+    
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    // move the files to the public directory
+    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${jsonFile.name}`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+  }catch (err) {
+    console.log(err);
+    return res.status(500).send({ msg: "Error occurred while processing files" });
+  }
 });
 
 app.get("/api/deployments", async (req, res) => {
   try {
     const deployments = await Deployment.find();
     res.json(deployments);
-    //console.log(performances)
+    console.log(performances)
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-app.get("/api/deployments/:deployment_id", async (req, res) => {
-    const deployment_id = req.params.deployment_id;
 
-    try {
-      const deployment = await Deployment.findOne({ deployment_id: deployment_id }).sort({_id: 1});
-      res.json(deployment);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+//deploy card
+app.get('/viewdeploy', async (req, res) => {
+  try {
+    const deployments = await Deployment.find({});
+    res.status(200).json(deployments);
+  } catch (error) {
+    console.error('Error in /deployments GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
+  }
+});
+
+app.get('/viewdeploy/:id', async (req, res) => {
+  try {
+    const deployment = await Deployment.findOne({ deploymentId: req.params.id });
+
+    console.log(deployment)
+    
+    if (!deployment) {
+      return res.status(404).json({ message: 'Deployment not found' });
     }
-  });
+    res.status(200).json(deployment);
+  } catch (error) {
+    console.error('Error in /viewdeploy/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});
+
 
 app.post('/deployments', async (req, res) => {
   console.log('Request payload:', req.body);
-  
+
   try {
     const deployment = new Deployment({
       deploymentId: req.body.deploymentId,
@@ -682,3 +753,15 @@ async function convertCodeWithGpt3(inputCode) {
   return response.choices[0].text.trim();
 }
 
+app.get('/deployments/:id', async (req, res) => {
+  try {
+    const deployment = await Deployment.findOne({ deploymentId: req.params.id });
+    if (!deployment) {
+      return res.status(404).json({ message: 'Deployment not found' });
+    }
+    res.status(200).json(deployment);
+  } catch (error) {
+    console.error('Error in /deployments/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});

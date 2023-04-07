@@ -1,6 +1,6 @@
 <template>
     <div class="manager-approval">
-      <h1>Manager Approval Dashboard</h1>
+      <h1>Approval Dashboard</h1>
       <table>
         <thead>
           <tr>

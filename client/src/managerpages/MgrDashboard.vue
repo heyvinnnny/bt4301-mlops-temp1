@@ -26,12 +26,13 @@
 
     <div class="row">
       <div class="col-md-6 col-xl-12">
-        <card :title="table1.title">
+        <!-- <card :title="table1.title">
           <div slot="raw-content" class="table-responsive">
             <paper-table :data="table1.data" :columns="table1.columns" display:flex>
             </paper-table>
           </div>
-        </card>
+        </card> -->
+        <view-deploy-detail></view-deploy-detail>
       </div>
     </div>
     <br />
@@ -75,6 +76,9 @@
 import { StatsCard, ChartCard } from "@/components/index";
 import { PaperTable } from "@/components";
 import Chartist from "chartist";
+
+import ViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
+
 const tableColumns = [
   "Name",
   "Description",
@@ -120,6 +124,7 @@ export default {
     StatsCard,
     ChartCard,
     PaperTable,
+    ViewDeployDetail
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data

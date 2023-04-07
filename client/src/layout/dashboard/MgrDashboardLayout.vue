@@ -1,13 +1,13 @@
 <template>
   <div class="wrapper">
-    <side-bar>
+    <side-bar data-background-color="white">
       <template slot="links">
 
-        <sidebar-link to="/mgrhome" name="Manager Page" icon="ti-home" />
+        <sidebar-link to="/mgrhome" name="Home Page" icon="ti-home" />
         <sidebar-link to="/mgrdashboard" name="Overview" icon="ti-panel" />
         <sidebar-link
           to="/mgrdatadrift"
-          name="Data Drift"
+          name="Drift Monitoring"
           icon="ti-signal"
         />
         <sidebar-link to="/mgrchallengers" name="Challengers" icon="ti-layout-grid4-alt" />
@@ -19,7 +19,7 @@
         <sidebar-link
           to="/mgrperformancemonitoring"
           name="Performance Monitor"
-          icon="ti-bell"
+          icon="ti-list-ol"
         />
         <sidebar-link
           to="/mgrcodelinting"
@@ -31,34 +31,8 @@
           name="Code Porting"
           icon="ti-bell"
         />
+        <sidebar-link to="/mgr-deployment-upload" name="Deployment Upload" icon="ti-upload" />
       </template>
-      <mobile-menu>
-        <li class="nav-item">
-          <a class="nav-link">
-            <i class="ti-panel"></i>
-            <p>Stats</p>
-          </a>
-        </li>
-        <drop-down
-          class="nav-item"
-          title="5 Notifications"
-          title-classes="nav-link"
-          icon="ti-bell"
-        >
-          <a class="dropdown-item">Notification 1</a>
-          <a class="dropdown-item">Notification 2</a>
-          <a class="dropdown-item">Notification 3</a>
-          <a class="dropdown-item">Notification 4</a>
-          <a class="dropdown-item">Another notification</a>
-        </drop-down>
-        <li class="nav-item">
-          <a class="nav-link">
-            <i class="ti-settings"></i>
-            <p>Settings</p>
-          </a>
-        </li>
-        <li class="divider"></li>
-      </mobile-menu>
     </side-bar>
     <div class="main-panel">
       <mgr-top-navbar></mgr-top-navbar>
