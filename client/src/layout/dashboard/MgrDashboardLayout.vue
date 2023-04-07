@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <side-bar>
+    <side-bar data-background-color="white">
       <template slot="links">
 
         <sidebar-link to="/mgrhome" name="Home Page" icon="ti-home" />
@@ -31,6 +31,7 @@
           name="Code Porting"
           icon="ti-bell"
         />
+        <sidebar-link to="/mgr-deployment-upload" name="Deployment Upload" icon="ti-upload" />
       </template>
     </side-bar>
     <div class="main-panel">

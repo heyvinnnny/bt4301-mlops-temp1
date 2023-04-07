@@ -19,14 +19,11 @@
       </div>
     </div>
 
-    <div class="performance-monitoring">
-    <chart-card
-      :title="'Total Predictions Over Time'"
-      :subTitle="'Performance Monitoring'"
-    >
-    <time-series-chart :model="selectedModel"/>
-    </chart-card>
-  </div>
+    <br>
+    <br>
+    <timeline></timeline>
+
+
 
   </div>
 </template>
@@ -35,6 +32,7 @@
 import axios from 'axios';
 import { ChartCard } from "@/components/index";
 import TimeSeriesChart from "../components/TimeSeriesChart.vue";
+import Timeline from "../components/Timeline.vue";
 import Chartist from "chartist";
 
 export default {
@@ -44,6 +42,7 @@ export default {
   components: {
     ChartCard,
     TimeSeriesChart,
+    Timeline
     
   },
   created() {
