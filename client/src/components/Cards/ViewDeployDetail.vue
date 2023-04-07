@@ -92,7 +92,7 @@
       this.bin = event.target.files[0]
     },
     handleDataJsonUpload(event) {
-      this.json = event.target.files[0]
+      this.test_data = event.target.files[0]
     },
     onUploadFile() {
             const formData = new FormData();
