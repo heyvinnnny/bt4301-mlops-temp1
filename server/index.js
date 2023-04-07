@@ -611,6 +611,35 @@ app.post("/upload", (req, res) => {
   }
 });
 
+//Upload test_data
+app.post("/data", (req, res) => {
+  if (!req.files) {
+    return res.status(500).send({ msg: "file is not found" });
+  }
+  // accessing the file
+  try {
+    const deployment_id =  req.body.deployment_id
+    const jsonFile = req.files.test_data;
+    // console.log(deployment_id, model_name, model_version);
+    //create folder if it doesnt exist
+    var dir = `${__dirname}/mlModel/${deployment_id}`
+    
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    // move the files to the public directory
+    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${jsonFile.name}`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+  }catch (err) {
+    console.log(err);
+    return res.status(500).send({ msg: "Error occurred while processing files" });
+  }
+});
+
 app.get("/api/deployments", async (req, res) => {
   try {
     const deployments = await Deployment.find();
