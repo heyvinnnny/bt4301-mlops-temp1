@@ -101,7 +101,7 @@ const routes = [
       },
       {
         path: "mgrdatadrift",
-        name: "manager data drift",
+        name: "manager drift monitoring",
         component: MgrDataDrift,
         meta: {requireAuth: true},
       },
@@ -218,7 +218,7 @@ const routes = [
       },
       {
         path: "datadrift",
-        name: "data drift",
+        name: "drift monitoring",
         component: DataDrift,
       },
       {
