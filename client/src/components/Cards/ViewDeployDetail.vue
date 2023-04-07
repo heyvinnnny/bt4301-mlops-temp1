@@ -27,6 +27,27 @@
           </tr>
         </tbody>
       </table>
+
+      <h2>Model Upload</h2>
+    <form @submit.prevent="submitForm">
+      <div>
+        <label for="model_name">Model Name:</label>
+        <input type="text" id="model_name" name="model_name" v-model="model_name" required>
+      </div>
+      <div>
+        <label for="model_version">Model Version:</label>
+        <input type="number" id="model_version" name="model_version" v-model="model_version" required>
+      </div>
+      <div>
+        <label for="jsonFile">JSON File:</label>
+        <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleJsonUpload">
+      </div>
+      <div>
+        <label for="binaryFile">Binary File:</label>
+        <input type="file" id="binaryFile" name="binaryFile" accept=".bin" required @change="handleBinUpload">
+      </div>
+      <button v-on:click="onUploadFile()" type="submit">Upload Files</button>
+    </form>
     </div>
   </template>
   
@@ -39,6 +60,10 @@
     data() {
       return {
         deployment: {},
+        model_name: '',
+        model_version: null,
+        json :'',
+        bin:''
       };
     },
     async created() {
@@ -49,6 +74,33 @@
         console.error(`Error retrieving deployment details: ${error.message}`);
       }
     },
+    methods: {
+    handleJsonUpload(event) {
+      this.json = event.target.files[0]
+    },
+    handleBinUpload(event) {
+      this.bin = event.target.files[0]
+    },
+    onUploadFile() {
+            const formData = new FormData();
+            formData.append("deployment_id", this.deployment.deploymentId);
+            formData.append("model_name", this.model_name);
+            formData.append("model_version", this.model_version);
+            formData.append("jsonFile", this.json);  // appending file
+            formData.append("binaryFile", this.bin);  // appending file
+  
+       // sending file to the backend
+        axios
+          .post("http://localhost:3000/upload", formData)
+          .then(res => {
+            // console.log("done uploading!")
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+  }
   };
   </script>
   

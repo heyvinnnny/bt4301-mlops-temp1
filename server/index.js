@@ -577,25 +577,38 @@ app.post("/upload", (req, res) => {
     return res.status(500).send({ msg: "file is not found" });
   }
   // accessing the file
-  const jsonFile = req.files.jsonFile;
-  const binaryFile = req.files.binaryFile;
-
-  // move the files to the public directory
-  jsonFile.mv(`${__dirname}/mlModel/${jsonFile.name}`, function (err) {
-    if (err) {
-      console.log(err);
-      return res.status(500).send({ msg: "Error occured" });
+  try {
+    const deployment_id =  req.body.deployment_id
+    const model_name = req.body.model_name
+    const model_version = req.body.model_version
+    const jsonFile = req.files.jsonFile;
+    const binaryFile = req.files.binaryFile;
+    // console.log(deployment_id, model_name, model_version);
+    //create folder if it doesnt exist
+    var dir = `${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}`
+    
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir, { recursive: true });
     }
-
-    binaryFile.mv(`${__dirname}/mlModel/${binaryFile.name}`, function (err) {
+    // move the files to the public directory
+    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${jsonFile.name}`, function (err) {
       if (err) {
         console.log(err);
         return res.status(500).send({ msg: "Error occured" });
       }
 
-      return res.send({ msg: "Files uploaded successfully" });
+      binaryFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${binaryFile.name}`, function (err) {
+        if (err) {
+          console.log(err);
+        }
+
+        return res.send({ msg: dir });
+      });
     });
-  });
+  }catch (err) {
+    console.log(err);
+    return res.status(500).send({ msg: "Error occurred while processing files" });
+  }
 });
 
 app.get("/api/deployments", async (req, res) => {
