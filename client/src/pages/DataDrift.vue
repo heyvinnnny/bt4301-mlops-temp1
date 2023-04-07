@@ -23,7 +23,7 @@ export default {
     }
   },
   mounted() {
-    this.$toast.success("Data Drift");
+    this.$toast.success("Drift Monitoring");
 
     var data = {
       labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
