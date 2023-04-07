@@ -49,6 +49,9 @@
 import axios from 'axios'
 
 export default {
+  mounted() {
+    this.$toast.success("Deployment Upload");
+  },
   data() {
     return {
       deploymentId: '',

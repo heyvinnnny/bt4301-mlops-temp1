@@ -93,6 +93,9 @@
 
 <script>
 export default {
+  mounted() {
+    this.$toast.success("Version Control");
+  },
   data() {
     return {
       versions: [
