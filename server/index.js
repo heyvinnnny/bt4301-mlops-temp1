@@ -598,15 +598,15 @@ app.post("/upload", (req, res) => {
   });
 });
 
-// app.get("/api/deployments", async (req, res) => {
-//   try {
-//     const deployments = await Deployment.find();
-//     res.json(deployments);
-//     //console.log(performances)
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// });
+app.get("/api/deployments", async (req, res) => {
+  try {
+    const deployments = await Deployment.find();
+    res.json(deployments);
+    //console.log(performances)
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 app.get("/api/deployments/:deployment_id", async (req, res) => {
     const deployment_id = req.params.deployment_id;
