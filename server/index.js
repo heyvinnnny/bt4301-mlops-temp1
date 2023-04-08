@@ -642,6 +642,7 @@ app.post("/upload", async (req, res) => {
     const deployment_id =  req.body.deployment_id
     const model_name = req.body.model_name
     const model_version = req.body.model_version
+    const email = req.body.email
     const jsonFile = req.files.jsonFile;
     const binaryFile = req.files.binaryFile;
     // console.log(deployment_id, model_name, model_version);
@@ -677,6 +678,7 @@ app.post("/upload", async (req, res) => {
         modelVersion: model_version,
         deploymentId: deployment_id,
         // path: dir,
+        email: email,
         auc: auc,
         gini: gini,
         logloss: logloss,
@@ -850,5 +852,32 @@ app.get('/deployments/:id', async (req, res) => {
   } catch (error) {
     console.error('Error in /deployments/:id GET route:', error);
     res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});
+
+
+
+//models
+app.get('/models', async (req, res) => {
+  try {
+    const models = await Model.find();
+    console.log(models);
+    res.json(models);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+app.get('/models/:id', async (req, res) => {
+  try {
+    const model = await Model.findById(req.params.id);
+    if (!model) {
+      return res.status(404).json({ msg: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
   }
 });

@@ -173,7 +173,7 @@ const routes = [
       },
       {
         path: "/viewsubmitcr/:id",
-        name: "ViewSubmitCR",
+        name: "ViewSubmitCRCard",
         component: ViewSubmitCR,
         meta: {requireAuth: true},
         props:true,

@@ -2,6 +2,7 @@
   <div>  
     <view-summary-card></view-summary-card>
     <view-challenger-card></view-challenger-card>
+    <br>
     <div class="row">
       <view-content-card-vue></view-content-card-vue>
       <activity-log-card></activity-log-card>

@@ -29,7 +29,7 @@
     </table>
 
     <h2>Model Upload</h2>
-  <form @submit.prevent="submitForm">
+  <form>
     <div>
       <label for="model_name">Model Name:</label>
       <input type="text" id="model_name" name="model_name" v-model="model_name" required>
@@ -38,6 +38,10 @@
       <label for="model_version">Model Version:</label>
       <input type="number" id="model_version" name="model_version" v-model="model_version" required>
     </div>
+    <div>
+        <label for="model-version">Email:</label>
+        <input type="text" class="form-control" id="email-version" v-model="user.email" disabled required>
+      </div>
     <div>
       <label for="jsonFile">JSON File:</label>
       <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleJsonUpload">
@@ -50,7 +54,7 @@
   </form>
 
   <h2>Upload Test Data</h2>
-  <form @submit.prevent="submitForm">
+  <form>
     <div>
       <label for="jsonFile">JSON File:</label>
       <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleDataJsonUpload">
@@ -73,13 +77,33 @@ export default {
       model_version: null,
       test_data:'',
       json :'',
+      email: '',
       bin:''
     };
+  },
+  computed: {
+    user: {
+      get() {
+        return JSON.parse(localStorage.getItem("user"));
+      },
+      set(user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      },
+    },
   },
   async created() {
     try {
       const response = await axios.get(`http://localhost:3000/viewdeploy/${this.id}`);
       this.deployment = response.data;
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const res = await axios.get("http://localhost:3000/users/me", config);
+      this.user = res.data;
+
     } catch (error) {
       console.error(`Error retrieving deployment details: ${error.message}`);
     }
@@ -99,6 +123,7 @@ export default {
           formData.append("deployment_id", this.deployment.deploymentId);
           formData.append("model_name", this.model_name);
           formData.append("model_version", this.model_version);
+          formData.append("email", this.user.email);
           formData.append("jsonFile", this.json);  // appending file
           formData.append("binaryFile", this.bin);  // appending file
 
