@@ -79,31 +79,6 @@ import Chartist from "chartist";
 import axios from "axios";
 const mongoose = require("mongoose"); 
 
-const tableColumnsC = [
-  "deployment_id",
-  "deployment_name",
-  "importance",
-  "service",
-  "drift",
-  "accuracy",
-  "num_predictions",
-  "created_at",
-  "date_now",
-  "last_prediction",
-  "manager_email",
-  "manager_name",
-  "user_email",
-  "user_name",
-  "model_version",
-  "environment_version", 
-  "deployment_status",
-  "testing_status",
-  "deployed",
-  "approval_status",
-  "replacement_reason",
-  "manually_apply_changes",
-];
-
 const tableColumns = [
   "Name",
   "Description",
@@ -121,7 +96,7 @@ const tableColumns3 = [
 ];
 const tableData = [
   {
-    name: "this.deployments[0].deployment_name", 
+    name: "this.deployments.deployment_name", 
     description: "Loan default model for the bank",
     endpoint: "https://datarobot-mlops.dynamic.orm.datarobot.com",
     importance: "Moderate",
@@ -172,11 +147,6 @@ export default {
   data() {
     return {
       selectedDeployment: '9012',
-      tableC: {
-        title: "in progress lol: just to check if the data are imported",
-        subTitle: "",
-        columns: [...tableColumnsC],
-      },
       deployments: [],
       table1: {
         title: "Summary",
