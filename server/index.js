@@ -612,8 +612,8 @@ app.post("/upload", async (req, res) => {
       const model_to_load = await tf.loadLayersModel(`file://mlModel/${deployment_id}/${model_name}/${model_version}/model.json`);
       const jsonData = JSON.parse(fs.readFileSync(`./mlModel/${deployment_id}/test.json`));
       const [auc, gini, logloss, ks, psi] = await calculateMetrics(model_to_load, jsonData)
-      console.log("auc is")
-      console.log(auc)
+      // console.log("auc is")
+      // console.log(auc)
       const model = new Model({
         modelName: model_name,
         modelVersion: model_version,
