@@ -401,8 +401,6 @@ app.post("/register", async (req, res) => {
       console.log("Email sent: " + info.response);
     });
 
-    res.status(200).json({ msg: "User registered, pending approval" });
-
     res.status(201).json({ msg: "User registered, pending approval" });
   } catch (err) {
     console.error(err);
@@ -420,30 +418,90 @@ app.get("/users/pending", auth, async (req, res) => {
   }
 });
 
-app.put("/users/approval/:userId", auth, async (req, res) => {
+app.put('/users/approval/:userId', auth, async (req, res) => {
   try {
     const { userId } = req.params;
     const { status } = req.body;
 
-    if (!["Approved", "Rejected"].includes(status)) {
-      return res.status(400).json({ msg: "Invalid status" });
+    if (!['Approved', 'Rejected'].includes(status)) {
+      return res.status(400).json({ msg: 'Invalid status' });
     }
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { status },
-      { new: true }
-    );
+    const user = await User.findByIdAndUpdate(userId, { status }, { new: true });
 
     if (!user) {
-      return res.status(404).json({ msg: "User not found" });
+      return res.status(404).json({ msg: 'User not found' });
     }
+
+    //To untick for testing **
+    // if (status === "Approved") {
+    //   // Send email notification to user
+    //   const transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     host: "smtp.gmail.com",
+    //     port: 465,
+    //     secure: true,
+    //     auth: {
+    //       user: "bt4301.mlops1@gmail.com",
+    //       pass: "kvbrfhqsmebvtptn",
+    //     },
+    //   });
+
+    //   const mailOptions = {
+    //     from: process.env.EMAIL_USER,
+    //     to: user.email,
+    //     subject: "Account approved",
+    //     html: `<p>Your account has been approved.</p>
+    //            <p><a href="http://localhost:8080/login">Click here to log in.</a></p>`,
+    //   };
+
+    //   transporter.sendMail(mailOptions, (err, info) => {
+    //     if (err) {
+    //       console.error(err);
+    //     } else {
+    //       console.log("Email sent: " + info.response);
+    //     }
+    //   });
+    // } else if (status === "Rejected") {
+    //   // Send email notification to user
+    //   const transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     host: "smtp.gmail.com",
+    //     port: 465,
+    //     secure: true,
+    //     auth: {
+    //       user: "bt4301.mlops1@gmail.com",
+    //       pass: "kvbrfhqsmebvtptn",
+    //     },
+    //   });
+
+    //   const mailOptions = {
+    //     from: process.env.EMAIL_USER,
+    //     to: user.email,
+    //     subject: "Account rejected",
+    //     html: `<p>Your account has been rejected. Please try again.</p>`,
+    //   };
+
+    //   transporter.sendMail(mailOptions, (err, info) => {
+    //     if (err) {
+    //       console.error(err);
+    //     } else {
+    //       console.log("Email sent: " + info.response);
+    //     }
+    //   });
+
+    //   // Delete user record from the database
+    //   await User.findByIdAndDelete(userId);
+    // }
+
+    // user.status = status;
+    // await user.save();
 
     res.json(user);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ msg: "Server error" });
-  }
+    res.status(500).json({ msg: 'Server error' });
+    }
 });
 
 //Randomly generated password for user
@@ -705,9 +763,7 @@ app.post('/deployments', async (req, res) => {
       deploymentName: req.body.deploymentName,
       importance: req.body.importance,
       dateNow: req.body.dateNow,
-      modelVersion: req.body.modelVersion,
-      envVersion: req.body.envVersion,
-      replacementReason: req.body.replacementReason,
+      deployDescription: req.body.deployDescription,
       email: req.body.email,
     })
 

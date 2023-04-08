@@ -8,9 +8,7 @@
             <th>Deployment Name</th>
             <th>Importance</th>
             <th>Date Now</th>
-            <th>Model Version</th>
-            <th>Environment Version</th>
-            <th>Replacement Reason</th>
+            <th>Deployment Description</th>
             <th>Email</th>
           </tr>
         </thead>
@@ -19,10 +17,8 @@
             <td>{{ deployment.deploymentId }}</td>
             <td>{{ deployment.deploymentName }}</td>
             <td>{{ deployment.importance }}</td>
-            <td>{{ deployment.dateNow }}</td>
-            <td>{{ deployment.modelVersion }}</td>
-            <td>{{ deployment.envVersion }}</td>
-            <td>{{ deployment.replacementReason }}</td>
+            <td>{{ deployment.dateNow.slice(0, 10) }}</td>
+            <td>{{ deployment.deployDescription }}</td>
             <td>{{ deployment.email }}</td>
           </tr>
         </tbody>

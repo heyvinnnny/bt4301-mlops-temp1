@@ -7,7 +7,7 @@
             <th>Deployment ID</th>
             <th>Deployment Name</th>
             <th>Importance</th>
-            <th>Date Now</th>
+            <th>Date Created</th>
           </tr>
         </thead>
         <tbody>
@@ -19,7 +19,7 @@
             </td>
             <td>{{ deployment.deploymentName }}</td>
             <td>{{ deployment.importance }}</td>
-            <td>{{ deployment.dateNow }}</td>
+            <td>{{ deployment.dateNow.slice(0, 10) }}</td>
           </tr>
         </tbody>
       </table>

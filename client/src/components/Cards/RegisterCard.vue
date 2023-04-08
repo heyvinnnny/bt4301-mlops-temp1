@@ -64,13 +64,14 @@
           <p style="text-align: left">
             Please take note that your account is subjected to approval.
           </p>
-          <br />
           <p v-if="message" style="color: red">{{ message }}</p>
-          <br />
         </form>
+        <div v-show="isSuccess" class="success-message">Registration completed. Your account is now pending for approval. </div>
+        <br>
         <p>
           Have an Account? <router-link to="/login"> Login Now!</router-link>
         </p>
+        
       </div>
     </div>
     <!-- //copyright -->
@@ -101,6 +102,7 @@ export default {
       confirmPassword: "",
       access: "",
       message: "",
+      isSuccess: false
     };
   },
   methods: {
@@ -133,6 +135,8 @@ export default {
         console.log(response.data);
         this.message = response.data.message;
 
+        this.isSuccess = true;
+
         // Redirect to the login page after a delay
         setTimeout(() => {
           this.$router.push("/login");
@@ -161,6 +165,26 @@ export default {
   height: 100%;
   position: absolute;
   width: 100%;
+}
+
+.success-message {
+  background-color: green;
+  color: #ffffff;
+  font-size: 1.2rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  animation: slide-down 0.3s ease-out;
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 html,
