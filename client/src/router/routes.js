@@ -30,7 +30,13 @@ import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
 import UploadModel from "@/pages/UploadMLModel.vue";
 import Timeline from "@/components/Timeline.vue";
-import ViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
+import ViewDeployDetail from "../components/Cards/ViewDeployDetail.vue";
+import ViewSubmitCR from "../components/Cards/ViewSubmitCRCard.vue";
+import ViewSummaryCard from "../components/Cards/ViewSummaryCard";
+import ViewContentCard from "../components/Cards/ViewContentCard"
+import ActivityLogCard from "../components/Cards/ActivityLogCard";
+import ViewChallengerCard from "../components/Cards/ViewChallengerCard";
+import ViewPendingCRCard from "../components/Cards/ViewPendingCRCard";
 
 
 //Manager Pages
@@ -162,6 +168,48 @@ const routes = [
         path: "/viewdeploy/:id",
         name: "ViewDeployDetail",
         component: ViewDeployDetail,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/viewsubmitcr/:id",
+        name: "ViewSubmitCR",
+        component: ViewSubmitCR,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/viewsummarycard/:id",
+        name: "ViewSummaryCard",
+        component: ViewSummaryCard,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/viewcontentcard/:id",
+        name: "ViewContentCard",
+        component: ViewContentCard,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/activitylogcard/:id",
+        name: "activitylogCard",
+        component: ActivityLogCard,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/viewchallengercard/:id",
+        name: "viewchallengercard",
+        component: ViewChallengerCard,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/viewpendingcrcard/:id",
+        name: "viewpendingcrcard",
+        component: ViewPendingCRCard,
         meta: {requireAuth: true},
         props:true,
       },

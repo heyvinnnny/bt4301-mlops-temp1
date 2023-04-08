@@ -704,6 +704,23 @@ app.get('/viewdeploy/:id', async (req, res) => {
 });
 
 
+app.get('/viewmodel/:id', async (req, res) => {
+  try {
+    const model = await Model.findOne({ deploymentId: req.params.id });
+
+    console.log(model)
+    
+    if (!model) {
+      return res.status(404).json({ message: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (error) {
+    console.error('Error in /viewmodel/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving model details: ${error.message}` });
+  }
+});
+
+
 app.post('/deployments', async (req, res) => {
   console.log('Request payload:', req.body);
 
