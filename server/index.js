@@ -19,7 +19,7 @@ const Performance = require("./models/performanceModel");
 const Deployment = require("./models/deployments");
 const Model = require("./models/model")
 const tf = require("@tensorflow/tfjs-node")
-
+const calculateMetrics = require("./calculate_metrics.js")
 
 app.use(morgan("combined"));
 
@@ -652,7 +652,7 @@ app.post("/upload", async (req, res) => {
       fs.mkdirSync(dir, { recursive: true });
     }
     // move the files to the public directory
-    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${jsonFile.name}`, function (err) {
+    await jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${jsonFile.name}`, function (err) {
       if (err) {
         console.log(err);
         return res.status(500).send({ msg: "Error occured" });
@@ -665,22 +665,30 @@ app.post("/upload", async (req, res) => {
       
     });
     });
-    const model = new Model({
-      modelName: model_name,
-      modelVersion: model_version,
-      deploymentId: deployment_id,
-      // path: dir,
-      auc: 0.5,
-      gini: 0.7,
-      logloss: 0.888,
-      kolmogorov: 0.2,
-      psi: 0.4,
-      deployed :false,
-      approval_status: "NA",
-      replacement_reason: "NA",
-      manually_apply_changes: false
-    })
-    await model.save()
+    
+    setTimeout( async() => {
+      const model_to_load = await tf.loadLayersModel(`file://mlModel/${deployment_id}/${model_name}/${model_version}/model.json`);
+      const jsonData = JSON.parse(fs.readFileSync(`./mlModel/${deployment_id}/test.json`));
+      const [auc, gini, logloss, ks, psi] = await calculateMetrics(model_to_load, jsonData)
+      console.log("auc is")
+      console.log(auc)
+      const model = new Model({
+        modelName: model_name,
+        modelVersion: model_version,
+        deploymentId: deployment_id,
+        // path: dir,
+        auc: auc,
+        gini: gini,
+        logloss: logloss,
+        kolmogorov: ks,
+        psi: psi,
+        deployed :false,
+        approval_status: "NA",
+        replacement_reason: "NA",
+        manually_apply_changes: false
+      });
+      await model.save();
+    }, 5000);
   }catch (err) {
     console.log(err);
     return res.status(500).send({ msg: "Error occurred while processing files" });
@@ -750,6 +758,23 @@ app.get('/viewdeploy/:id', async (req, res) => {
   } catch (error) {
     console.error('Error in /viewdeploy/:id GET route:', error);
     res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});
+
+
+app.get('/viewmodel/:id', async (req, res) => {
+  try {
+    const model = await Model.findOne({ deploymentId: req.params.id });
+
+    console.log(model)
+    
+    if (!model) {
+      return res.status(404).json({ message: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (error) {
+    console.error('Error in /viewmodel/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving model details: ${error.message}` });
   }
 });
 
