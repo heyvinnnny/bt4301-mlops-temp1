@@ -18,6 +18,7 @@ const fileUpload = require("express-fileupload");
 const Performance = require("./models/performanceModel");
 const Deployment = require("./models/deployments");
 const Model = require("./models/model")
+const Assignment = require("./models/assignment")
 const tf = require("@tensorflow/tfjs-node")
 const calculateMetrics = require("./calculate_metrics.js")
 
@@ -725,27 +726,30 @@ app.post("/data", (req, res) => {
   }
 });
 
-app.get("/api/deployments", async (req, res) => {
+app.get('/deployments', async (req, res) => {
   try {
     const deployments = await Deployment.find();
     res.json(deployments);
-    console.log(performances)
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Error getting deployments' });
   }
 });
 
 
-//deploy card
-app.get('/viewdeploy', async (req, res) => {
-  try {
-    const deployments = await Deployment.find({});
-    res.status(200).json(deployments);
-  } catch (error) {
-    console.error('Error in /deployments GET route:', error);
-    res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
-  }
-});
+//deploy card 2
+// app.get('/viewdeploy', async (req, res) => {
+//   try {
+//     const userId = req.user._id;
+//     const userAssignments = await Assignment.find({ user: userId });
+//     const deploymentIds = userAssignments.map((assignment) => assignment.deployment);
+//     const deployments = await Deployment.find({ _id: { $in: deploymentIds } });
+//     res.json(deployments);
+//   } catch (error) {
+//     console.error('Error in /deployments GET route:', error);
+//     res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
+//   }
+// });
 
 app.get('/viewdeploy/:id', async (req, res) => {
   try {
@@ -793,8 +797,6 @@ app.post('/deployments', async (req, res) => {
       deployDescription: req.body.deployDescription,
       email: req.body.email,
     })
-
-    console.log(deployment)
 
     await deployment.save()
     res.status(201).json({ message: 'Deployment information uploaded successfully!' })
@@ -879,5 +881,88 @@ app.get('/models/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+app.put('/models/:id', async (req, res) => {
+  const { id } = req.params; // extract the ID from the request URL
+  const { replacement_reason, manually_apply_changes } = req.body; // extract the replacement reason and apply changes from the request body
+
+  try {
+    // find the model by ID and update its replacement reason and apply changes
+    const updatedModel = await Model.findByIdAndUpdate(
+      id,
+      { replacement_reason, manually_apply_changes },
+      { new: true }
+    );
+
+    res.status(200).json(updatedModel); // send back the updated model as response
+  } catch (error) {
+    console.error(`Error updating model with ID ${id}: ${error.message}`);
+    res.status(500).json({ message: 'Error updating model' });
+  }
+});
+
+
+//assign
+
+// Route for the manager assign page
+app.get('/manager-assign', async (req, res) => {
+  try {
+    const users = await User.find({ access: 'User', status: 'Approved' });
+    const deployments = await Deployment.find();
+    res.render('managerAssign', { users, deployments });
+  } catch (err) {
+    res.status(500).send('Server Error');
+  }
+});
+
+app.post('/mgrassignment', async (req, res) => {
+  try {
+    const { deployment, users } = req.body;
+    const deploymentToUpdate = await Deployment.findById(deployment);
+    deploymentToUpdate.allowedUsers = Array.isArray(users) ? users : [users];
+    await deploymentToUpdate.save();
+    res.status(200).json({ message: 'Successfully assigned deployment' });
+  } catch (err) {
+    console.error('Error in mgrassignment route:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+//deploy card 1
+app.get('/viewdeploy', async (req, res) => {
+  try {
+    const deployments = await Deployment.find({});
+    res.status(200).json(deployments);
+  } catch (error) {
+    console.error('Error in /deployments GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
+  }
+});
+
+// API endpoint for fetching assigned deployments for a specific user
+app.get('/deployments/assigned/:userId', auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log('User ID:', userId); // Log the user ID
+    const deployments = await Deployment.find({ allowedUsers: userId });
+    console.log('Deployments:', deployments); // Log the fetched deployments
+    res.status(200).json(deployments);
+
+  } catch (err) {
+    console.error('Error in deployments/assigned/:userId route:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+// API endpoint for fetching users based on access and status
+app.get('/users', async (req, res) => {
+  try {
+    const { access, status } = req.query;
+    const users = await User.find({ access, status });
+    res.json(users);
+  } catch (err) {
+    res.status(500).send('Server Error');
   }
 });

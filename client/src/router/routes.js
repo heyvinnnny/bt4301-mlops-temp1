@@ -52,6 +52,7 @@ import MgrDeploymentUpload from "@/managerpages/MgrDeploymentUpload.vue";
 import MgrPerformanceMonitoring from "@/managerpages/MgrPerformanceMonitoring.vue";
 import MgrVersionControl from "@/managerpages/MgrVersionControl.vue";
 import MgrViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
+import MgrAssignment from "@/managerpages/MgrAssignment.vue"
 
 
 const routes = [
@@ -66,6 +67,13 @@ const routes = [
         path: "mgrhome",
         name: "home",
         component: MgrHome,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "mgrassignment",
+        name: "MgrAssignment",
+        component: MgrAssignment,
         meta: {requireAuth: true},
         props:true,
       },

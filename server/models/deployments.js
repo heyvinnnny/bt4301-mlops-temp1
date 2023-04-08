@@ -36,6 +36,7 @@ const DeploymentSchema = new mongoose.Schema({
   //envVersion: { type: String, required: true },
   //replacementReason: { type: String, required: true },
   email: { type: String, required: true },
+  allowedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 const Deployment = mongoose.model('Deployment', DeploymentSchema);
