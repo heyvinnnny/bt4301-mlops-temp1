@@ -18,6 +18,8 @@ const fileUpload = require("express-fileupload");
 const Performance = require("./models/performanceModel");
 const Deployment = require("./models/deployments");
 const Model = require("./models/model")
+const tf = require("@tensorflow/tfjs-node")
+
 
 app.use(morgan("combined"));
 
@@ -614,7 +616,11 @@ app.post("/upload", async (req, res) => {
       gini: 0.7,
       logloss: 0.888,
       kolmogorov: 0.2,
-      psi: 0.4
+      psi: 0.4,
+      deployed :false,
+      approval_status: "NA",
+      replacement_reason: "NA",
+      manually_apply_changes: false
     })
     await model.save()
   }catch (err) {
