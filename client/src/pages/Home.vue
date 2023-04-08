@@ -260,7 +260,7 @@ export default {
 <script>
 import { StatsCard, ChartCard } from "@/components/index";
 import { PaperTable } from "@/components";
-import ViewDeployCard from "../components/Cards/ViewDeployCard.vue"
+import ViewDeployCard from "../components/Cards/ViewDeployCard.vue" 
 
 const tableColumns = [
   "Id",
