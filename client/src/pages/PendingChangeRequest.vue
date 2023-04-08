@@ -191,49 +191,9 @@ const tableColumns3 = [
             value: "5 hours ago",
           },
         ],
-        usersChart: {
-          data: {
-            labels: [
-              "12:00AM",
-              "3:00AM",
-              "6:00AM",
-              "9:00AM",
-              "12:00PM",
-              "3:00PM",
-              "6:00PM",
-              "9:00PM",
-            ],
-            series: [
-              [1, 0, 1, 1, 1, 0, 0, 1],
-              // [67, 152, 193, 240, 387, 435, 535, 642, 744],
-              // [23, 113, 67, 108, 190, 239, 307, 410, 410],
-            ],
-          },
-          options: {
-            low: 0,
-            high: 1,
-            showArea: true,
-            height: "245px",
-            axisX: {
-              showGrid: false,
-            },
-            lineSmooth: Chartist.Interpolation.simple({
-              divisor: 3,
-            }),
-            showLine: true,
-            showPoint: false,
-          },
-        },
       };
     },
   };
   </script>
-<style scoped>
-.pendingText {
-  position: relative;
-  left: -500px;
-  padding-left: 150px;
-  text-align: center;
-  color: aqua;
-}
+<style scoped></style>
   
