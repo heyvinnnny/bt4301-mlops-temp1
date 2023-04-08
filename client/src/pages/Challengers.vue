@@ -1,29 +1,5 @@
 <template>
   <div>
-    <!--Stats cards-->
-    <div class="row">
-      <div
-        class="col-md-6 col-xl-6"
-        v-for="stats in statsCards"
-        :key="stats.title"
-      >
-        <stats-card>
-          <div
-            class="icon-big text-center"
-            :class="`icon-${stats.type}`"
-            slot="header"
-          >
-            <i :class="stats.icon"></i>
-          </div>
-          <div class="numbers" slot="content">
-            <p>{{ stats.title }}</p>
-            {{ stats.value }}
-          </div>
-        </stats-card>
-      </div>      
-    </div>
-    <br />
-
     <div class="row">
       <div class="col-md-6 col-xl-12">
         <card :title="table1.title">
@@ -73,19 +49,6 @@
       </div>
     </div>
     <br/>
-
-    <!--Charts-->
-    <div class="row">
-      <div class="col-md-6 col-xl-12">
-        <chart-card
-          title="Loan Default Predictor (Risk Management)"
-          sub-title="DataRobot Prediction Server | Probability of Default"
-          :chart-data="usersChart.data"
-          :chart-options="usersChart.options"
-        >
-        </chart-card>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -94,7 +57,7 @@ import { StatsCard, ChartCard } from "@/components/index";
 import { PaperTable } from "@/components";
 import Chartist from "chartist";
 const tableColumns = [
-  "Name",
+  "DeploymentName",
   "Description",
   "Endpoint",
   "Importance",
@@ -116,7 +79,7 @@ const tableColumns3 = [
 ];
 const tableData = [
   {
-    name: "Loan Default Predictor (Risk Management)",
+    deploymentname: "Loan Default Predictor (Risk Management)",
     description: "Loan default model for the bank",
     endpoint: "https://datarobot-mlops.dynamic.orm.datarobot.com",
     importance: "Moderate",
@@ -177,7 +140,7 @@ export default {
   data() {
     return {
       table1: {
-        title: "Summary",
+        title: "Deployment Summary",
         columns: [...tableColumns],
         data: [...tableData],
       },
@@ -195,53 +158,6 @@ export default {
         title: "Governance",
         columns: [...tableColumns3],
         data: [...tableData3],
-      },
-      statsCards: [
-        {
-          type: "warning",
-          icon: "ti-server",
-          title: "Avg Predictions / Day",
-          value: "1800",
-        },
-        {
-          type: "warning",
-          icon: "ti-pulse",
-          title: "Last Prediction",
-          value: "5 hours ago",
-        },
-      ],
-      usersChart: {
-        data: {
-          labels: [
-            "12:00AM",
-            "3:00AM",
-            "6:00AM",
-            "9:00AM",
-            "12:00PM",
-            "3:00PM",
-            "6:00PM",
-            "9:00PM",
-          ],
-          series: [
-            [1, 0, 1, 1, 1, 0, 0, 1],
-            // [67, 152, 193, 240, 387, 435, 535, 642, 744],
-            // [23, 113, 67, 108, 190, 239, 307, 410, 410],
-          ],
-        },
-        options: {
-          low: 0,
-          high: 1,
-          showArea: true,
-          height: "245px",
-          axisX: {
-            showGrid: false,
-          },
-          lineSmooth: Chartist.Interpolation.simple({
-            divisor: 3,
-          }),
-          showLine: true,
-          showPoint: false,
-        },
       },
     };
   },

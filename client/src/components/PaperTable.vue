@@ -34,9 +34,6 @@
         </tr>
       </tbody>
     </table>
-    <p-button class="add-deployment-btn" @click.native="onAddDeploymentClick">
-      + Add Deployment
-    </p-button>
   </div>
 </template>
 <script>
