@@ -138,25 +138,6 @@ export default {
       deployments: [],
     };
   },
-  // async created() {
-  //   try {
-  //     const response = await axios.get("http://localhost:3000/api/deployments");
-  //     const activeDeploymentsCount = response.data.length;
-  //     this.statsCards[0].value = activeDeploymentsCount;
-  //     // if (activeDeploymentsCount > 0) {
-  //     //   this.chartCards[0].chartData.labels = ["100%"];
-  //     //   this.chartCards[0].chartData.series = [1];
-  //     //   this.chartCards[1].chartData.labels = ["100%"];
-  //     //   this.chartCards[1].chartData.series = [1];
-  //     //   this.chartCards[2].chartData.labels = ["100%"];
-  //     //   this.chartCards[2].chartData.series = [1];
-  //     // }
-  //   } catch (error) {
-  //     console.error(
-  //       `Error retrieving deployment information: ${error.message}`
-  //     );
-  //   }
-  // },
   async created() {
     try {
       // Get the user object from localStorage
