@@ -22,8 +22,8 @@
         </stats-card>
       </div>
     </div>
-    <br/>
-    
+    <br />
+
     <div class="row">
       <!--Charts-->
       <div class="col-md-4 mb-4" v-for="chart in chartCards" :key="chart.title">
@@ -41,21 +41,20 @@
         </chart-card>
       </div>
     </div>
-    
+
     <div class="row">
       <div class="col-12">
-            <view-deploy-card></view-deploy-card>
+        <view-deploy-card></view-deploy-card>
       </div>
     </div>
-    
-
   </div>
 </template>
 
 <script>
 import { StatsCard, ChartCard } from "@/components/index";
 import { PaperTable } from "@/components";
-import ViewDeployCard from "../components/Cards/ViewDeployCard.vue" 
+import ViewDeployCard from "../components/Cards/ViewDeployCard.vue";
+import axios from "axios";
 
 const tableColumns = [
   "Id",
@@ -95,51 +94,38 @@ export default {
   components: {
     StatsCard,
     ChartCard,
+    // eslint-disable-next-line vue/no-unused-components
     PaperTable,
-    ViewDeployCard
+    ViewDeployCard,
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
    */
   data() {
     return {
-      statsCards: [
-        {
-          type: "warning",
-          icon: "ti-server",
-          title: "Active Deployments",
-          value: "72",
-        },
-        {
-          type: "success",
-          icon: "ti-calendar",
-          title: "Predictions",
-          value: "1,345",
-        },
-      ],
       chartCards: [
         {
           title: "Service Health Summary",
           chartType: "Pie",
           chartData: {
-            labels: ["62%", "32%", "6%"],
-            series: [62, 32, 6],
+            labels: [],
+            series: [],
           },
         },
         {
           title: "Data Drift Summary",
           chartType: "Pie",
           chartData: {
-            labels: ["62%", "32%", "6%"],
-            series: [62, 32, 6],
+            labels: [],
+            series: [],
           },
         },
         {
           title: "Accuracy Summary",
           chartType: "Pie",
           chartData: {
-            labels: ["62%", "32%", "6%"],
-            series: [62, 32, 6],
+            labels: [],
+            series: [],
           },
         },
       ],
@@ -149,10 +135,87 @@ export default {
         columns: [...tableColumns],
         data: [...tableData],
       },
+      deployments: [],
     };
+  },
+  // async created() {
+  //   try {
+  //     const response = await axios.get("http://localhost:3000/api/deployments");
+  //     const activeDeploymentsCount = response.data.length;
+  //     this.statsCards[0].value = activeDeploymentsCount;
+  //     // if (activeDeploymentsCount > 0) {
+  //     //   this.chartCards[0].chartData.labels = ["100%"];
+  //     //   this.chartCards[0].chartData.series = [1];
+  //     //   this.chartCards[1].chartData.labels = ["100%"];
+  //     //   this.chartCards[1].chartData.series = [1];
+  //     //   this.chartCards[2].chartData.labels = ["100%"];
+  //     //   this.chartCards[2].chartData.series = [1];
+  //     // }
+  //   } catch (error) {
+  //     console.error(
+  //       `Error retrieving deployment information: ${error.message}`
+  //     );
+  //   }
+  // },
+  async created() {
+    try {
+      // Get the user object from localStorage
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      // Get the logged-in user's ID from the user object
+      const userId = user.id;
+
+      // Get the token from localStorage
+      const token = localStorage.getItem("token");
+
+      // Set up the headers for the request, including the Authorization header
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.get(
+        `http://localhost:3000/deployments/assigned/${userId}`,
+        config
+      );
+      this.deployments = response.data;
+      const activeDeploymentsCount = this.deployments.length;
+      this.statsCards[0].value = activeDeploymentsCount;
+
+      if (activeDeploymentsCount > 0) {
+        this.chartCards[0].chartData.labels = ["100%"];
+        this.chartCards[0].chartData.series = [1];
+        this.chartCards[1].chartData.labels = ["100%"];
+        this.chartCards[1].chartData.series = [1];
+        this.chartCards[2].chartData.labels = ["100%"];
+        this.chartCards[2].chartData.series = [1];
+        this.statsCards[1].value = "3029";
+      }
+    } catch (error) {
+      console.error(
+        `Error retrieving deployment information: ${error.message}`
+      );
+    }
+  },
+  computed: {
+    statsCards() {
+      return [
+        {
+          type: "warning",
+          icon: "ti-server",
+          title: "Active Deployments",
+          value: this.deployments.length,
+        },
+        {
+          type: "success",
+          icon: "ti-calendar",
+          title: "Predictions",
+          value: "0",
+        },
+      ];
+    },
   },
 };
 </script>
 
 <style></style>
-
