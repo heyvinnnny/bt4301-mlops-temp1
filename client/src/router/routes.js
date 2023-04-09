@@ -55,7 +55,8 @@ import MgrDashboard from "@/managerpages/MgrDashboard.vue";
 import MgrDeploymentUpload from "@/managerpages/MgrDeploymentUpload.vue";
 import MgrPerformanceMonitoring from "@/managerpages/MgrPerformanceMonitoring.vue";
 import MgrVersionControl from "@/managerpages/MgrVersionControl.vue";
-import MgrViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
+import MgrViewDeployDetail from "../components/Cards/MgrViewDeployDetail.vue"
+import MgrViewDrift from "../components/Cards/MgrViewDrift.vue"
 import MgrAssignment from "@/managerpages/MgrAssignment.vue"
 import CRApproval from "@/managerpages/CRApproval.vue"
 
@@ -149,6 +150,12 @@ const routes = [
         name: "version control",
         component: MgrVersionControl,
         meta: {requireAuth: true},
+      },
+      {
+        path: "mgrdriftmonitoring",
+        name: "MgrViewDrift",
+        component: MgrViewDrift,
+        props: true
       },
     ],
   },

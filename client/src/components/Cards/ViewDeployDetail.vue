@@ -50,8 +50,6 @@
     <br>
     <div v-show="isSuccess1" class="success-message">Model files uploaded and created successfully!</div>
   </form>
-
-
     <h2>Upload Test Data</h2>
     <form @submit.prevent="submitForm">
       <div>
@@ -128,6 +126,7 @@ export default {
   handleDataJsonUpload(event) {
     this.test_data = event.target.files[0]
   },
+
   onUploadFile() {
           const formData = new FormData();
           formData.append("deployment_id", this.deployment.deploymentId);
@@ -180,7 +179,7 @@ export default {
             }
           });
       },
-      onUploadData() {
+    onUploadData() {
             const formData = new FormData();
             formData.append("deployment_id", this.deployment.deploymentId);
             formData.append("test_data", this.test_data);  // appending file

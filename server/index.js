@@ -646,12 +646,9 @@ app.post("/upload", async (req, res) => {
     const email = req.body.email;
     const jsonFile = req.files.jsonFile;
     const binaryFile = req.files.binaryFile;
-    console.log("this is fine")
-    console.log(email)
     let jsonData
     try {
       jsonData = JSON.parse(fs.readFileSync(`./mlModel/${deployment_id}/test.json`));
-      console.log(jsonData)
     } catch (error) {
       return res.status(404).json({ message: 'Data not found' });
     }
@@ -706,7 +703,7 @@ app.post("/upload", async (req, res) => {
       });
       await model.save();
       return res.status(200).send({msg:"Done uploading!"})
-    }, 10000);
+    }, 5000);
     
     
   } catch (err) {
