@@ -64,9 +64,8 @@
     </form>
     <router-link :to="{ name: 'ViewDrift', params: { id: id } }">Data Drift</router-link>
 
-    </div>
-    <button v-on:click="onUploadData()" type="submit">Upload Files</button>
-  </form>
+    
+
   </div>
 </template>
 
