@@ -27,7 +27,15 @@
         </tr>
       </tbody>
     </table>
-
+    <h2>Upload Test Data</h2>
+    Please upload test data before uploading model!
+    <form @submit.prevent="submitForm">
+      <div>
+        <label for="jsonFile">JSON File:</label>
+        <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleDataJsonUpload">
+      </div>
+      <button v-on:click="onUploadData()" type="submit">Upload Files</button>
+    </form>
     <h2>Model Upload</h2>
   <form>
     <div>
@@ -54,14 +62,7 @@
   </form>
 
 
-    <h2>Upload Test Data</h2>
-    <form @submit.prevent="submitForm">
-      <div>
-        <label for="jsonFile">JSON File:</label>
-        <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleDataJsonUpload">
-      </div>
-      <button v-on:click="onUploadData()" type="submit">Upload Files</button>
-    </form>
+    
     <h2>Data Drift</h2>
     <router-link :to="{ name: 'ViewDrift', params: { id: id } }">Data Drift</router-link>
 
