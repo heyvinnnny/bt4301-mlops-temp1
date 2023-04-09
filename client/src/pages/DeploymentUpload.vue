@@ -4,7 +4,7 @@
     <form>
       <div class="form-group">
         <label for="deployment-id">Deployment ID:</label>
-        <input type="text" class="form-control" id="deployment-id" v-model="deploymentId" required>
+        <input type="text" class="form-control" id="deployment-id" v-model="deploymentId" pattern="[0-9]+" required>
       </div>
       <div class="form-group">
         <label for="deployment-name">Deployment Name:</label>
@@ -29,18 +29,19 @@
         <input type="text" class="form-control" id="email-version" v-model="user.email" disabled required>
       </div>
       <div class="form-group">
-        <label for="model-version">Model Version:</label>
-        <input type="text" class="form-control" id="model-version" v-model="modelVersion" required>
+        <label for="model-version">Deployment Description:</label>
+        <input type="text" class="form-control" id="deployment-description" v-model="deployDescription" required>
       </div>
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="env-version">Environment Version:</label>
         <input type="text" class="form-control" id="manager-email" v-model="envVersion" required>
       </div>
       <div class="form-group">
         <label for="replacement-reason">Replacement Reason:</label>
         <textarea class="form-control" id="replacement-reason" v-model="replacementReason" required></textarea>
-      </div>
+      </div> -->
       <button type="submit" class="btn btn-primary" @click.prevent="submitForm">Submit</button>
+      <div v-show="isSuccess" class="success-message">Deployment created successfully!</div>
     </form>
   </div>
 </template>
@@ -58,10 +59,11 @@ export default {
       deploymentName: '',
       importance: '',
       dateNow: new Date().toISOString().slice(0, 10),
-      modelVersion: '',
-      envVersion: '',
-      replacementReason: '',
-      email: ""
+      deployDescription: '',
+      //envVersion: '',
+      //replacementReason: '',
+      email: "",
+      isSuccess: false
     }
   },
   computed: {
@@ -90,28 +92,54 @@ export default {
   },
   methods: {
     async submitForm() {
-      const response = await axios.post('http://localhost:3000/deployments', {
+      try {
+        const response = await axios.post('http://localhost:3000/deployments', {
           deploymentId: this.deploymentId,
           deploymentName: this.deploymentName,
           importance: this.importance,
           dateNow: this.dateNow,
-          modelVersion: this.modelVersion,
-          envVersion: this.envVersion,
-          replacementReason: this.replacementReason,
+          deployDescription: this.deployDescription,
           email: this.user.email,
-      });
+        });
 
-      console.log(response.data);
+        console.log(response.data);
 
-      this.deploymentId = ''
-      this.deploymentName = ''
-      this.importance = ''
-      this.dateNow = new Date().toISOString().slice(0, 10)
-      this.modelVersion = ''
-      this.envVersion = ''
-      this.replacementReason = ''
-      this.email = '' 
+        // Display a success notification
+        this.isSuccess = true;
+
+        // Reset the form fields
+        this.deploymentId = '';
+        this.deploymentName = '';
+        this.importance = '';
+        this.dateNow = new Date().toISOString().slice(0, 10);
+        this.deployDescription = '';
+        this.email = '';
+      } catch (error) {
+        console.error(error);
+      }
     },
   }
 }
 </script>
+
+<style scoped>
+.success-message {
+  background-color: green;
+  color: #ffffff;
+  font-size: 1.2rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  animation: slide-down 0.3s ease-out;
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+</style>

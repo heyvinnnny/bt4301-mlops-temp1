@@ -1,5 +1,7 @@
 import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
+import HomeDashboardLayout from "@/layout/dashboard/HomeDashboardLayout.vue";
 import MgrDashboardLayout from "@/layout/dashboard/MgrDashboardLayout.vue";
+import MgrHomeDashboardLayout from "@/layout/dashboard/MgrHomeDashboardLayout.vue";
 import MgrUserProfile from "@/pages/MgrUserProfile.vue";
 
 // GeneralViews
@@ -30,7 +32,14 @@ import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
 import UploadModel from "@/pages/UploadMLModel.vue";
 import Timeline from "@/components/Timeline.vue";
-import ViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
+import ViewDrift from "../components/Cards/ViewDrift.vue"
+import ViewDeployDetail from "../components/Cards/ViewDeployDetail.vue";
+import ViewSubmitCR from "../components/Cards/ViewSubmitCRCard.vue";
+import ViewSummaryCard from "../components/Cards/ViewSummaryCard";
+import ViewContentCard from "../components/Cards/ViewContentCard"
+import ActivityLogCard from "../components/Cards/ActivityLogCard";
+import ViewChallengerCard from "../components/Cards/ViewChallengerCard";
+import ViewPendingCRCard from "../components/Cards/ViewPendingCRCard";
 
 
 //Manager Pages
@@ -46,6 +55,7 @@ import MgrDeploymentUpload from "@/managerpages/MgrDeploymentUpload.vue";
 import MgrPerformanceMonitoring from "@/managerpages/MgrPerformanceMonitoring.vue";
 import MgrVersionControl from "@/managerpages/MgrVersionControl.vue";
 import MgrViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
+import MgrAssignment from "@/managerpages/MgrAssignment.vue"
 
 
 const routes = [
@@ -57,9 +67,9 @@ const routes = [
     meta: {requireAuth: true},
     children: [
       {
-        path: "mgrhome",
-        name: "home",
-        component: MgrHome,
+        path: "mgrassignment",
+        name: "MgrAssignment",
+        component: MgrAssignment,
         meta: {requireAuth: true},
         props:true,
       },
@@ -136,6 +146,22 @@ const routes = [
   {
     path: "/",
     mode: 'history',
+    component: MgrHomeDashboardLayout,
+    redirect: "/login",
+    meta: {requireAuth: true},
+    children: [
+      {
+        path: "mgrhome",
+        name: "home",
+        component: MgrHome,
+        meta: {requireAuth: true},
+        props:true,
+      },
+    ],
+  },
+  {
+    path: "/",
+    mode: 'history',
     component: DashboardLayout,
     redirect: "/login",
     meta: {requireAuth: true},
@@ -166,6 +192,48 @@ const routes = [
         props:true,
       },
       {
+        path: "/viewsubmitcr/:id",
+        name: "ViewSubmitCRCard",
+        component: ViewSubmitCR,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/viewsummarycard/:id",
+        name: "ViewSummaryCard",
+        component: ViewSummaryCard,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/viewcontentcard/:id",
+        name: "ViewContentCard",
+        component: ViewContentCard,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/activitylogcard/:id",
+        name: "activitylogCard",
+        component: ActivityLogCard,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/viewchallengercard/:id",
+        name: "viewchallengercard",
+        component: ViewChallengerCard,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "/viewpendingcrcard/:id",
+        name: "viewpendingcrcard",
+        component: ViewPendingCRCard,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
         path: "deployment-upload",
         name: "deployment-upload",
         component: DeploymentUpload,
@@ -175,12 +243,6 @@ const routes = [
         path: "version-control",
         name: "version control",
         component: VersionControl,
-        meta: {requireAuth: true},
-      },
-      {
-        path: "/home",
-        name: "home",
-        component: Home,
         meta: {requireAuth: true},
       },
       {
@@ -259,6 +321,27 @@ const routes = [
         path: "ChangeRequestApproval",
         name: "ChangeRequestApproval",
         component: ChangeRequestApproval,
+      },
+      {
+        path: "driftmonitoring",
+        name: "ViewDrift",
+        component: ViewDrift,
+        props: true
+      },
+    ],
+  },
+  {
+    path: "/",
+    mode: 'history',
+    component: HomeDashboardLayout,
+    redirect: "/login",
+    meta: {requireAuth: true},
+    children: [
+      {
+        path: "/home",
+        name: "home",
+        component: Home,
+        meta: {requireAuth: true},
       },
     ],
   },

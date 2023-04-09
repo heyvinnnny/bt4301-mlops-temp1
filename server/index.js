@@ -18,6 +18,9 @@ const fileUpload = require("express-fileupload");
 const Performance = require("./models/performanceModel");
 const Deployment = require("./models/deployments");
 const Model = require("./models/model")
+const Assignment = require("./models/assignment")
+const tf = require("@tensorflow/tfjs-node")
+const calculateMetrics = require("./calculate_metrics.js")
 
 app.use(morgan("combined"));
 
@@ -399,8 +402,6 @@ app.post("/register", async (req, res) => {
       console.log("Email sent: " + info.response);
     });
 
-    res.status(200).json({ msg: "User registered, pending approval" });
-
     res.status(201).json({ msg: "User registered, pending approval" });
   } catch (err) {
     console.error(err);
@@ -418,30 +419,90 @@ app.get("/users/pending", auth, async (req, res) => {
   }
 });
 
-app.put("/users/approval/:userId", auth, async (req, res) => {
+app.put('/users/approval/:userId', auth, async (req, res) => {
   try {
     const { userId } = req.params;
     const { status } = req.body;
 
-    if (!["Approved", "Rejected"].includes(status)) {
-      return res.status(400).json({ msg: "Invalid status" });
+    if (!['Approved', 'Rejected'].includes(status)) {
+      return res.status(400).json({ msg: 'Invalid status' });
     }
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { status },
-      { new: true }
-    );
+    const user = await User.findByIdAndUpdate(userId, { status }, { new: true });
 
     if (!user) {
-      return res.status(404).json({ msg: "User not found" });
+      return res.status(404).json({ msg: 'User not found' });
     }
+
+    //To untick for testing **
+    // if (status === "Approved") {
+    //   // Send email notification to user
+    //   const transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     host: "smtp.gmail.com",
+    //     port: 465,
+    //     secure: true,
+    //     auth: {
+    //       user: "bt4301.mlops1@gmail.com",
+    //       pass: "kvbrfhqsmebvtptn",
+    //     },
+    //   });
+
+    //   const mailOptions = {
+    //     from: process.env.EMAIL_USER,
+    //     to: user.email,
+    //     subject: "Account approved",
+    //     html: `<p>Your account has been approved.</p>
+    //            <p><a href="http://localhost:8080/login">Click here to log in.</a></p>`,
+    //   };
+
+    //   transporter.sendMail(mailOptions, (err, info) => {
+    //     if (err) {
+    //       console.error(err);
+    //     } else {
+    //       console.log("Email sent: " + info.response);
+    //     }
+    //   });
+    // } else if (status === "Rejected") {
+    //   // Send email notification to user
+    //   const transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     host: "smtp.gmail.com",
+    //     port: 465,
+    //     secure: true,
+    //     auth: {
+    //       user: "bt4301.mlops1@gmail.com",
+    //       pass: "kvbrfhqsmebvtptn",
+    //     },
+    //   });
+
+    //   const mailOptions = {
+    //     from: process.env.EMAIL_USER,
+    //     to: user.email,
+    //     subject: "Account rejected",
+    //     html: `<p>Your account has been rejected. Please try again.</p>`,
+    //   };
+
+    //   transporter.sendMail(mailOptions, (err, info) => {
+    //     if (err) {
+    //       console.error(err);
+    //     } else {
+    //       console.log("Email sent: " + info.response);
+    //     }
+    //   });
+
+    //   // Delete user record from the database
+    //   await User.findByIdAndDelete(userId);
+    // }
+
+    // user.status = status;
+    // await user.save();
 
     res.json(user);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ msg: "Server error" });
-  }
+    res.status(500).json({ msg: 'Server error' });
+    }
 });
 
 //Randomly generated password for user
@@ -579,11 +640,21 @@ app.post("/upload", async (req, res) => {
   }
   // accessing the file
   try {
+    
     const deployment_id =  req.body.deployment_id
     const model_name = req.body.model_name
     const model_version = req.body.model_version
+    const email = req.body.email
     const jsonFile = req.files.jsonFile;
     const binaryFile = req.files.binaryFile;
+    console.log("this is fine")
+    let jsonData
+    try {
+      jsonData = JSON.parse(fs.readFileSync(`./mlModel/${deployment_id}/test.json`));
+      console.log(jsonData)
+    } catch (error) {
+      return res.status(404).json({ message: 'Data not found' });
+    }
     // console.log(deployment_id, model_name, model_version);
     //create folder if it doesnt exist
     var dir = `${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}`
@@ -592,32 +663,53 @@ app.post("/upload", async (req, res) => {
       fs.mkdirSync(dir, { recursive: true });
     }
     // move the files to the public directory
-    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${jsonFile.name}`, function (err) {
+    await jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/model.json`, function (err) {
       if (err) {
         console.log(err);
         return res.status(500).send({ msg: "Error occured" });
       }
 
-    binaryFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${binaryFile.name}`, function (err) {
+    binaryFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/weights.bin`, function (err) {
       if (err) {
         console.log(err);
       }
       
     });
     });
-    const model = new Model({
-      modelName: model_name,
-      modelVersion: model_version,
-      deploymentId: deployment_id,
-      // path: dir,
-      auc: 0.5,
-      gini: 0.7,
-      logloss: 0.888,
-      kolmogorov: 0.2,
-      psi: 0.4
-    })
-    await model.save()
-  }catch (err) {
+    
+    setTimeout( async() => {
+      let model_to_load 
+      let auc,gini, logloss,ks,psi
+      try {
+        model_to_load = await tf.loadLayersModel(`file://mlModel/${deployment_id}/${model_name}/${model_version}/model.json`);
+        [auc, gini, logloss, ks, psi] = await calculateMetrics(model_to_load, jsonData)
+      } catch (error) {
+        return res.status(500).json({msg: "Model not correct shape!"})
+      }
+        // console.log("auc is")
+      // console.log(auc)
+      const model = new Model({
+        modelName: model_name,
+        modelVersion: model_version,
+        deploymentId: deployment_id,
+        // path: dir,
+        email: email,
+        auc: auc,
+        gini: gini,
+        logloss: logloss,
+        kolmogorov: ks,
+        psi: psi,
+        deployed :false,
+        approval_status: "NA",
+        replacement_reason: "NA",
+        manually_apply_changes: false
+      });
+      await model.save();
+      return res.status(200).send({msg:"Done uploading!"})
+    }, 5000);
+    
+    
+  } catch (err) {
     console.log(err);
     return res.status(500).send({ msg: "Error occurred while processing files" });
   }
@@ -639,39 +731,43 @@ app.post("/data", (req, res) => {
       fs.mkdirSync(dir, { recursive: true });
     }
     // move the files to the public directory
-    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${jsonFile.name}`, function (err) {
+    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/test.json`, function (err) {
       if (err) {
         console.log(err);
-        return res.status(500).send({ msg: "Error occured" });
+        return res.status(500).json({ msg: "Error occured" });
       }
     });
+    return res.status(200).json({ msg: "Uploaded successfully!" });
   }catch (err) {
     console.log(err);
     return res.status(500).send({ msg: "Error occurred while processing files" });
   }
 });
 
-app.get("/api/deployments", async (req, res) => {
+app.get('/deployments', async (req, res) => {
   try {
     const deployments = await Deployment.find();
     res.json(deployments);
-    console.log(performances)
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Error getting deployments' });
   }
 });
 
 
-//deploy card
-app.get('/viewdeploy', async (req, res) => {
-  try {
-    const deployments = await Deployment.find({});
-    res.status(200).json(deployments);
-  } catch (error) {
-    console.error('Error in /deployments GET route:', error);
-    res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
-  }
-});
+//deploy card 2
+// app.get('/viewdeploy', async (req, res) => {
+//   try {
+//     const userId = req.user._id;
+//     const userAssignments = await Assignment.find({ user: userId });
+//     const deploymentIds = userAssignments.map((assignment) => assignment.deployment);
+//     const deployments = await Deployment.find({ _id: { $in: deploymentIds } });
+//     res.json(deployments);
+//   } catch (error) {
+//     console.error('Error in /deployments GET route:', error);
+//     res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
+//   }
+// });
 
 app.get('/viewdeploy/:id', async (req, res) => {
   try {
@@ -690,6 +786,23 @@ app.get('/viewdeploy/:id', async (req, res) => {
 });
 
 
+app.get('/viewmodel/:id', async (req, res) => {
+  try {
+    const model = await Model.findOne({ deploymentId: req.params.id });
+
+    console.log(model)
+    
+    if (!model) {
+      return res.status(404).json({ message: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (error) {
+    console.error('Error in /viewmodel/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving model details: ${error.message}` });
+  }
+});
+
+
 app.post('/deployments', async (req, res) => {
   console.log('Request payload:', req.body);
 
@@ -699,13 +812,9 @@ app.post('/deployments', async (req, res) => {
       deploymentName: req.body.deploymentName,
       importance: req.body.importance,
       dateNow: req.body.dateNow,
-      modelVersion: req.body.modelVersion,
-      envVersion: req.body.envVersion,
-      replacementReason: req.body.replacementReason,
+      deployDescription: req.body.deployDescription,
       email: req.body.email,
     })
-
-    console.log(deployment)
 
     await deployment.save()
     res.status(201).json({ message: 'Deployment information uploaded successfully!' })
@@ -713,7 +822,87 @@ app.post('/deployments', async (req, res) => {
     res.status(500).json({ message: `Error uploading deployment information: ${error.message}` })
   }
 })
+app.get('/viewmodel_drift/:id', async (req, res) => {
+  try {
+    const model = await Model.findOne({ deploymentId: req.params.id, deployed:true});
 
+    console.log(model)
+    
+    if (!model) {
+      // console.log("No model found!")
+      return res.status(404).json({ message: 'Model not found' });
+    }
+    const model_to_load = await tf.loadLayersModel(`file://mlModel/${model.deploymentId}/${model.modelName}/${model.modelVersion}/model.json`);
+    let jsonDataW1, jsonDataW2, jsonDataW3, jsonDataW4;
+    try {
+      jsonDataW1 = JSON.parse(fs.readFileSync(`./mlModel/${model.deploymentId}/testdata/week1.json`));
+      jsonDataW2 = JSON.parse(fs.readFileSync(`./mlModel/${model.deploymentId}/testdata/week2.json`));
+      jsonDataW3 = JSON.parse(fs.readFileSync(`./mlModel/${model.deploymentId}/testdata/week3.json`));
+      jsonDataW4 = JSON.parse(fs.readFileSync(`./mlModel/${model.deploymentId}/testdata/week4.json`));
+    } catch (error) {
+      return res.status(404).json({ message: 'Data not found' });
+    }
+      const [auc1, gini1, logloss1, ks1, psi1] = await calculateMetrics(model_to_load, jsonDataW1)
+    const [auc2, gini2, logloss2, ks2, psi2] = await calculateMetrics(model_to_load, jsonDataW2)
+    const [auc3, gini3, logloss3, ks3, psi3] = await calculateMetrics(model_to_load, jsonDataW3)
+    const [auc4, gini4, logloss4, ks4, psi4] = await calculateMetrics(model_to_load, jsonDataW4)
+    res.status(200).json({ model, metrics: { auc1, gini1, logloss1, ks1, psi1, auc2, gini2, logloss2, ks2, psi2, auc3, gini3, logloss3, ks3, psi3, auc4, gini4, logloss4, ks4, psi4}});;
+  } catch (error) {
+    console.error('Error in /viewdeploy/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});
+
+//Upload test_data
+app.post("/upload_data_drift", (req, res) => {
+  if (!req.files) {
+    return res.status(500).send({ msg: "file is not found" });
+  }
+  // accessing the file
+  try {
+    const deployment_id =  req.body.deployment_id
+    const week1 = req.files.week1;
+    const week2 = req.files.week2;
+    const week3 = req.files.week3;
+    const week4 = req.files.week4;
+    console.log(deployment_id)
+    //create folder if it doesnt exist
+    var dir = `${__dirname}/mlModel/${deployment_id}/testdata`
+    
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    // move the files to the public directory
+    week1.mv(`${__dirname}/mlModel/${deployment_id}/testdata/week1.json`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+    week2.mv(`${__dirname}/mlModel/${deployment_id}/testdata/week2.json`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+    week3.mv(`${__dirname}/mlModel/${deployment_id}/testdata/week3.json`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+    week4.mv(`${__dirname}/mlModel/${deployment_id}/testdata/week4.json`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+    return res.status(200).json({ msg: "Uploaded files" });
+  }catch (err) {
+    console.log(err);
+    return res.status(500).send({ msg: "Error occurred while processing files" });
+  }
+});
 
 // Start the server
 const PORT = process.env.PORT || 27017;
@@ -763,5 +952,115 @@ app.get('/deployments/:id', async (req, res) => {
   } catch (error) {
     console.error('Error in /deployments/:id GET route:', error);
     res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});
+
+
+
+//models
+app.get('/models', async (req, res) => {
+  try {
+    const models = await Model.find();
+    console.log(models);
+    res.json(models);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+app.get('/models/:id', async (req, res) => {
+  try {
+    const model = await Model.findById(req.params.id);
+    if (!model) {
+      return res.status(404).json({ msg: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+app.put('/models/:id', async (req, res) => {
+  const { id } = req.params; // extract the ID from the request URL
+  const { replacement_reason, manually_apply_changes } = req.body; // extract the replacement reason and apply changes from the request body
+
+  try {
+    // find the model by ID and update its replacement reason and apply changes
+    const updatedModel = await Model.findByIdAndUpdate(
+      id,
+      { replacement_reason, manually_apply_changes },
+      { new: true }
+    );
+
+    res.status(200).json(updatedModel); // send back the updated model as response
+  } catch (error) {
+    console.error(`Error updating model with ID ${id}: ${error.message}`);
+    res.status(500).json({ message: 'Error updating model' });
+  }
+});
+
+
+//assign
+
+// Route for the manager assign page
+app.get('/manager-assign', async (req, res) => {
+  try {
+    const users = await User.find({ access: 'User', status: 'Approved' });
+    const deployments = await Deployment.find();
+    res.render('managerAssign', { users, deployments });
+  } catch (err) {
+    res.status(500).send('Server Error');
+  }
+});
+
+app.post('/mgrassignment', async (req, res) => {
+  try {
+    const { deployment, users } = req.body;
+    const deploymentToUpdate = await Deployment.findById(deployment);
+    deploymentToUpdate.allowedUsers = Array.isArray(users) ? users : [users];
+    await deploymentToUpdate.save();
+    res.status(200).json({ message: 'Successfully assigned deployment' });
+  } catch (err) {
+    console.error('Error in mgrassignment route:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+//deploy card 1
+app.get('/viewdeploy', async (req, res) => {
+  try {
+    const deployments = await Deployment.find({});
+    res.status(200).json(deployments);
+  } catch (error) {
+    console.error('Error in /deployments GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
+  }
+});
+
+// API endpoint for fetching assigned deployments for a specific user
+app.get('/deployments/assigned/:userId', auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log('User ID:', userId); // Log the user ID
+    const deployments = await Deployment.find({ allowedUsers: userId });
+    console.log('Deployments:', deployments); // Log the fetched deployments
+    res.status(200).json(deployments);
+
+  } catch (err) {
+    console.error('Error in deployments/assigned/:userId route:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+// API endpoint for fetching users based on access and status
+app.get('/users', async (req, res) => {
+  try {
+    const { access, status } = req.query;
+    const users = await User.find({ access, status });
+    res.json(users);
+  } catch (err) {
+    res.status(500).send('Server Error');
   }
 });

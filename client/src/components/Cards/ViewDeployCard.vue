@@ -7,7 +7,7 @@
             <th>Deployment ID</th>
             <th>Deployment Name</th>
             <th>Importance</th>
-            <th>Date Now</th>
+            <th>Date Created</th>
           </tr>
         </thead>
         <tbody>
@@ -19,7 +19,7 @@
             </td>
             <td>{{ deployment.deploymentName }}</td>
             <td>{{ deployment.importance }}</td>
-            <td>{{ deployment.dateNow }}</td>
+            <td>{{ deployment.dateNow.slice(0, 10) }}</td>
           </tr>
         </tbody>
       </table>
@@ -38,7 +38,23 @@
     },
     async created() {
       try {
-        const response = await axios.get('http://localhost:3000/viewdeploy');
+        //const response = await axios.get('http://localhost:3000/viewdeploy');
+        // Get the user object from localStorage
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        // Get the logged-in user's ID from the user object
+        const userId = user.id;
+
+        // Get the token from localStorage
+            const token = localStorage.getItem("token");
+
+        // Set up the headers for the request, including the Authorization header
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(`http://localhost:3000/deployments/assigned/${userId}`, config);
         this.deployments = response.data;
       } catch (error) {
         console.error(`Error retrieving deployment information: ${error.message}`);

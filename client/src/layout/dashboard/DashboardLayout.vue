@@ -21,16 +21,6 @@
           name="Performance Monitor"
           icon="ti-list-ol"
         />
-        <sidebar-link
-          to="/codelinting"
-          name="Code Linting"
-          icon="ti-blackboard"
-        />
-        <sidebar-link
-          to="/codeporting"
-          name="Code Porting"
-          icon="ti-bell"
-        />
         <sidebar-link to="/deployment-upload" name="Deployment Upload" icon="ti-upload" />
       </template>
     </side-bar>
