@@ -25,7 +25,7 @@
       </button>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
-          <drop-down
+          <!-- <drop-down
             class="nav-item"
             title="5 Notifications"
             title-classes="nav-link"
@@ -36,7 +36,13 @@
             <a class="dropdown-item" href="#">Notification 3</a>
             <a class="dropdown-item" href="#">Notification 4</a>
             <a class="dropdown-item" href="#">Another notification</a>
-          </drop-down>
+          </drop-down> -->
+          <li class="nav-item">
+            <router-link class="nav-link" to="/mgrcodeporting">Code Porting</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/mgrcodelinting">Code Linting</router-link>
+          </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/mgrassignment">Assignment</router-link>
           </li>
