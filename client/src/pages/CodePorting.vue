@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Code Converter</h1>
-    <label for="input-code">Enter your Python code:</label>
+    <label for="input-code">Enter your Python code:</label> <br>
     <textarea
       id="input-code"
       v-model="inputCode"
