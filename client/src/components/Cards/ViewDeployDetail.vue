@@ -53,11 +53,17 @@
     <button v-on:click="onUploadFile()" type="submit">Upload Files</button>
   </form>
 
-  <h2>Upload Test Data</h2>
-  <form>
-    <div>
-      <label for="jsonFile">JSON File:</label>
-      <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleDataJsonUpload">
+
+    <h2>Upload Test Data</h2>
+    <form @submit.prevent="submitForm">
+      <div>
+        <label for="jsonFile">JSON File:</label>
+        <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleDataJsonUpload">
+      </div>
+      <button v-on:click="onUploadData()" type="submit">Upload Files</button>
+    </form>
+    <router-link :to="{ name: 'ViewDrift', params: { id: id } }">Data Drift</router-link>
+
     </div>
     <button v-on:click="onUploadData()" type="submit">Upload Files</button>
   </form>
@@ -138,26 +144,57 @@ export default {
           console.log(err);
         });
     },
-    onUploadData() {
-          const formData = new FormData();
-          formData.append("deployment_id", this.deployment.deploymentId);
-          formData.append("test_data", this.test_data);  // appending file
 
-     // sending file to the backend
-      axios
-        .post("http://localhost:3000/data", formData)
-        .then(res => {
-          console.log("done uploading!")
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-}
-};
-</script>
-
+    onUploadFile() {
+            const formData = new FormData();
+            formData.append("deployment_id", this.deployment.deploymentId);
+            formData.append("model_name", this.model_name);
+            formData.append("model_version", this.model_version);
+            formData.append("jsonFile", this.json);  // appending file
+            formData.append("binaryFile", this.bin);  // appending file
+  
+       // sending file to the backend
+        axios
+          .post("http://localhost:3000/upload", formData)
+          .then(res => {
+            // console.log("done uploading!")
+            alert("Done uploading! please refresh!")
+            console.log(res);
+          })
+          .catch(err => {
+            
+            if (err.response && err.response.status === 404 && err.response.data.message == "Data not found") {
+              alert("Upload test data first!")
+            } else if (err.response && err.response.status === 500 && err.response.data.msg =="Model not correct shape!") {
+              alert(err.response.data.msg)
+            } else {
+              alert("Something went wrong! Try again!")
+              console.log(err);
+            }
+          });
+      },
+      onUploadData() {
+            const formData = new FormData();
+            formData.append("deployment_id", this.deployment.deploymentId);
+            formData.append("test_data", this.test_data);  // appending file
+  
+       // sending file to the backend
+        axios
+          .post("http://localhost:3000/data", formData)
+          .then(res => {
+            console.log("done uploading!")
+            alert("Done uploading! please refresh!")
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+  }
+  };
+  </script>
+  
+  
 
 <style scoped>
 .deployment-details-table {

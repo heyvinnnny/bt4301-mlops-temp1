@@ -32,6 +32,7 @@ import UpdateCurrentModel from "@/pages/UpdateCurrentModel.vue";
 import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
 import UploadModel from "@/pages/UploadMLModel.vue";
 import Timeline from "@/components/Timeline.vue";
+import ViewDrift from "../components/Cards/ViewDrift.vue"
 import ViewDeployDetail from "../components/Cards/ViewDeployDetail.vue";
 import ViewSubmitCR from "../components/Cards/ViewSubmitCRCard.vue";
 import ViewSummaryCard from "../components/Cards/ViewSummaryCard";
@@ -320,6 +321,12 @@ const routes = [
         path: "ChangeRequestApproval",
         name: "ChangeRequestApproval",
         component: ChangeRequestApproval,
+      },
+      {
+        path: "driftmonitoring",
+        name: "ViewDrift",
+        component: ViewDrift,
+        props: true
       },
     ],
   },

@@ -17,11 +17,11 @@ async function calculateMetrics (model, jsonData) {
   const logloss = await calculateLogLoss(true_label,predProbs)
   const ks = await calculateKS(true_label,predProbs)
   const psi = await calculatePSI(true_label,predProbs)
-  console.log(auc)
-  console.log(gini)
-  console.log(ks)
-  console.log(logloss)
-  console.log(psi)
+  // console.log(auc)
+  // console.log(gini)
+  // console.log(ks)
+  // console.log(logloss)
+  // console.log(psi)
   return [auc, gini,logloss, ks, psi]
 }
 

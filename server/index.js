@@ -640,12 +640,21 @@ app.post("/upload", async (req, res) => {
   }
   // accessing the file
   try {
+    
     const deployment_id =  req.body.deployment_id
     const model_name = req.body.model_name
     const model_version = req.body.model_version
     const email = req.body.email
     const jsonFile = req.files.jsonFile;
     const binaryFile = req.files.binaryFile;
+    console.log("this is fine")
+    let jsonData
+    try {
+      jsonData = JSON.parse(fs.readFileSync(`./mlModel/${deployment_id}/test.json`));
+      console.log(jsonData)
+    } catch (error) {
+      return res.status(404).json({ message: 'Data not found' });
+    }
     // console.log(deployment_id, model_name, model_version);
     //create folder if it doesnt exist
     var dir = `${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}`
@@ -654,13 +663,13 @@ app.post("/upload", async (req, res) => {
       fs.mkdirSync(dir, { recursive: true });
     }
     // move the files to the public directory
-    await jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${jsonFile.name}`, function (err) {
+    await jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/model.json`, function (err) {
       if (err) {
         console.log(err);
         return res.status(500).send({ msg: "Error occured" });
       }
 
-    binaryFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${binaryFile.name}`, function (err) {
+    binaryFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/weights.bin`, function (err) {
       if (err) {
         console.log(err);
       }
@@ -669,11 +678,16 @@ app.post("/upload", async (req, res) => {
     });
     
     setTimeout( async() => {
-      const model_to_load = await tf.loadLayersModel(`file://mlModel/${deployment_id}/${model_name}/${model_version}/model.json`);
-      const jsonData = JSON.parse(fs.readFileSync(`./mlModel/${deployment_id}/test.json`));
-      const [auc, gini, logloss, ks, psi] = await calculateMetrics(model_to_load, jsonData)
-      console.log("auc is")
-      console.log(auc)
+      let model_to_load 
+      let auc,gini, logloss,ks,psi
+      try {
+        model_to_load = await tf.loadLayersModel(`file://mlModel/${deployment_id}/${model_name}/${model_version}/model.json`);
+        [auc, gini, logloss, ks, psi] = await calculateMetrics(model_to_load, jsonData)
+      } catch (error) {
+        return res.status(500).json({msg: "Model not correct shape!"})
+      }
+        // console.log("auc is")
+      // console.log(auc)
       const model = new Model({
         modelName: model_name,
         modelVersion: model_version,
@@ -691,8 +705,11 @@ app.post("/upload", async (req, res) => {
         manually_apply_changes: false
       });
       await model.save();
+      return res.status(200).send({msg:"Done uploading!"})
     }, 5000);
-  }catch (err) {
+    
+    
+  } catch (err) {
     console.log(err);
     return res.status(500).send({ msg: "Error occurred while processing files" });
   }
@@ -714,12 +731,13 @@ app.post("/data", (req, res) => {
       fs.mkdirSync(dir, { recursive: true });
     }
     // move the files to the public directory
-    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${jsonFile.name}`, function (err) {
+    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/test.json`, function (err) {
       if (err) {
         console.log(err);
-        return res.status(500).send({ msg: "Error occured" });
+        return res.status(500).json({ msg: "Error occured" });
       }
     });
+    return res.status(200).json({ msg: "Uploaded successfully!" });
   }catch (err) {
     console.log(err);
     return res.status(500).send({ msg: "Error occurred while processing files" });
@@ -804,7 +822,87 @@ app.post('/deployments', async (req, res) => {
     res.status(500).json({ message: `Error uploading deployment information: ${error.message}` })
   }
 })
+app.get('/viewmodel/:id', async (req, res) => {
+  try {
+    const model = await Model.findOne({ deploymentId: req.params.id, deployed:true});
 
+    console.log(model)
+    
+    if (!model) {
+      // console.log("No model found!")
+      return res.status(404).json({ message: 'Model not found' });
+    }
+    const model_to_load = await tf.loadLayersModel(`file://mlModel/${model.deploymentId}/${model.modelName}/${model.modelVersion}/model.json`);
+    let jsonDataW1, jsonDataW2, jsonDataW3, jsonDataW4;
+    try {
+      jsonDataW1 = JSON.parse(fs.readFileSync(`./mlModel/${model.deploymentId}/testdata/week1.json`));
+      jsonDataW2 = JSON.parse(fs.readFileSync(`./mlModel/${model.deploymentId}/testdata/week2.json`));
+      jsonDataW3 = JSON.parse(fs.readFileSync(`./mlModel/${model.deploymentId}/testdata/week3.json`));
+      jsonDataW4 = JSON.parse(fs.readFileSync(`./mlModel/${model.deploymentId}/testdata/week4.json`));
+    } catch (error) {
+      return res.status(404).json({ message: 'Data not found' });
+    }
+      const [auc1, gini1, logloss1, ks1, psi1] = await calculateMetrics(model_to_load, jsonDataW1)
+    const [auc2, gini2, logloss2, ks2, psi2] = await calculateMetrics(model_to_load, jsonDataW2)
+    const [auc3, gini3, logloss3, ks3, psi3] = await calculateMetrics(model_to_load, jsonDataW3)
+    const [auc4, gini4, logloss4, ks4, psi4] = await calculateMetrics(model_to_load, jsonDataW4)
+    res.status(200).json({ model, metrics: { auc1, gini1, logloss1, ks1, psi1, auc2, gini2, logloss2, ks2, psi2, auc3, gini3, logloss3, ks3, psi3, auc4, gini4, logloss4, ks4, psi4}});;
+  } catch (error) {
+    console.error('Error in /viewdeploy/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});
+
+//Upload test_data
+app.post("/upload_data_drift", (req, res) => {
+  if (!req.files) {
+    return res.status(500).send({ msg: "file is not found" });
+  }
+  // accessing the file
+  try {
+    const deployment_id =  req.body.deployment_id
+    const week1 = req.files.week1;
+    const week2 = req.files.week2;
+    const week3 = req.files.week3;
+    const week4 = req.files.week4;
+    console.log(deployment_id)
+    //create folder if it doesnt exist
+    var dir = `${__dirname}/mlModel/${deployment_id}/testdata`
+    
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    // move the files to the public directory
+    week1.mv(`${__dirname}/mlModel/${deployment_id}/testdata/week1.json`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+    week2.mv(`${__dirname}/mlModel/${deployment_id}/testdata/week2.json`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+    week3.mv(`${__dirname}/mlModel/${deployment_id}/testdata/week3.json`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+    week4.mv(`${__dirname}/mlModel/${deployment_id}/testdata/week4.json`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+    return res.status(200).json({ msg: "Uploaded files" });
+  }catch (err) {
+    console.log(err);
+    return res.status(500).send({ msg: "Error occurred while processing files" });
+  }
+});
 
 // Start the server
 const PORT = process.env.PORT || 27017;
