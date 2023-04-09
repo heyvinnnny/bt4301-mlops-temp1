@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
     <div class="container-fluid">
       <div class="navbar-toggler-bar" v-if="loggedInUserName">
       
@@ -53,7 +53,7 @@
             <router-link class="nav-link" to="/mgruserprofile">Manager Profile</router-link>
           </li>
           <li class="nav-item">
-            <button @click="logout" class="nav-link" style="border:0px">Logout</button>
+            <button @click="logout" class="nav-link btn-black" style="border:0px">Logout</button>
           </li>
         </ul>
       </div>
@@ -120,4 +120,9 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.btn-black {
+  background-color: rgb(94, 166, 199);
+  border: 0px;
+}
+</style>
