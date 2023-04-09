@@ -128,7 +128,7 @@ export default {
           formData.append("deployment_id", this.deployment.deploymentId);
           formData.append("model_name", this.model_name);
           formData.append("model_version", this.model_version);
-          formData.append("email", this.user.email);
+          formData.append("email", this.email);
           formData.append("jsonFile", this.json);  // appending file
           formData.append("binaryFile", this.bin);  // appending file
 
@@ -150,7 +150,7 @@ export default {
             formData.append("deployment_id", this.deployment.deploymentId);
             formData.append("model_name", this.model_name);
             formData.append("model_version", this.model_version);
-            formData.append("email", this.user.email);
+            formData.append("email", this.email);
             formData.append("jsonFile", this.json);  // appending file
             formData.append("binaryFile", this.bin);  // appending file
   
