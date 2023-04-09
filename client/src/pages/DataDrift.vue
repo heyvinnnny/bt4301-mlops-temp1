@@ -1,5 +1,5 @@
 <template>
-  <card title="Data Drift">
+  <card title="Drift Monitoring">
     <div>
       <select id="metricSelect">
         <option value="0">AUC</option>
@@ -23,7 +23,7 @@ export default {
     }
   },
   mounted() {
-    this.$toast.success("Data Drift");
+    this.$toast.success("Drift Monitoring");
 
     var data = {
       labels: ["Week 1", "Week 2", "Week 3", "Week 4"],

@@ -17,6 +17,7 @@ const path = require("path");
 const fileUpload = require("express-fileupload");
 const Performance = require("./models/performanceModel");
 const Deployment = require("./models/deployments");
+const Model = require("./models/model")
 
 app.use(morgan("combined"));
 
@@ -572,121 +573,195 @@ app.use(cors()); // it enables all cors requests
 app.use(fileUpload());
 
 // file upload api
-app.post("/upload", (req, res) => {
+app.post("/upload", async (req, res) => {
   if (!req.files) {
     return res.status(500).send({ msg: "file is not found" });
   }
   // accessing the file
-  const jsonFile = req.files.jsonFile;
-  const binaryFile = req.files.binaryFile;
-
-  // move the files to the public directory
-  jsonFile.mv(`${__dirname}/mlModel/${jsonFile.name}`, function (err) {
-    if (err) {
-      console.log(err);
-      return res.status(500).send({ msg: "Error occured" });
+  try {
+    const deployment_id =  req.body.deployment_id
+    const model_name = req.body.model_name
+    const model_version = req.body.model_version
+    const jsonFile = req.files.jsonFile;
+    const binaryFile = req.files.binaryFile;
+    // console.log(deployment_id, model_name, model_version);
+    //create folder if it doesnt exist
+    var dir = `${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}`
+    
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir, { recursive: true });
     }
-
-    binaryFile.mv(`${__dirname}/mlModel/${binaryFile.name}`, function (err) {
+    // move the files to the public directory
+    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${jsonFile.name}`, function (err) {
       if (err) {
         console.log(err);
         return res.status(500).send({ msg: "Error occured" });
       }
 
-      return res.send({ msg: "Files uploaded successfully" });
+    binaryFile.mv(`${__dirname}/mlModel/${deployment_id}/${model_name}/${model_version}/${binaryFile.name}`, function (err) {
+      if (err) {
+        console.log(err);
+      }
+      
     });
-  });
+    });
+    const model = new Model({
+      modelName: model_name,
+      modelVersion: model_version,
+      deploymentId: deployment_id,
+      // path: dir,
+      auc: 0.5,
+      gini: 0.7,
+      logloss: 0.888,
+      kolmogorov: 0.2,
+      psi: 0.4
+    })
+    await model.save()
+  }catch (err) {
+    console.log(err);
+    return res.status(500).send({ msg: "Error occurred while processing files" });
+  }
 });
-// app.get('/performance', async (req, res) => {
-//   const { model, resolution } = req.query;
 
-//   let match = {};
-//   let group = {};
-
-//   switch (resolution) {
-//     case 'monthly':
-//       match = { $match: { model } };
-//       group = {
-//         $group: {
-//           _id: {
-//             year: { $year: '$timestamp' },
-//             month: { $month: '$timestamp' },
-//           },
-//           totalPredictions: { $sum: '$totalPredictions' },
-//         },
-//       };
-//       break;
-//     case 'quarterly':
-//       match = { $match: { model } };
-//       group = {
-//         $group: {
-//           _id: {
-//             year: { $year: '$timestamp' },
-//             quarter: {
-//               $subtract: [
-//                 { $month: '$timestamp' },
-//                 { $mod: [{ $month: '$timestamp' }, 3] },
-//               ],
-//             },
-//           },
-//           totalPredictions: { $sum: '$totalPredictions' },
-//         },
-//       };
-//       break;
-//     case 'yearly':
-//       match = { $match: { model } };
-//       group = {
-//         $group: {
-//           _id: { year: { $year: '$timestamp' } },
-//           totalPredictions: { $sum: '$totalPredictions' },
-//         },
-//       };
-//       break;
-//     default:
-//       break;
-//   }
-
-//   app.post('/performance', async (req, res) => {
-//     const performance = new Performance(req.body);
-
-//     try {
-//       await performance.save();
-//       res.send(performance);
-//     } catch (err) {
-//       res.status(500).send(err);
-//     }
-//   });
-
-//   const data = await Performance.aggregate([match, group]);
-
-//   res.send(data);
-// });
-
-//   // Load the python model
-//   const pyshell = new PythonShell(modelPath);
-
-//   // Send the data to the python model
-//   pyshell.send(JSON.stringify(data));
-
-//   // Get the result from the python model
-//   pyshell.on("message", (message) => {
-//     console.log(message);
-//     res.status(200).json({ result: message });
-//   });
-// });
+//Upload test_data
+app.post("/data", (req, res) => {
+  if (!req.files) {
+    return res.status(500).send({ msg: "file is not found" });
+  }
+  // accessing the file
+  try {
+    const deployment_id =  req.body.deployment_id
+    const jsonFile = req.files.test_data;
+    //create folder if it doesnt exist
+    var dir = `${__dirname}/mlModel/${deployment_id}`
+    
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    // move the files to the public directory
+    jsonFile.mv(`${__dirname}/mlModel/${deployment_id}/${jsonFile.name}`, function (err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ msg: "Error occured" });
+      }
+    });
+  }catch (err) {
+    console.log(err);
+    return res.status(500).send({ msg: "Error occurred while processing files" });
+  }
+});
 
 app.get("/api/deployments", async (req, res) => {
   try {
     const deployments = await Deployment.find();
     res.json(deployments);
-    //console.log(performances)
+    console.log(performances)
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
+
+//deploy card
+app.get('/viewdeploy', async (req, res) => {
+  try {
+    const deployments = await Deployment.find({});
+    res.status(200).json(deployments);
+  } catch (error) {
+    console.error('Error in /deployments GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
+  }
+});
+
+app.get('/viewdeploy/:id', async (req, res) => {
+  try {
+    const deployment = await Deployment.findOne({ deploymentId: req.params.id });
+
+    console.log(deployment)
+    
+    if (!deployment) {
+      return res.status(404).json({ message: 'Deployment not found' });
+    }
+    res.status(200).json(deployment);
+  } catch (error) {
+    console.error('Error in /viewdeploy/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});
+
+
+app.post('/deployments', async (req, res) => {
+  console.log('Request payload:', req.body);
+
+  try {
+    const deployment = new Deployment({
+      deploymentId: req.body.deploymentId,
+      deploymentName: req.body.deploymentName,
+      importance: req.body.importance,
+      dateNow: req.body.dateNow,
+      modelVersion: req.body.modelVersion,
+      envVersion: req.body.envVersion,
+      replacementReason: req.body.replacementReason,
+      email: req.body.email,
+    })
+
+    console.log(deployment)
+
+    await deployment.save()
+    res.status(201).json({ message: 'Deployment information uploaded successfully!' })
+  } catch (error) {
+    res.status(500).json({ message: `Error uploading deployment information: ${error.message}` })
+  }
+})
+
+
 // Start the server
 const PORT = process.env.PORT || 27017;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
+});
+
+const openai = require("openai");
+
+// Set your OpenAI API key
+openai.apiKey = "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";
+
+app.post("/convert", async (req, res) => {
+  const inputCode = req.body.code;
+
+  try {
+    const convertedCode = await convertCodeWithGpt3(inputCode);
+    res.json({ convertedCode });
+  } catch (error) {
+    console.error("Error during conversion:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+async function convertCodeWithGpt3(inputCode) {
+  const prompt = `Convert the following Python code to PHP:\n\n${inputCode}\n\nPHP code:`;
+
+  const response = await openai.Completion.create({
+    engine: "davinci-codex",
+    prompt,
+    max_tokens: 100,
+    n: 1,
+    stop: null,
+    temperature: 0.5,
+  });
+
+  return response.choices[0].text.trim();
+}
+
+app.get('/deployments/:id', async (req, res) => {
+  try {
+    const deployment = await Deployment.findOne({ deploymentId: req.params.id });
+    if (!deployment) {
+      return res.status(404).json({ message: 'Deployment not found' });
+    }
+    res.status(200).json(deployment);
+  } catch (error) {
+    console.error('Error in /deployments/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
 });

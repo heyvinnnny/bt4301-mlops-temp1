@@ -38,7 +38,10 @@
             <a class="dropdown-item" href="#">Another notification</a>
           </drop-down>
           <li class="nav-item">
-            <router-link class="nav-link" to="/userprofile">Profile</router-link>
+            <router-link class="nav-link" to="/mgrapproval">Approval Requests</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/mgruserprofile">Manager Profile</router-link>
           </li>
           <li class="nav-item">
             <button @click="logout" class="nav-link" style="border:0px">Logout</button>

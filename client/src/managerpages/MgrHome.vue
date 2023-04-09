@@ -41,25 +41,23 @@
           </chart-card>
         </div>
       </div>
-      
+
       <div class="row">
         <div class="col-12">
-          <card :title="table1.title" :subTitle="table1.subTitle">
-            <div slot="raw-content" class="table-responsive">
-              <paper-table :data="table1.data" :columns="table1.columns">
-              </paper-table>
-            </div>
-          </card>
+              <mgr-view-deploy-card></mgr-view-deploy-card>
         </div>
       </div>
+      
+
     </div>
   </template>
   
   <script>
   import { StatsCard, ChartCard } from "@/components/index";
   import { PaperTable } from "@/components";
+  import ViewDeployCard from "../components/Cards/ViewDeployCard.vue"
+  import MgrViewDeployCard from "../components/Cards/MgrViewDeployCard.vue"
 
-  
   const tableColumns = [
     "Id",
     "Name",
@@ -99,6 +97,8 @@
       StatsCard,
       ChartCard,
       PaperTable,
+      ViewDeployCard,
+      MgrViewDeployCard,
     },
     /**
      * Chart data used to render stats, charts. Should be replaced with server data
