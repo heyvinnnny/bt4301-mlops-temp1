@@ -1,66 +1,74 @@
 <template>
   <div>
-    <h1>Deployment Details</h1>
-    <table class="deployment-details-table">
-      <thead>
-        <tr>
-          <th>Deployment ID</th>
-          <th>Deployment Name</th>
-          <th>Importance</th>
-          <th>Date Created</th>
-          <th>Deployment Description</th>
-          <th>Email</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{{ deployment.deploymentId }}</td>
-          <td>{{ deployment.deploymentName }}</td>
-          <td>{{ deployment.importance }}</td>
-          <td>{{ deployment.dateNow.slice(0, 10) }}</td>
-          <td>{{ deployment.deployDescription }}</td>
-          <td>{{ deployment.email }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <h2>Upload Test Data</h2>
-    Please upload test data before uploading model!
-    <form @submit.prevent="submitForm">
-      <div>
-        <label for="jsonFile">JSON File:</label>
-        <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleDataJsonUpload">
-      </div>
-      <button v-on:click="onUploadData()" type="submit">Upload Files</button>
-    </form>
-    <h2>Model Upload</h2>
-  <form>
-    <div>
-      <label for="model_name">Model Name:</label>
-      <input type="text" id="model_name" name="model_name" v-model="model_name" required>
-    </div>
-    <div>
-      <label for="model_version">Model Version:</label>
-      <input type="number" id="model_version" name="model_version" v-model="model_version" required>
-    </div>
-    <div>
-        <label for="email-version">Email:</label>
-        <input type="text" class="form-control" id="email-version" v-model="user.email" disabled required>
-      </div>
-    <div>
-      <label for="jsonFile">JSON File:</label>
-      <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleJsonUpload">
-    </div>
-    <div>
-      <label for="binaryFile">Binary File:</label>
-      <input type="file" id="binaryFile" name="binaryFile" accept=".bin" required @change="handleBinUpload">
-    </div>
-    <button v-on:click="onUploadFile()" type="submit" class="upload-button">Upload Files</button>
-    <br>
-    <div v-show="isSuccess1" class="success-message">Model files uploaded and created successfully!</div>
-  </form>
+    <div class="log-entry">
+      <h2>Deployment Details</h2>
+      <table class="deployment-details-table">
+        <thead>
+          <tr>
+            <th>Deployment ID</th>
+            <th>Deployment Name</th>
+            <th>Importance</th>
+            <th>Date Created</th>
+            <th>Deployment Description</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ deployment.deploymentId }}</td>
+            <td>{{ deployment.deploymentName }}</td>
+            <td>{{ deployment.importance }}</td>
+            <td>{{ deployment.dateNow.slice(0, 10) }}</td>
+            <td>{{ deployment.deployDescription }}</td>
+            <td>{{ deployment.email }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div> <br>
+    <div class="log-entry">
+      <h2>Upload Test Data</h2>
+      Please upload test data before uploading model!
+      <form @submit.prevent="submitForm">
+        <div>
+          <label for="jsonFile">JSON File:</label>
+          <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleDataJsonUpload">
+        </div>
+        <button v-on:click="onUploadData()" type="submit">Upload Files</button>
+      </form>
 
+      <h2>Model Upload</h2>
+      <form>
+        <div>
+          <label for="model_name">Model Name:</label>
+          <input type="text" id="model_name" name="model_name" v-model="model_name" required>
+        </div>
+        <div>
+          <label for="model_version">Model Version:</label>
+          <input type="number" id="model_version" name="model_version" v-model="model_version" required>
+        </div>
+        <div>
+            <label for="email-version">Email:</label>
+            <input type="text" class="form-control" id="email-version" v-model="user.email" disabled required>
+          </div>
+        <div>
+          <label for="jsonFile">JSON File:</label>
+          <input type="file" id="jsonFile" name="jsonFile" accept=".json" required @change="handleJsonUpload">
+        </div>
+        <div>
+          <label for="binaryFile">Binary File:</label>
+          <input type="file" id="binaryFile" name="binaryFile" accept=".bin" required @change="handleBinUpload">
+        </div>
+        <button v-on:click="onUploadFile()" type="submit" class="upload-button">Upload Files</button>
+        <br>
+        <div v-show="isSuccess1" class="success-message">Model files uploaded and created successfully!</div>
+      </form>
+      </div>
+      <br>
+
+    <div class="log-entry">
     <h2>Data Drift</h2>
     <router-link :to="{ name: 'ViewDrift', params: { id: id } }">Data Drift</router-link>
+    </div>
   
   </div>
 </template>
@@ -199,7 +207,12 @@ export default {
   
 
 <style scoped>
-
+.log-entry {
+  padding: 15px;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
 .success-message {
   background-color: green;
   color: #ffffff;
