@@ -63,8 +63,6 @@
 
     <h2>Data Drift</h2>
     <router-link :to="{ name: 'ViewDrift', params: { id: id } }">Data Drift</router-link>
-
-    
   
   </div>
 </template>
@@ -136,7 +134,6 @@ export default {
           formData.append("jsonFile", this.json);  // appending file
           formData.append("binaryFile", this.bin);  // appending file
 
-          
      // sending file to the backend
       axios
         .post("http://localhost:3000/upload", formData)
