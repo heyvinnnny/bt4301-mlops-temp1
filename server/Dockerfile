@@ -1,20 +1,26 @@
-# Use the official Node.js 16 image as the base image
+# Use the official Node.js image as the base image
 FROM node:16
 
-# Set the working directory to /app
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files to the container
+# Install build tools for TensorFlow.js Node bindings
+RUN apt-get update && apt-get install -y python build-essential
+
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
 # Install the dependencies
 RUN npm install
 
-# Copy the rest of the application code to the container
+# Rebuild the TensorFlow.js Node bindings for the current environment
+RUN npm rebuild @tensorflow/tfjs-node --build-from-source
+
+# Copy the rest of the application code to the working directory
 COPY . .
 
-# Expose port 3000
+# Expose the port your application will run on (if necessary)
 EXPOSE 3000
 
-# Start the application
+# Define the command to run your application
 CMD ["npm", "start"]

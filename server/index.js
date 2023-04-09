@@ -18,6 +18,7 @@ const fileUpload = require("express-fileupload");
 const Performance = require("./models/performanceModel");
 const Deployment = require("./models/deployments");
 const Model = require("./models/model")
+const Assignment = require("./models/assignment")
 const tf = require("@tensorflow/tfjs-node")
 const calculateMetrics = require("./calculate_metrics.js")
 
@@ -401,8 +402,6 @@ app.post("/register", async (req, res) => {
       console.log("Email sent: " + info.response);
     });
 
-    res.status(200).json({ msg: "User registered, pending approval" });
-
     res.status(201).json({ msg: "User registered, pending approval" });
   } catch (err) {
     console.error(err);
@@ -420,30 +419,90 @@ app.get("/users/pending", auth, async (req, res) => {
   }
 });
 
-app.put("/users/approval/:userId", auth, async (req, res) => {
+app.put('/users/approval/:userId', auth, async (req, res) => {
   try {
     const { userId } = req.params;
     const { status } = req.body;
 
-    if (!["Approved", "Rejected"].includes(status)) {
-      return res.status(400).json({ msg: "Invalid status" });
+    if (!['Approved', 'Rejected'].includes(status)) {
+      return res.status(400).json({ msg: 'Invalid status' });
     }
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { status },
-      { new: true }
-    );
+    const user = await User.findByIdAndUpdate(userId, { status }, { new: true });
 
     if (!user) {
-      return res.status(404).json({ msg: "User not found" });
+      return res.status(404).json({ msg: 'User not found' });
     }
+
+    //To untick for testing **
+    // if (status === "Approved") {
+    //   // Send email notification to user
+    //   const transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     host: "smtp.gmail.com",
+    //     port: 465,
+    //     secure: true,
+    //     auth: {
+    //       user: "bt4301.mlops1@gmail.com",
+    //       pass: "kvbrfhqsmebvtptn",
+    //     },
+    //   });
+
+    //   const mailOptions = {
+    //     from: process.env.EMAIL_USER,
+    //     to: user.email,
+    //     subject: "Account approved",
+    //     html: `<p>Your account has been approved.</p>
+    //            <p><a href="http://localhost:8080/login">Click here to log in.</a></p>`,
+    //   };
+
+    //   transporter.sendMail(mailOptions, (err, info) => {
+    //     if (err) {
+    //       console.error(err);
+    //     } else {
+    //       console.log("Email sent: " + info.response);
+    //     }
+    //   });
+    // } else if (status === "Rejected") {
+    //   // Send email notification to user
+    //   const transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     host: "smtp.gmail.com",
+    //     port: 465,
+    //     secure: true,
+    //     auth: {
+    //       user: "bt4301.mlops1@gmail.com",
+    //       pass: "kvbrfhqsmebvtptn",
+    //     },
+    //   });
+
+    //   const mailOptions = {
+    //     from: process.env.EMAIL_USER,
+    //     to: user.email,
+    //     subject: "Account rejected",
+    //     html: `<p>Your account has been rejected. Please try again.</p>`,
+    //   };
+
+    //   transporter.sendMail(mailOptions, (err, info) => {
+    //     if (err) {
+    //       console.error(err);
+    //     } else {
+    //       console.log("Email sent: " + info.response);
+    //     }
+    //   });
+
+    //   // Delete user record from the database
+    //   await User.findByIdAndDelete(userId);
+    // }
+
+    // user.status = status;
+    // await user.save();
 
     res.json(user);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ msg: "Server error" });
-  }
+    res.status(500).json({ msg: 'Server error' });
+    }
 });
 
 //Randomly generated password for user
@@ -585,6 +644,7 @@ app.post("/upload", async (req, res) => {
     const deployment_id =  req.body.deployment_id
     const model_name = req.body.model_name
     const model_version = req.body.model_version
+    const email = req.body.email
     const jsonFile = req.files.jsonFile;
     const binaryFile = req.files.binaryFile;
     console.log("this is fine")
@@ -633,6 +693,7 @@ app.post("/upload", async (req, res) => {
         modelVersion: model_version,
         deploymentId: deployment_id,
         // path: dir,
+        email: email,
         auc: auc,
         gini: gini,
         logloss: logloss,
@@ -683,27 +744,30 @@ app.post("/data", (req, res) => {
   }
 });
 
-app.get("/api/deployments", async (req, res) => {
+app.get('/deployments', async (req, res) => {
   try {
     const deployments = await Deployment.find();
     res.json(deployments);
-    console.log(performances)
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Error getting deployments' });
   }
 });
 
 
-//deploy card
-app.get('/viewdeploy', async (req, res) => {
-  try {
-    const deployments = await Deployment.find({});
-    res.status(200).json(deployments);
-  } catch (error) {
-    console.error('Error in /deployments GET route:', error);
-    res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
-  }
-});
+//deploy card 2
+// app.get('/viewdeploy', async (req, res) => {
+//   try {
+//     const userId = req.user._id;
+//     const userAssignments = await Assignment.find({ user: userId });
+//     const deploymentIds = userAssignments.map((assignment) => assignment.deployment);
+//     const deployments = await Deployment.find({ _id: { $in: deploymentIds } });
+//     res.json(deployments);
+//   } catch (error) {
+//     console.error('Error in /deployments GET route:', error);
+//     res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
+//   }
+// });
 
 app.get('/viewdeploy/:id', async (req, res) => {
   try {
@@ -722,6 +786,23 @@ app.get('/viewdeploy/:id', async (req, res) => {
 });
 
 
+app.get('/viewmodel/:id', async (req, res) => {
+  try {
+    const model = await Model.findOne({ deploymentId: req.params.id });
+
+    console.log(model)
+    
+    if (!model) {
+      return res.status(404).json({ message: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (error) {
+    console.error('Error in /viewmodel/:id GET route:', error);
+    res.status(500).json({ message: `Error retrieving model details: ${error.message}` });
+  }
+});
+
+
 app.post('/deployments', async (req, res) => {
   console.log('Request payload:', req.body);
 
@@ -731,13 +812,9 @@ app.post('/deployments', async (req, res) => {
       deploymentName: req.body.deploymentName,
       importance: req.body.importance,
       dateNow: req.body.dateNow,
-      modelVersion: req.body.modelVersion,
-      envVersion: req.body.envVersion,
-      replacementReason: req.body.replacementReason,
+      deployDescription: req.body.deployDescription,
       email: req.body.email,
     })
-
-    console.log(deployment)
 
     await deployment.save()
     res.status(201).json({ message: 'Deployment information uploaded successfully!' })
@@ -875,5 +952,115 @@ app.get('/deployments/:id', async (req, res) => {
   } catch (error) {
     console.error('Error in /deployments/:id GET route:', error);
     res.status(500).json({ message: `Error retrieving deployment details: ${error.message}` });
+  }
+});
+
+
+
+//models
+app.get('/models', async (req, res) => {
+  try {
+    const models = await Model.find();
+    console.log(models);
+    res.json(models);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+app.get('/models/:id', async (req, res) => {
+  try {
+    const model = await Model.findById(req.params.id);
+    if (!model) {
+      return res.status(404).json({ msg: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+app.put('/models/:id', async (req, res) => {
+  const { id } = req.params; // extract the ID from the request URL
+  const { replacement_reason, manually_apply_changes } = req.body; // extract the replacement reason and apply changes from the request body
+
+  try {
+    // find the model by ID and update its replacement reason and apply changes
+    const updatedModel = await Model.findByIdAndUpdate(
+      id,
+      { replacement_reason, manually_apply_changes },
+      { new: true }
+    );
+
+    res.status(200).json(updatedModel); // send back the updated model as response
+  } catch (error) {
+    console.error(`Error updating model with ID ${id}: ${error.message}`);
+    res.status(500).json({ message: 'Error updating model' });
+  }
+});
+
+
+//assign
+
+// Route for the manager assign page
+app.get('/manager-assign', async (req, res) => {
+  try {
+    const users = await User.find({ access: 'User', status: 'Approved' });
+    const deployments = await Deployment.find();
+    res.render('managerAssign', { users, deployments });
+  } catch (err) {
+    res.status(500).send('Server Error');
+  }
+});
+
+app.post('/mgrassignment', async (req, res) => {
+  try {
+    const { deployment, users } = req.body;
+    const deploymentToUpdate = await Deployment.findById(deployment);
+    deploymentToUpdate.allowedUsers = Array.isArray(users) ? users : [users];
+    await deploymentToUpdate.save();
+    res.status(200).json({ message: 'Successfully assigned deployment' });
+  } catch (err) {
+    console.error('Error in mgrassignment route:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+//deploy card 1
+app.get('/viewdeploy', async (req, res) => {
+  try {
+    const deployments = await Deployment.find({});
+    res.status(200).json(deployments);
+  } catch (error) {
+    console.error('Error in /deployments GET route:', error);
+    res.status(500).json({ message: `Error retrieving deployment information: ${error.message}` });
+  }
+});
+
+// API endpoint for fetching assigned deployments for a specific user
+app.get('/deployments/assigned/:userId', auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log('User ID:', userId); // Log the user ID
+    const deployments = await Deployment.find({ allowedUsers: userId });
+    console.log('Deployments:', deployments); // Log the fetched deployments
+    res.status(200).json(deployments);
+
+  } catch (err) {
+    console.error('Error in deployments/assigned/:userId route:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+// API endpoint for fetching users based on access and status
+app.get('/users', async (req, res) => {
+  try {
+    const { access, status } = req.query;
+    const users = await User.find({ access, status });
+    res.json(users);
+  } catch (err) {
+    res.status(500).send('Server Error');
   }
 });

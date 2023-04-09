@@ -32,10 +32,11 @@ const DeploymentSchema = new mongoose.Schema({
   deploymentName: { type: String, required: true },
   importance: { type: String, required: true },
   dateNow: { type: Date, required: true },
-  modelVersion: { type: String, required: true },
-  envVersion: { type: String, required: true },
-  replacementReason: { type: String, required: true },
+  deployDescription: { type: String, required: true },
+  //envVersion: { type: String, required: true },
+  //replacementReason: { type: String, required: true },
   email: { type: String, required: true },
+  allowedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 const Deployment = mongoose.model('Deployment', DeploymentSchema);
