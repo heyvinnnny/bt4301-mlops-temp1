@@ -981,6 +981,21 @@ app.get('/models/:id', async (req, res) => {
   }
 });
 
+app.get('/models_deploymentid/:id', async (req, res) => {
+  try {
+    console.log("The deploymetnId is:")
+    console.log(req.params.id)
+    const model = await Model.find({deploymentId: req.params.id});
+    if (!model) {
+      return res.status(404).json({ msg: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
 app.put('/models/:id', async (req, res) => {
   const { id } = req.params; // extract the ID from the request URL
   const { replacement_reason, manually_apply_changes } = req.body; // extract the replacement reason and apply changes from the request body
