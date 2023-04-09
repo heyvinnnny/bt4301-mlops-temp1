@@ -33,8 +33,6 @@ const DeploymentSchema = new mongoose.Schema({
   importance: { type: String, required: true },
   dateNow: { type: Date, required: true },
   deployDescription: { type: String, required: true },
-  //envVersion: { type: String, required: true },
-  //replacementReason: { type: String, required: true },
   email: { type: String, required: true },
   allowedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
