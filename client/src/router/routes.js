@@ -1,5 +1,7 @@
 import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
+import HomeDashboardLayout from "@/layout/dashboard/HomeDashboardLayout.vue";
 import MgrDashboardLayout from "@/layout/dashboard/MgrDashboardLayout.vue";
+import MgrHomeDashboardLayout from "@/layout/dashboard/MgrHomeDashboardLayout.vue";
 import MgrUserProfile from "@/pages/MgrUserProfile.vue";
 
 // GeneralViews
@@ -63,13 +65,6 @@ const routes = [
     redirect: "/login",
     meta: {requireAuth: true},
     children: [
-      {
-        path: "mgrhome",
-        name: "home",
-        component: MgrHome,
-        meta: {requireAuth: true},
-        props:true,
-      },
       {
         path: "mgrassignment",
         name: "MgrAssignment",
@@ -144,6 +139,22 @@ const routes = [
         name: "version control",
         component: MgrVersionControl,
         meta: {requireAuth: true},
+      },
+    ],
+  },
+  {
+    path: "/",
+    mode: 'history',
+    component: MgrHomeDashboardLayout,
+    redirect: "/login",
+    meta: {requireAuth: true},
+    children: [
+      {
+        path: "mgrhome",
+        name: "home",
+        component: MgrHome,
+        meta: {requireAuth: true},
+        props:true,
       },
     ],
   },
@@ -234,12 +245,6 @@ const routes = [
         meta: {requireAuth: true},
       },
       {
-        path: "/home",
-        name: "home",
-        component: Home,
-        meta: {requireAuth: true},
-      },
-      {
         path: "userprofile",
         name: "userprofile",
         component: UserProfile,
@@ -315,6 +320,21 @@ const routes = [
         path: "ChangeRequestApproval",
         name: "ChangeRequestApproval",
         component: ChangeRequestApproval,
+      },
+    ],
+  },
+  {
+    path: "/",
+    mode: 'history',
+    component: HomeDashboardLayout,
+    redirect: "/login",
+    meta: {requireAuth: true},
+    children: [
+      {
+        path: "/home",
+        name: "home",
+        component: Home,
+        meta: {requireAuth: true},
       },
     ],
   },

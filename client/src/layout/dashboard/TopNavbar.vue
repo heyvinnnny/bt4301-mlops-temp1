@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
     <div class="container-fluid">
       <div class="navbar-toggler-bar" v-if="loggedInUserName">
       
@@ -16,27 +16,12 @@
         :aria-expanded="$sidebar.showSidebar"
         aria-label="Toggle navigation"
       >
-      
-
-
         <span class="navbar-toggler-bar"></span>
         <span class="navbar-toggler-bar"></span>
         <span class="navbar-toggler-bar"></span>
       </button>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
-          <!-- <drop-down
-            class="nav-item"
-            title="5 Notifications"
-            title-classes="nav-link"
-            icon="ti-bell"
-          >
-            <a class="dropdown-item" href="#">Notification 1</a>
-            <a class="dropdown-item" href="#">Notification 2</a>
-            <a class="dropdown-item" href="#">Notification 3</a>
-            <a class="dropdown-item" href="#">Notification 4</a>
-            <a class="dropdown-item" href="#">Another notification</a>
-          </drop-down> -->
           <li class="nav-item">
             <router-link class="nav-link" to="/codeporting">Code Porting</router-link>
           </li>
@@ -47,7 +32,7 @@
             <router-link class="nav-link" to="/userprofile">Profile</router-link>
           </li>
           <li class="nav-item">
-            <button @click="logout" class="nav-link" style="border:0px">Logout</button>
+            <button @click="logout" class="nav-link btn-black" style="border:0px">Logout</button>
           </li>
         </ul>
       </div>
@@ -114,4 +99,9 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.btn-black {
+  background-color: rgb(94, 166, 199);
+  border: 0px;
+}
+</style>
