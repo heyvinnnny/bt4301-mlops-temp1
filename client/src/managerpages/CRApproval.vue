@@ -5,7 +5,7 @@
         <div class="deployment-info">
           <h3>{{ deployments[model.deploymentId]?.deploymentName }}</h3>
           <p><strong>Deployment ID:</strong> {{ model.deploymentId }}</p>
-          <p><strong>Deployment Description:</strong> {{ deployments[model.deploymentId]?.deployDescription }}</p>
+          <!-- <p><strong>Deployment Description:</strong> {{ deployments[model.deploymentId]?.deployDescription }}</p> -->
           <button @click="toggleDetails(model._id)">Show more details</button>
         </div>
         <div v-if="openedModelId === model._id" class="model-info">
@@ -13,8 +13,13 @@
           <p><strong>Model Version:</strong> {{ model.modelVersion }}</p>
           <p><strong>Replacement Reason:</strong> {{ model.replacement_reason }}</p>
           <p><strong>Requested by:</strong> {{ model.email }}</p>
+          <p><strong>Manager:</strong> {{ user.email }}</p>
           <textarea v-model="model.managerComment" placeholder="Enter comment"></textarea>
-          <button @click="approve(model)">Approve</button>
+            <button
+    @click="approve(model)"
+    :disabled="model.approval_status === 'Approved'"
+    >{{ model.approval_status === 'Approved' ? 'Approved' : 'Approve' }}</button>
+
         </div>
       </div>
     </div>
@@ -22,65 +27,78 @@
   
   
   <script>
-  export default {
-    data() {
-      return {
-        pendingModels: [],
-        deployments: {},
-        openedModelId: null,
-      };
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      pendingModels: [],
+      deployments: {},
+      openedModelId: null,
+    };
+  },
+  computed: {
+    user: {
+      get() {
+        return JSON.parse(localStorage.getItem("user"));
+      },
+      set(user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      },
     },
-    async created() {
+  },
+  async created() {
     try {
-      const [pendingModelsResponse, deploymentsResponse] = await Promise.all([
-        fetch('http://localhost:3000/pending'),
-        fetch('http://localhost:3000/deployments'),
-      ]);
+      const token = localStorage.getItem("token");
+      const config = {
+          headers: {
+          Authorization: `Bearer ${token}`,
+          },
+      };
+      const res = await axios.get("http://localhost:3000/users/me", config);
+      this.user = res.data;
+      console.log(this.user)
+      const pendingModelsResponse = await axios.get('http://localhost:3000/pending');
+      
+      const deploymentsResponse = await axios.get('http://localhost:3000/deployments');
 
-      if (!pendingModelsResponse.ok) {
-        throw new Error(`Error fetching pending models: ${pendingModelsResponse.statusText}`);
-      }
-
-      if (!deploymentsResponse.ok) {
-        throw new Error(`Error fetching deployments: ${deploymentsResponse.statusText}`);
-      }
-
-      this.pendingModels = await pendingModelsResponse.json();
-
-      const deploymentsArray = await deploymentsResponse.json();
+      this.pendingModels = pendingModelsResponse.data;
+      const deploymentsArray = deploymentsResponse.data;
       this.deployments = deploymentsArray.reduce((acc, deployment) => {
         acc[deployment._id] = deployment;
         return acc;
       }, {});
-      
+
+       // Log deployments to the console
+       console.log(this.deployments);
+       
     } catch (error) {
       console.error(error);
     }
   },
-    methods: {
-        toggleDetails(modelId) {
-        this.openedModelId = this.openedModelId === modelId ? null : modelId;
-        },
-      async approve(model) {
-        try {
-          const response = await fetch(`http://localhost:3000/${model._id}/approve`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ managerComment: model.managerComment }),
-          });
-
-
-          const updatedModel = await response.json();
-          model.approval_status = updatedModel.approval_status;
-        } catch (error) {
-          console.error('Error approving model', error);
-        }
+  methods: {
+      toggleDetails(modelId) {
+      this.openedModelId = this.openedModelId === modelId ? null : modelId;
       },
+    async approve(model) {
+      try {
+        const response = await axios.post(`http://localhost:3000/${model._id}/approve`, {
+          managerComment: model.managerComment,
+          approverEmail: this.user.email,
+        });
+
+        const updatedModel = response.data;
+        model.approval_status = updatedModel.approval_status;
+
+        // Remove the approved model from the pendingModels array
+        this.pendingModels = this.pendingModels.filter(m => m._id !== model._id);
+      } catch (error) {
+        console.error('Error approving model', error);
+      }
     },
-  };
-  </script>
+  },
+};
+</script>
 
 <style scoped>
 .container {
