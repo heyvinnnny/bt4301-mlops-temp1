@@ -983,6 +983,21 @@ app.get('/models/:id', async (req, res) => {
   }
 });
 
+app.get('/models_deploymentid/:id', async (req, res) => {
+  try {
+    console.log("The deploymetnId is:")
+    console.log(req.params.id)
+    const model = await Model.find({deploymentId: req.params.id});
+    if (!model) {
+      return res.status(404).json({ msg: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
 
 //change request part by user
 const transport = nodemailer.createTransport({
