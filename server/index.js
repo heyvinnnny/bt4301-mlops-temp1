@@ -620,7 +620,6 @@ app.get("/users/me", auth, async (req, res) => {
       name: name || "",
       email: email || "",
       access: access,
-      // add other necessary fields
     });
   } catch (err) {
     console.error(err);
@@ -700,7 +699,9 @@ app.post("/upload", async (req, res) => {
         deployed :false,
         approval_status: "NA",
         replacement_reason: "NA",
-        manually_apply_changes: false
+        manually_apply_changes: false,
+        managerComment: "NA",
+        approverEmail: "NA"
       });
       await model.save();
       return res.status(200).send({msg:"Done uploading!"})
@@ -982,24 +983,73 @@ app.get('/models/:id', async (req, res) => {
   }
 });
 
-app.put('/models/:id', async (req, res) => {
-  const { id } = req.params; // extract the ID from the request URL
-  const { replacement_reason, manually_apply_changes } = req.body; // extract the replacement reason and apply changes from the request body
-
+app.get('/models_deploymentid/:id', async (req, res) => {
   try {
-    // find the model by ID and update its replacement reason and apply changes
+    console.log("The deploymetnId is:")
+    console.log(req.params.id)
+    const model = await Model.find({deploymentId: req.params.id});
+    if (!model) {
+      return res.status(404).json({ msg: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+
+//change request part by user
+const transport = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "bt4301.mlops1@gmail.com",
+    pass: "kvbrfhqsmebvtptn",
+  },
+});
+
+async function sendChangeRequestEmail(model) {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: 'hieu98@u.nus.edu', // manager's email address
+      subject: 'Change request submitted',
+      text: `A change request has been submitted for model ${model.modelName} (ID: ${model._id}).\n\nReplacement Reason: ${model.replacement_reason}\nManually Apply Changes: ${model.manually_apply_changes}`,
+    };
+
+    await transport.sendMail(mailOptions);
+  } catch (error) {
+    console.error(`Error sending email: ${error.message}`);
+  }
+}
+
+app.put('/models/:modelId/change-request', async (req, res) => {
+  try {
+    const { modelId } = req.params;
+    const { replacement_reason, manually_apply_changes } = req.body;
+
     const updatedModel = await Model.findByIdAndUpdate(
-      id,
-      { replacement_reason, manually_apply_changes },
+      modelId,
+      {
+        approval_status: 'Pending',
+        replacement_reason: replacement_reason,
+        manually_apply_changes: manually_apply_changes,
+      },
       { new: true }
     );
 
-    res.status(200).json(updatedModel); // send back the updated model as response
-  } catch (error) {
-    console.error(`Error updating model with ID ${id}: ${error.message}`);
-    res.status(500).json({ message: 'Error updating model' });
+    await sendChangeRequestEmail(updatedModel);
+
+    res.status(200).json({ msg: 'Change request submitted, waiting for approval' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
   }
 });
+
 
 
 //assign
@@ -1062,5 +1112,92 @@ app.get('/users', async (req, res) => {
     res.json(users);
   } catch (err) {
     res.status(500).send('Server Error');
+  }
+});
+
+
+//change request approval
+// app.get('/pending', async (req, res) => {
+//   try {
+//     const pendingModels = await Model.find({ approval_status: "Pending" })
+//       .populate({ // Add the populate() method
+//         path: 'deploymentId',
+//         model: Deployment,
+//         select: 'deploymentName deployDescription'
+//       });
+//     res.json(pendingModels);
+//     console.log(pendingModels);
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error fetching pending models' });
+//   }
+// });
+
+app.get('/pending', async (req, res) => {
+  try {
+    const pendingModels = await Model.find({ approval_status: 'Pending' });
+    res.json(pendingModels);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching pending models' });
+  }
+});
+
+// app.post('/:id/approve', async (req, res) => {
+//   try {
+//     const model = await Model.findById(req.params.id);
+//     if (!model) {
+//       return res.status(404).json({ message: 'Model not found' });
+//     }
+//     model.approval_status = 'Approved';
+//     model.managerComment = req.body.managerComment;
+//     model.approverEmail = req.body.approverEmail;
+//     const updatedModel = await model.save();
+//     res.json(updatedModel);
+//     } catch (error) {
+//     res.status(500).json({ message: 'Error approving model' });
+//     }
+// });
+
+app.post("/:id/approve", async (req, res) => {
+  try {
+    const model = await Model.findById(req.params.id);
+    if (!model) {
+      return res.status(404).json({ message: "Model not found" });
+    }
+    model.approval_status = "Approved";
+    model.managerComment = req.body.managerComment;
+    model.approverEmail = req.body.approverEmail;
+    const updatedModel = await model.save();
+
+    // Send email to the user
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "bt4301.mlops1@gmail.com",
+        pass: "kvbrfhqsmebvtptn",
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: model.email, // User's email
+      subject: "Change Request Approval",
+      html: `<p>Your change request for model ${model.modelName} (version ${model.modelVersion}) has been approved by ${req.body.approverEmail}.</p>
+             <p>Manager's comment: ${req.body.managerComment}</p>`,
+    };
+
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ msg: "Error sending email" });
+      }
+      console.log("Email sent: " + info.response);
+    });
+
+    res.json(updatedModel);
+  } catch (error) {
+    res.status(500).json({ message: "Error approving model" });
   }
 });

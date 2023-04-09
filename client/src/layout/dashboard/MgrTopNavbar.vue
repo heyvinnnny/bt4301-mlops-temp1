@@ -47,6 +47,9 @@
             <router-link class="nav-link" to="/mgrassignment">Assignment</router-link>
           </li>
           <li class="nav-item">
+            <router-link class="nav-link" to="/crapproval">Change Requests</router-link>
+          </li>
+          <li class="nav-item">
             <router-link class="nav-link" to="/mgrapproval">Approval Requests</router-link>
           </li>
           <li class="nav-item">
