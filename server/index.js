@@ -822,7 +822,7 @@ app.post('/deployments', async (req, res) => {
     res.status(500).json({ message: `Error uploading deployment information: ${error.message}` })
   }
 })
-app.get('/viewmodel/:id', async (req, res) => {
+app.get('/viewmodel_drift/:id', async (req, res) => {
   try {
     const model = await Model.findOne({ deploymentId: req.params.id, deployed:true});
 

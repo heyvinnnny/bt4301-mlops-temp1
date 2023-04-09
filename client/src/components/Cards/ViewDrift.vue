@@ -71,7 +71,7 @@ export default {
 
     async created() {
         try {
-            const response = await axios.get(`http://localhost:3000/viewmodel/${this.id}`);
+            const response = await axios.get(`http://localhost:3000/viewmodel_drift/${this.id}`);
             this.model = response.data.model;
             const { auc1, gini1, logloss1, ks1, psi1, auc2, gini2, logloss2, ks2, psi2, auc3, gini3, logloss3, ks3, psi3, auc4, gini4, logloss4, ks4, psi4 } = response.data.metrics;
             this.auc = [auc1, auc2, auc3, auc4]
