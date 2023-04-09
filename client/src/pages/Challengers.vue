@@ -34,7 +34,7 @@
         <div class="log-entry">
           <div class="main-info">
             <p>Model Name : {{ champion_model.modelName}} {{ champion_model.modelVersion}}</p>
-            <p>Approved By: {{ selectedDeployment.dateNow}} </p>
+            <p>Approved By: {{ selectedDeployment.email}} </p>
             <p>Uploaded By: {{ champion_model.email}}</p>
           </div>
         </div>

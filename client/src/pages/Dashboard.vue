@@ -12,7 +12,7 @@
       <div
         class="col-md-6 col-xl-6"
         v-for="stats in statsCards"
-        :key="stats.title"
+        :key="stats.title" 
       >
         <stats-card>
           <div
@@ -22,9 +22,9 @@
           >
             <i :class="stats.icon"></i>
           </div>
-          <div class="numbers" slot="content">
+          <div class="numbers" slot="content" >
             <p>{{ stats.title }}</p>
-            {{ stats.value }}
+            <h5 v-if="populated">{{ stats.value }}</h5>
           </div>
         </stats-card>
       </div>      
@@ -59,7 +59,7 @@
         <div class="log-entry">
           <div class="main-info">
             <p>Model Name : {{ champion_model.modelName}} {{ champion_model.modelVersion}}</p>
-            <p>Approved By: {{ selectedDeployment.dateNow}} </p>
+            <p>Approved By: {{ selectedDeployment.email}} </p>
             <p>Uploaded By: {{ champion_model.email}}</p>
           </div>
         </div>
