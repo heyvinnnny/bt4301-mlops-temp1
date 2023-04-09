@@ -58,6 +58,7 @@ import MgrVersionControl from "@/managerpages/MgrVersionControl.vue";
 import MgrViewDeployDetail from "../components/Cards/MgrViewDeployDetail.vue"
 import MgrViewDrift from "../components/Cards/MgrViewDrift.vue"
 import MgrAssignment from "@/managerpages/MgrAssignment.vue"
+import CRApproval from "@/managerpages/CRApproval.vue"
 
 
 const routes = [
@@ -72,6 +73,13 @@ const routes = [
         path: "mgrassignment",
         name: "MgrAssignment",
         component: MgrAssignment,
+        meta: {requireAuth: true},
+        props:true,
+      },
+      {
+        path: "crapproval",
+        name: "CRApproval",
+        component: CRApproval,
         meta: {requireAuth: true},
         props:true,
       },

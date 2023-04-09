@@ -620,7 +620,6 @@ app.get("/users/me", auth, async (req, res) => {
       name: name || "",
       email: email || "",
       access: access,
-      // add other necessary fields
     });
   } catch (err) {
     console.error(err);
@@ -1063,4 +1062,35 @@ app.get('/users', async (req, res) => {
   } catch (err) {
     res.status(500).send('Server Error');
   }
+});
+
+
+//change request approval
+app.get('/pending', async (req, res) => {
+  try {
+    const pendingModels = await Model.find({ approval_status: 'NA' })
+      .populate({ // Add the populate() method
+        path: 'deploymentId',
+        model: Deployment,
+        select: 'deploymentName deployDescription'
+      });
+    res.json(pendingModels);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching pending models' });
+  }
+});
+
+app.post('/:id/approve', async (req, res) => {
+  try {
+    const model = await Model.findById(req.params.id);
+    if (!model) {
+      return res.status(404).json({ message: 'Model not found' });
+    }
+    model.approval_status = 'Approved';
+    model.managerComment = req.body.managerComment;
+    const updatedModel = await model.save();
+    res.json(updatedModel);
+    } catch (error) {
+    res.status(500).json({ message: 'Error approving model' });
+    }
 });
