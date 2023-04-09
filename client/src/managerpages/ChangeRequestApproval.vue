@@ -1,241 +1,38 @@
 <template>
   <div>
-    <!--Stats cards-->
-    <div class="row">
-      <div
-        class="col-md-6 col-xl-6"
-        v-for="stats in statsCards"
-        :key="stats.title"
-      >
-        <stats-card>
-          <div
-            class="icon-big text-center"
-            :class="`icon-${stats.type}`"
-            slot="header"
-          >
-            <i :class="stats.icon"></i>
-          </div>
-          <div class="numbers" slot="content">
-            <p>{{ stats.title }}</p>
-            {{ stats.value }}
-          </div>
-        </stats-card>
-      </div>      
-    </div>
-    <br />
+    <view-summary-card></view-summary-card>
 
+    <mgr-approve-c-r-card></mgr-approve-c-r-card>
     <div class="row">
-      <div class="col-md-6 col-xl-12">
-        <card :title="table1.title">
-          <div slot="raw-content" class="table-responsive">
-              <paper-table :data="table1.data" :columns="table1.columns" display:flex>
-              </paper-table>
-          </div>
-        </card>
+      <div class="row">
+        <view-content-card-vue></view-content-card-vue>
+        <activity-log-card></activity-log-card>
       </div>
     </div>
     <br />
 
-    <div class="row">
-      <div class="col-md-6 col-xl-12">
-        <card :title="tableChangeRequest.title">
-          <div slot="raw-content" class="table-responsive">
-              <paper-table :data="tableChangeRequest.data" :columns="tableChangeRequest.columns" display:flex>
-              </paper-table>
-              <div>
-                <p style="background-color:powderblue;">Change Summary: </p>
-                <p  style = "position:relative; left:20px; top:2px;"> Model to be replaced with Probability of Default (Risk Management) - ElasticNet</p>
-                <p style="background-color:powderblue;">Approve or request updates from Owner: </p>
-                <div style = "position:relative; left:20px; top:2px;">
-                  <input type="radio" id="one" value="One" v-model="picked">
-                    <label for="one">Approve</label>
-                    <br>
-                    <input type="radio" id="two" value="Two" v-model="picked">
-                    <label for="two">Deny & request updates</label>
-                    <br>
-                </div> <br>
-                <p style="background-color:powderblue;">Additional Comments: </p>
-                <textarea id="freeform" name="freeform" >
-                </textarea>
-              </div>
-              <button @click="redirectPendingCR" class="btn btn-primary">Approve</button>
-              <button @click="redirectChallenger" class="btn btn-primary">Cancel</button> <br> 
-          </div>
-        </card>
-      </div>
-    </div>
-    <br />
-
-    <div class="row">
-      <div class="col-md-6 col-xl-6">
-        <card :title="table2.title">
-          <div slot="raw-content" class="table-responsive">
-            <paper-table :data="table2.data" :columns="table2.columns" display:flex>
-            </paper-table>
-          </div>
-        </card>
-      </div>
-
-      <div class="col-md-6 col-xl-6">
-        <card :title="table3.title">
-          <div slot="raw-content" class="table-responsive">
-            <paper-table :data="table3.data" :columns="table3.columns" display:flex>
-            </paper-table>
-          </div>
-        </card>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
-import { StatsCard, ChartCard } from "@/components/index";
 import { PaperTable } from "@/components";
-import { Button } from "@/components";
-import Chartist from "chartist";
-const tableColumns = [
-  "Name",
-  "Description",
-  "Endpoint",
-  "Importance",
-];
-const tableColumnsChangeRequest = [
+import ViewSummaryCard from "../components/Cards/ViewSummaryCard.vue";
+import ViewContentCardVue from '../components/Cards/ViewContentCard.vue';
+import ActivityLogCard from "../components/Cards/ActivityLogCard.vue";
+import MgrApproveCRCard from "../components/Cards/MgrApproveCRCard.vue";
 
-];
-const tableColumns2 = [
-"Model",
-"Environment",
-"TargetType",
-];
-const tableColumns3 = [
-"ReplacementDate",
-"Review",
-];
-const tableData = [
-  {
-    name: "Loan Default Predictor (Risk Management)",
-    description: "Loan default model for the bank",
-    endpoint: "https://datarobot-mlops.dynamic.orm.datarobot.com",
-    importance: "Moderate",
-  },
-];
-const tableDataChangeRequest = [
-  {
-    name: "Loan Default Predictor (Risk Management)",
-    description: "Loan default model for the bank",
-    endpoint: "https://datarobot-mlops.dynamic.orm.datarobot.com",
-    importance: "Moderate",
-  },
-];
-const tableData2 = [
-{
-  model: "Probability of Default (Risk management) - Random Forest 2020",
-  environment: "Python 3 Scikit-Learn Drop-In (v4)",
-  targettype: "Binary",
-},
-];
-const tableData3 = [
-  {
-    replacementdate: "19 August 2020",
-    review: "Waiting to be reviewed",
-  },
-];
 
 export default {
   mounted() {
     this.$toast.success("Pending Change Request");
   },
   components: {
-    StatsCard,
-    ChartCard,
     PaperTable,
-    Button,
-  },
-  methods: {
-    redirectPendingCR() {
-      this.$router.push({
-        path: '/challengers',
-      }) 
-    },
-    redirectChallenger() {
-      this.$router.push({
-        path: '/challengers',
-      }) 
-    },
-  },
-  /**
-   * Chart data used to render stats, charts. Should be replaced with server data
-   */
-  data() {
-    return {
-      table1: {
-        title: "Summary",
-        columns: [...tableColumns],
-        data: [...tableData],
-      },
-      tableChangeRequest: {
-        title: "Submit Review",
-      //   columns: [...tableColumnsChangeRequest],
-      //   data: [...tableDataChangeRequest],
-      },
-      table2: {
-        title: "Content",
-        columns: [...tableColumns2],
-        data: [...tableData2],
-      },
-      table3: {
-        title: "Governance",
-        columns: [...tableColumns3],
-        data: [...tableData3],
-      },
-      statsCards: [
-        {
-          type: "warning",
-          icon: "ti-server",
-          title: "Avg Predictions / Day",
-          value: "1800",
-        },
-        {
-          type: "warning",
-          icon: "ti-pulse",
-          title: "Last Prediction",
-          value: "5 hours ago",
-        },
-      ],
-      usersChart: {
-        data: {
-          labels: [
-            "12:00AM",
-            "3:00AM",
-            "6:00AM",
-            "9:00AM",
-            "12:00PM",
-            "3:00PM",
-            "6:00PM",
-            "9:00PM",
-          ],
-          series: [
-            [1, 0, 1, 1, 1, 0, 0, 1],
-            // [67, 152, 193, 240, 387, 435, 535, 642, 744],
-            // [23, 113, 67, 108, 190, 239, 307, 410, 410],
-          ],
-        },
-        options: {
-          low: 0,
-          high: 1,
-          showArea: true,
-          height: "245px",
-          axisX: {
-            showGrid: false,
-          },
-          lineSmooth: Chartist.Interpolation.simple({
-            divisor: 3,
-          }),
-          showLine: true,
-          showPoint: false,
-        },
-      },
-    };
+    ViewSummaryCard,
+    ViewContentCardVue,
+    ActivityLogCard,
+    MgrApproveCRCard
+
   },
 };
 </script>

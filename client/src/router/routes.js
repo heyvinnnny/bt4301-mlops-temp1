@@ -40,6 +40,7 @@ import ViewContentCard from "../components/Cards/ViewContentCard"
 import ActivityLogCard from "../components/Cards/ActivityLogCard";
 import ViewChallengerCard from "../components/Cards/ViewChallengerCard";
 import ViewPendingCRCard from "../components/Cards/ViewPendingCRCard";
+import MgrApproveCRCard from "../components/Cards/MgrApproveCRCard";
 
 
 //Manager Pages
