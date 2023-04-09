@@ -32,14 +32,6 @@
         <label for="model-version">Deployment Description:</label>
         <input type="text" class="form-control" id="deployment-description" v-model="deployDescription" required>
       </div>
-      <!-- <div class="form-group">
-        <label for="env-version">Environment Version:</label>
-        <input type="text" class="form-control" id="manager-email" v-model="envVersion" required>
-      </div>
-      <div class="form-group">
-        <label for="replacement-reason">Replacement Reason:</label>
-        <textarea class="form-control" id="replacement-reason" v-model="replacementReason" required></textarea>
-      </div> -->
       <button type="submit" class="btn btn-primary" @click.prevent="submitForm">Submit</button>
       <div v-show="isSuccess" class="success-message">Deployment created successfully!</div>
     </form>
@@ -60,8 +52,6 @@ export default {
       importance: '',
       dateNow: new Date().toISOString().slice(0, 10),
       deployDescription: '',
-      //envVersion: '',
-      //replacementReason: '',
       email: "",
       isSuccess: false
     }
