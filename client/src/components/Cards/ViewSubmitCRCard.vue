@@ -34,6 +34,9 @@
             <button @click="redirectChallenger" class="btn btn-primary">Cancel</button> <br>
           </div>
         </card>
+        <div v-if="changeRequestSubmitted" class="alert alert-success mt-3">
+          Change request submitted. Please wait for approval.
+        </div>
       </div>
     </div>
   </div>
@@ -66,7 +69,9 @@
     data() {
       return {
         models: [],
+        changeRequestSubmitted: false,
         selectedReason: 'Accuracy',
+        modelId: this.$route.params.id,
         reasons: [
           { id: 1, text: 'Accuracy', value: 'Accuracy' },
           { id: 2, text: 'Data Drift', value: 'Data Drift' },
@@ -97,17 +102,21 @@
         }) 
       },
         async submitChangeRequest() {
-        try {
-          await axios.put(`http://localhost:3000/models/${this.modelId}`, {
-            replacement_reason: this.replacementReason,
-            manually_apply_changes: this.manuallyApplyChanges === 'apply',
-          });
-          // Redirect to the pending change request page after successful submission
-          this.$router.push('/pendingChangeRequest');
-        } catch (error) {
-          console.error(`Error submitting change request: ${error.message}`);
-        }
-      },
+          try {
+            const requestData = {
+              approval_status: 'Pending',
+              replacement_reason: this.selectedReason,
+              manually_apply_changes: this.manuallyApplyChanges === 'apply',
+            };
+            await axios.put(`http://localhost:3000/models/${this.modelId}/change-request`, requestData);
+
+            // Redirect to the pending change request page after successful submission
+            //this.$router.push('/pendingChangeRequest');
+            this.changeRequestSubmitted = true;
+          } catch (error) {
+            console.error(`Error submitting change request: ${error.message}`);
+          }
+        },
     },
     // async created() {
     //   try {

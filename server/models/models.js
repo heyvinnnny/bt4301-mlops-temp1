@@ -14,6 +14,8 @@ const ModelSchema = new mongoose.Schema({
   approval_status: {type: String, required: true},
   replacement_reason: { type: String },
   manually_apply_changes: { type: Boolean },
+  managerComment: { type: String },
+  approverEmail: { type: String },
 });
 
 const Model = mongoose.model('Model', ModelSchema);
