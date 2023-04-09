@@ -57,6 +57,7 @@
       </div>
       <button v-on:click="onUploadData()" type="submit">Upload Files</button>
     </form>
+    <router-link :to="{ name: 'ViewDrift', params: { id: id } }">Data Drift</router-link>
     </div>
   </template>
   
@@ -107,10 +108,19 @@
           .post("http://localhost:3000/upload", formData)
           .then(res => {
             // console.log("done uploading!")
+            alert("Done uploading! please refresh!")
             console.log(res);
           })
           .catch(err => {
-            console.log(err);
+            
+            if (err.response && err.response.status === 404 && err.response.data.message == "Data not found") {
+              alert("Upload test data first!")
+            } else if (err.response && err.response.status === 500 && err.response.data.msg =="Model not correct shape!") {
+              alert(err.response.data.msg)
+            } else {
+              alert("Something went wrong! Try again!")
+              console.log(err);
+            }
           });
       },
       onUploadData() {
@@ -123,6 +133,7 @@
           .post("http://localhost:3000/data", formData)
           .then(res => {
             console.log("done uploading!")
+            alert("Done uploading! please refresh!")
             console.log(res);
           })
           .catch(err => {

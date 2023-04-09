@@ -31,7 +31,7 @@ import PendingChangeRequest from "@/pages/PendingChangeRequest.vue";
 import UploadModel from "@/pages/UploadMLModel.vue";
 import Timeline from "@/components/Timeline.vue";
 import ViewDeployDetail from "../components/Cards/ViewDeployDetail.vue"
-
+import ViewDrift from "../components/Cards/ViewDrift.vue"
 
 //Manager Pages
 import MgrHome from "@/managerpages/MgrHome.vue";
@@ -259,6 +259,12 @@ const routes = [
         path: "ChangeRequestApproval",
         name: "ChangeRequestApproval",
         component: ChangeRequestApproval,
+      },
+      {
+        path: "driftmonitoring",
+        name: "ViewDrift",
+        component: ViewDrift,
+        props: true
       },
     ],
   },
