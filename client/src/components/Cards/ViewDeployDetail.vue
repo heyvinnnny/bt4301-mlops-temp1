@@ -50,7 +50,7 @@
       <label for="binaryFile">Binary File:</label>
       <input type="file" id="binaryFile" name="binaryFile" accept=".bin" required @change="handleBinUpload">
     </div>
-    <button v-on:click="onUploadFile()" type="submit">Upload Files</button>
+    <button v-on:click="onUploadFile()" type="button">Upload Files</button>
   </form>
 
 
@@ -124,32 +124,13 @@ export default {
   handleDataJsonUpload(event) {
     this.test_data = event.target.files[0]
   },
+
   onUploadFile() {
-          const formData = new FormData();
-          formData.append("deployment_id", this.deployment.deploymentId);
-          formData.append("model_name", this.model_name);
-          formData.append("model_version", this.model_version);
-          formData.append("email", this.user.email);
-          formData.append("jsonFile", this.json);  // appending file
-          formData.append("binaryFile", this.bin);  // appending file
-
-     // sending file to the backend
-      axios
-        .post("http://localhost:3000/upload", formData)
-        .then(res => {
-          // console.log("done uploading!")
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-
-    onUploadFile() {
             const formData = new FormData();
             formData.append("deployment_id", this.deployment.deploymentId);
             formData.append("model_name", this.model_name);
             formData.append("model_version", this.model_version);
+            formData.append("email", this.user.email);
             formData.append("jsonFile", this.json);  // appending file
             formData.append("binaryFile", this.bin);  // appending file
   
@@ -173,7 +154,7 @@ export default {
             }
           });
       },
-      onUploadData() {
+    onUploadData() {
             const formData = new FormData();
             formData.append("deployment_id", this.deployment.deploymentId);
             formData.append("test_data", this.test_data);  // appending file

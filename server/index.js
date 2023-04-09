@@ -17,7 +17,7 @@ const path = require("path");
 const fileUpload = require("express-fileupload");
 const Performance = require("./models/performanceModel");
 const Deployment = require("./models/deployments");
-const Model = require("./models/model")
+const Model = require("./models/models")
 const Assignment = require("./models/assignment")
 const tf = require("@tensorflow/tfjs-node")
 const calculateMetrics = require("./calculate_metrics.js")
@@ -641,17 +641,15 @@ app.post("/upload", async (req, res) => {
   // accessing the file
   try {
     
-    const deployment_id =  req.body.deployment_id
-    const model_name = req.body.model_name
-    const model_version = req.body.model_version
-    const email = req.body.email
+    const deployment_id =  req.body.deployment_id;
+    const model_name = req.body.model_name;
+    const model_version = req.body.model_version;
+    const email = req.body.email;
     const jsonFile = req.files.jsonFile;
     const binaryFile = req.files.binaryFile;
-    console.log("this is fine")
     let jsonData
     try {
       jsonData = JSON.parse(fs.readFileSync(`./mlModel/${deployment_id}/test.json`));
-      console.log(jsonData)
     } catch (error) {
       return res.status(404).json({ message: 'Data not found' });
     }
@@ -822,6 +820,8 @@ app.post('/deployments', async (req, res) => {
     res.status(500).json({ message: `Error uploading deployment information: ${error.message}` })
   }
 })
+
+
 app.get('/viewmodel_drift/:id', async (req, res) => {
   try {
     const model = await Model.findOne({ deploymentId: req.params.id, deployed:true});
