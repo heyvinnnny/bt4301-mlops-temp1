@@ -825,7 +825,7 @@ app.post('/deployments', async (req, res) => {
 
 app.get('/viewmodel_drift/:id', async (req, res) => {
   try {
-    const model = await Model.findOne({ deploymentId: req.params.id, deployed:true});
+    const model = await Model.findOne({ deploymentId: req.params.id, approval_status:"Approved"});
 
     console.log(model)
     
@@ -1166,6 +1166,12 @@ app.post("/:id/approve", async (req, res) => {
     model.approval_status = "Approved";
     model.managerComment = req.body.managerComment;
     model.approverEmail = req.body.approverEmail;
+    model.deployed = req.body.deployed;
+
+    // if (model.approval_status === 'Approved') {
+    //   model.deployed = true;
+    // }
+
     const updatedModel = await model.save();
 
     // Send email to the user
