@@ -12,11 +12,6 @@
         />
         <sidebar-link to="/challengers" name="Challengers" icon="ti-layout-grid4-alt" />
         <sidebar-link
-          to="/version-control"
-          name="Version Control"
-          icon="ti-server"
-        />
-        <sidebar-link
           to="/performancemonitoring"
           name="Performance Monitor"
           icon="ti-list-ol"
