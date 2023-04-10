@@ -58,7 +58,7 @@
           <label for="binaryFile">Binary File:</label>
           <input type="file" id="binaryFile" name="binaryFile" accept=".bin" required @change="handleBinUpload">
         </div>
-        <button v-on:click="onUploadFile()" type="submit" class="upload-button">Upload Files</button>
+        <button v-on:click="onUploadFile()" type="button" class="upload-button">Upload Files</button>
         <br>
         <div v-show="isSuccess1" class="success-message">Model files uploaded and created successfully!</div>
       </form>
@@ -131,34 +131,34 @@ export default {
     this.test_data = event.target.files[0]
   },
 
-  onUploadFile() {
-          const formData = new FormData();
-          formData.append("deployment_id", this.deployment.deploymentId);
-          formData.append("model_name", this.model_name);
-          formData.append("model_version", this.model_version);
-          formData.append("email", this.user.email);
-          formData.append("jsonFile", this.json);  // appending file
-          formData.append("binaryFile", this.bin);  // appending file
+  // onUploadFile() {
+  //         const formData = new FormData();
+  //         formData.append("deployment_id", this.deployment.deploymentId);
+  //         formData.append("model_name", this.model_name);
+  //         formData.append("model_version", this.model_version);
+  //         formData.append("email", this.user.email);
+  //         formData.append("jsonFile", this.json);  // appending file
+  //         formData.append("binaryFile", this.bin);  // appending file
 
-     // sending file to the backend
-      axios
-        .post("http://localhost:3000/upload", formData)
-        .then(res => {
-          // console.log("done uploading!")
-          this.isSuccess1 = true;
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
+  //    // sending file to the backend
+  //     axios
+  //       .post("http://localhost:3000/upload", formData)
+  //       .then(res => {
+  //         // console.log("done uploading!")
+  //         this.isSuccess1 = true;
+  //         console.log(res);
+  //       })
+  //       .catch(err => {
+  //         console.log(err);
+  //       });
+  //   },
 
     onUploadFile() {
             const formData = new FormData();
             formData.append("deployment_id", this.deployment.deploymentId);
             formData.append("model_name", this.model_name);
             formData.append("model_version", this.model_version);
-            formData.append("email", this.email);
+            formData.append("email", this.user.email);
             formData.append("jsonFile", this.json);  // appending file
             formData.append("binaryFile", this.bin);  // appending file
   
@@ -167,7 +167,7 @@ export default {
           .post("http://localhost:3000/upload", formData)
           .then(res => {
             // console.log("done uploading!")
-            //alert("Done uploading! please refresh!")
+            alert("Done uploading! please refresh!")
             console.log(res);
           })
           .catch(err => {
@@ -193,7 +193,7 @@ export default {
           .post("http://localhost:3000/data", formData)
           .then(res => {
             //console.log("done uploading!")
-            //alert("Done uploading! please refresh!")
+            alert("Done uploading! please refresh!")
             this.isSuccess2 = true;
             console.log(res);
           })
