@@ -71,6 +71,57 @@
         />
       </div>
       <div class="form-group">
+        <label for="elasticScaling">Elastic Scaling:</label>
+        <br />
+        <input
+          type="radio"
+          id="Yes"
+          value="Yes"
+          v-model="selectedElasticScaling"
+          @change="handleElasticScalingSelection"
+        />
+        <label for="yes">Yes</label>
+        &nbsp;&nbsp;&nbsp;
+        <input
+          type="radio"
+          id="No"
+          value="No"
+          v-model="selectedElasticScaling"
+          @change="handleElasticScalingSelection"
+        />
+        <label for="No">No</label>
+        <div class="form" v-if="showInputs">
+          <div v-if="selectedElasticScaling === 'Yes'">
+            <select
+              class="form-control"
+              id="elastic scaling"
+              v-model="switching"
+              required
+            >
+              <option value="">Choose an option</option>
+              <option value="Service Health">Service Health</option>
+              <option value="Data Drift">Data Drift</option>
+              <option value="Accuracy Rate">Accuracy Rate</option>
+            </select>
+            <div class="form-group">
+              <label for="model-version">Threshold (%):</label>
+              <input
+                type="text"
+                class="form-control"
+                id="threshold"
+                v-model="threshold"
+                required
+              />
+            </div>
+          </div>
+          <div
+            class="col-md-5"
+            v-else-if="selectedElasticScaling === 'No'"
+          ></div>
+        </div>
+      </div>
+
+      <div class="form-group">
         <label for="deploymentType">Deployment Type:</label>
         <br />
         <input
@@ -211,6 +262,7 @@ export default {
       selectedDeployment: "",
       selectedRollback: "",
       showInputs: false,
+      selectedElasticScaling: "",
     };
   },
   computed: {
@@ -266,6 +318,9 @@ export default {
       }
     },
     handleDeploymentSelection() {
+      this.showInputs = true;
+    },
+    handleElasticScalingSelection() {
       this.showInputs = true;
     },
   },
