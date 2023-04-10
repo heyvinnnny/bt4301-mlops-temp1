@@ -4,15 +4,33 @@
     <form>
       <div class="form-group">
         <label for="deployment-id">Deployment ID:</label>
-        <input type="text" class="form-control" id="deployment-id" v-model="deploymentId" pattern="[0-9]+" required>
+        <input
+          type="text"
+          class="form-control"
+          id="deployment-id"
+          v-model="deploymentId"
+          pattern="[0-9]+"
+          required
+        />
       </div>
       <div class="form-group">
         <label for="deployment-name">Deployment Name:</label>
-        <input type="text" class="form-control" id="deployment-name" v-model="deploymentName" required>
+        <input
+          type="text"
+          class="form-control"
+          id="deployment-name"
+          v-model="deploymentName"
+          required
+        />
       </div>
       <div class="form-group">
         <label for="importance">Importance:</label>
-        <select class="form-control" id="importance" v-model="importance" required>
+        <select
+          class="form-control"
+          id="importance"
+          v-model="importance"
+          required
+        >
           <option value="">Choose an option</option>
           <option value="Low">Low</option>
           <option value="Medium">Medium</option>
@@ -22,24 +40,48 @@
       </div>
       <div class="form-group">
         <label for="date-now">Date Now:</label>
-        <input type="date" class="form-control" id="date-now" v-model="dateNow" required readonly>
+        <input
+          type="date"
+          class="form-control"
+          id="date-now"
+          v-model="dateNow"
+          required
+          readonly
+        />
       </div>
       <div class="form-group">
         <label for="model-version">Email:</label>
-        <input type="text" class="form-control" id="email-version" v-model="user.email" disabled required>
+        <input
+          type="text"
+          class="form-control"
+          id="email-version"
+          v-model="user.email"
+          disabled
+          required
+        />
       </div>
       <div class="form-group">
         <label for="model-version">Deployment Description:</label>
-        <input type="text" class="form-control" id="deployment-description" v-model="deployDescription" required>
+        <input
+          type="text"
+          class="form-control"
+          id="deployment-description"
+          v-model="deployDescription"
+          required
+        />
       </div>
-      <button type="submit" class="btn btn-primary" @click.prevent="submitForm">Submit</button>
-      <div v-show="isSuccess" class="success-message">Deployment created successfully!</div>
+      <button type="submit" class="btn btn-primary" @click.prevent="submitForm">
+        Submit
+      </button>
+      <div v-show="isSuccess" class="success-message">
+        Deployment created successfully!
+      </div>
     </form>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 
 export default {
   mounted() {
@@ -47,14 +89,14 @@ export default {
   },
   data() {
     return {
-      deploymentId: '',
-      deploymentName: '',
-      importance: '',
+      deploymentId: "",
+      deploymentName: "",
+      importance: "",
       dateNow: new Date().toISOString().slice(0, 10),
-      deployDescription: '',
+      deployDescription: "",
       email: "",
-      isSuccess: false
-    }
+      isSuccess: false,
+    };
   },
   computed: {
     user: {
@@ -83,7 +125,7 @@ export default {
   methods: {
     async submitForm() {
       try {
-        const response = await axios.post('http://localhost:3000/deployments', {
+        const response = await axios.post("http://localhost:3000/deployments", {
           deploymentId: this.deploymentId,
           deploymentName: this.deploymentName,
           importance: this.importance,
@@ -98,18 +140,18 @@ export default {
         this.isSuccess = true;
 
         // Reset the form fields
-        this.deploymentId = '';
-        this.deploymentName = '';
-        this.importance = '';
+        this.deploymentId = "";
+        this.deploymentName = "";
+        this.importance = "";
         this.dateNow = new Date().toISOString().slice(0, 10);
-        this.deployDescription = '';
-        this.email = '';
+        this.deployDescription = "";
+        this.email = "";
       } catch (error) {
         console.error(error);
       }
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
