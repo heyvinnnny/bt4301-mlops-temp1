@@ -2,7 +2,6 @@
   <div class="wrapper">
     <side-bar data-background-color="darkblue">
       <template slot="links">
-
         <sidebar-link to="/home" name="Home Page" icon="ti-home" />
         <sidebar-link to="/dashboard" name="Overview" icon="ti-panel" />
         <sidebar-link
@@ -10,7 +9,11 @@
           name="Drift Monitoring"
           icon="ti-signal"
         />
-        <sidebar-link to="/challengers" name="Challengers" icon="ti-layout-grid4-alt" />
+        <sidebar-link
+          to="/challengers"
+          name="Challengers"
+          icon="ti-layout-grid4-alt"
+        />
         <sidebar-link
           to="/version-control"
           name="Version Control"
@@ -21,7 +24,11 @@
           name="Performance Monitor"
           icon="ti-list-ol"
         />
-        <sidebar-link to="/deployment-upload" name="Deployment Upload" icon="ti-upload" />
+        <!-- <sidebar-link
+          to="/deployment-upload"
+          name="Deployment Upload"
+          icon="ti-upload"
+        /> -->
       </template>
     </side-bar>
     <div class="main-panel">

@@ -128,7 +128,7 @@
                 type="text"
                 class="form-control"
                 id="traffic-percentage"
-                v-model="deployDescription"
+                v-model="trafficPercentage"
                 required
               />
             </div>
@@ -140,7 +140,7 @@
                 type="text"
                 class="form-control"
                 id="deployment-duration"
-                v-model="deployDescription"
+                v-model="deploymentDuration"
                 required
               />
             </div>
@@ -149,7 +149,7 @@
               <select
                 class="form-control"
                 id="rollback-criteria"
-                v-model="rollback"
+                v-model="rollbackCriteria"
                 required
               >
                 <option value="">Choose an option</option>
@@ -165,7 +165,7 @@
                 type="text"
                 class="form-control"
                 id="rollback-threshold"
-                v-model="deployDescription"
+                v-model="rollbackThreshold"
                 required
               />
             </div>
