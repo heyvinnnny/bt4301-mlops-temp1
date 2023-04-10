@@ -43,6 +43,14 @@
 
     <div class="log-entry">
       <h3>Challengers Models</h3>
+      <router-link
+        :to="{
+          name: 'ViewDeployDetail',
+          params: { id: selectedDeployment.deploymentId },
+        }"
+      >
+        + Add new challenger model
+      </router-link>
       <table>
         <thead>
           <tr>
