@@ -4,11 +4,11 @@
       <template slot="links">
         <sidebar-link to="/home" name="Home Page" icon="ti-home" />
         <sidebar-link to="/dashboard" name="Overview" icon="ti-panel" />
-        <sidebar-link
+        <!-- <sidebar-link
           to="/datadrift"
           name="Drift Monitoring"
           icon="ti-signal"
-        />
+        /> -->
         <sidebar-link
           to="/challengers"
           name="Challengers"
@@ -51,6 +51,7 @@ export default {
     TopNavbar,
     ContentFooter,
     DashboardContent,
+    // eslint-disable-next-line vue/no-unused-components
     MobileMenu,
   },
   methods: {

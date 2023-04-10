@@ -2,15 +2,18 @@
   <div class="wrapper">
     <side-bar data-background-color="white">
       <template slot="links">
-
         <sidebar-link to="/mgrhome" name="Home Page" icon="ti-home" />
         <sidebar-link to="/mgrdashboard" name="Overview" icon="ti-panel" />
-        <sidebar-link
+        <!-- <sidebar-link
           to="/mgrdatadrift"
           name="Drift Monitoring"
           icon="ti-signal"
+        /> -->
+        <sidebar-link
+          to="/mgrchallengers"
+          name="Challengers"
+          icon="ti-layout-grid4-alt"
         />
-        <sidebar-link to="/mgrchallengers" name="Challengers" icon="ti-layout-grid4-alt" />
         <sidebar-link
           to="/mgrversioncontrol"
           name="Version Control"
@@ -21,7 +24,11 @@
           name="Performance Monitor"
           icon="ti-list-ol"
         />
-        <sidebar-link to="/mgr-deployment-upload" name="Deployment Upload" icon="ti-upload" />
+        <sidebar-link
+          to="/mgr-deployment-upload"
+          name="Deployment Upload"
+          icon="ti-upload"
+        />
       </template>
     </side-bar>
     <div class="main-panel">
@@ -44,6 +51,7 @@ export default {
     MgrTopNavbar,
     ContentFooter,
     DashboardContent,
+    // eslint-disable-next-line vue/no-unused-components
     MobileMenu,
   },
   methods: {
