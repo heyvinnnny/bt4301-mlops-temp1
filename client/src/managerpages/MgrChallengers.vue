@@ -1,250 +1,211 @@
 <template>
   <div>
-    <!--Stats cards-->
-    <div class="row">
-      <div
-        class="col-md-6 col-xl-6"
-        v-for="stats in statsCards"
-        :key="stats.title"
-      >
-        <stats-card>
-          <div
-            class="icon-big text-center"
-            :class="`icon-${stats.type}`"
-            slot="header"
-          >
-            <i :class="stats.icon"></i>
-          </div>
-          <div class="numbers" slot="content">
-            <p>{{ stats.title }}</p>
-            {{ stats.value }}
-          </div>
-        </stats-card>
-      </div>      
+    <div class="log-entry">
+      <h3>Select Deployment:</h3>
+      <select v-model="selectedDeployment" @change="onChange($event)">
+        <option v-for="deployment in deployments" :key="deployment._id" :value="deployment">{{ deployment.deploymentId }}</option>
+      </select>
     </div>
-    <br />
 
-    <div class="row">
-      <div class="col-md-6 col-xl-12">
-        <card :title="table1.title">
-          <div slot="raw-content" class="table-responsive">
-            <paper-table :data="table1.data" :columns="table1.columns" display:flex>
-            </paper-table>
-          </div>
-        </card>
-      </div>
+    <div class="log-entry">
+      <h3>Deployment Summary</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Deployment ID</th>
+            <th>Deployment Name</th>
+            <th>Deployment Description</th>
+            <th>Importance</th>
+          </tr>
+        </thead>
+        <tbody>
+            <td> {{ selectedDeployment.deploymentId }} </td>
+            <td> {{ selectedDeployment.deploymentName }} </td>            
+            <td> {{ selectedDeployment.deployDescription  }}</td>
+            <td> {{ selectedDeployment.importance }} </td>
+        </tbody>
+      </table>
     </div>
-    <br />
+    <br>
 
-    <div class="row">
-      <div class="col-md-6 col-xl-12">
-        <card :title="tableDeployment.title">
-          <div slot="raw-content" class="table-responsive">
+    <div class="log-entry">
+      <h3>Champion Model</h3>
+      <card :title="Govern">
+        <div class="log-entry">
+          <div class="main-info">
+            <p>Model Name : {{ champion_model.modelName}} {{ champion_model.modelVersion}}</p>
+            <p>Approved By: {{ selectedDeployment.email}} </p>
+            <p>Uploaded By: {{ champion_model.email}}</p>
+          </div>
+        </div>
+    </card>
+    </div>
 
-            <a href="#" class="btn-link bold" @click="redirectAddChallenger">+ Add Challenger Model</a>
-            <paper-table :data="tableDeployment.data" :columns="tableDeployment.columns" display:flex>
-            </paper-table>
-            <div>
-              <button @click="redirectUpdateChallenger" class="btn btn-primary">Update Challenger Model</button>
+    <div class="log-entry">
+      <h3>Challengers Models</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Model Name</th>
+            <th>Model Version</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="model in models.filter(m => m._id !== champion_model._id)" :key="model._id">
+            <td>{{ model.modelName }}</td>
+            <td>{{ model.modelVersion }}</td>
+            <td>
+              <router-link :to="{ name: 'ViewSubmitCRCard', params: { id: model._id } }">
+                <button>Replace</button>
+              </router-link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="log-entry">
+      <h3>Governance</h3>
+      <card :title="Govern">
+        <div class="log-entry">
+          <div class="main-info">
+            <p>Deployment Created</p>
+            <p> {{ selectedDeployment.dateNow}} </p>
+            <p> {{ selectedDeployment.email}} </p>
+          </div>
+
+          <div class="main-info">
+            <p>Model Last Updated</p>
+            <p> {{ selectedDeployment.dateNow}} </p>
+            <p> {{ champion_model.email}} </p>
+          </div>
+
+          <button @click="toggleDetails">
+            {{ showMore ? "Show more details" : "Show less details" }}
+          </button>
+
+          <div v-if="!showMore" class="extended-info">
+            <div class="updated-request">
+              <h4>Updated requested</h4>
+              <p>Requested by {{ champion_model.email}} on  {{ selectedDeployment.dateNow}} </p>
+              <p>Comments if any:</p>
+            </div>
+
+            <div class="approval-request">
+              <h4>Approval Given</h4>
+              <p>Approved by  {{ selectedDeployment.email}}  on  {{ selectedDeployment.dateNow}}</p>
+              <p>Comments if any:</p>
+            </div>
+
+            <div class="reviewers">
+              <h4>Reviewers</h4>
+              <p>John Doe</p>
             </div>
           </div>
-        </card>
-      </div>
-    </div>
-    <br />
-
-
-    <div class="row">
-      <div class="col-md-6 col-xl-6">
-        <card :title="table2.title">
-          <div slot="raw-content" class="table-responsive">
-            <paper-table :data="table2.data" :columns="table2.columns" display:flex>
-            </paper-table>
-          </div>
-        </card>
-      </div>
-      <div class="col-md-6 col-xl-6">
-        <card :title="table3.title">
-          <div slot="raw-content" class="table-responsive">
-            <paper-table :data="table3.data" :columns="table3.columns" display:flex>
-            </paper-table>
-          </div>
-        </card>
-      </div>
-    </div>
-    <br/>
-
-    <!--Charts-->
-    <div class="row">
-      <div class="col-md-6 col-xl-12">
-        <chart-card
-          title="Loan Default Predictor (Risk Management)"
-          sub-title="DataRobot Prediction Server | Probability of Default"
-          :chart-data="usersChart.data"
-          :chart-options="usersChart.options"
-        >
-        </chart-card>
-      </div>
+        </div>
+    </card>
     </div>
   </div>
 </template>
 
+
 <script>
-import { StatsCard, ChartCard } from "@/components/index";
-import { PaperTable } from "@/components";
-import Chartist from "chartist";
-const tableColumns = [
-  "Name",
-  "Description",
-  "Endpoint",
-  "Importance",
-];
-const tableColumnsDeployment = [
-  "DisplayName",
-  "Model",
-  "TrainingData",
-  "Action"
-];
-const tableColumns2 = [
-  "Model",
-  "Environment",
-  "TargetType",
-];
-const tableColumns3 = [
-  "ReplacementDate",
-  "Review",
-];
-const tableData = [
-  {
-    name: "Loan Default Predictor (Risk Management)",
-    description: "Loan default model for the bank",
-    endpoint: "https://datarobot-mlops.dynamic.orm.datarobot.com",
-    importance: "Moderate",
-  },
-];
-const tableDataDeployment = [
-  {
-    displayname: "Loan Default Model (CHAMPION)",
-    model: "Probability of Default (Risk Management) - Random Forest 2020",
-    trainingdata: "5K_Lending_Club_Loans_",
-    action: "",
-  },
-  {
-    displayname: "Loan Default Model (Prod)",
-    model: "Probability of Default (Risk Management) - ElasticNet",
-    trainingdata: "5K_Lending_Club_Loans_",
-    action: "replace",
-  },
-];
-const tableData2 = [
-  {
-    model: "Probability of Default (Risk management) - Random Forest 2020",
-    environment: "Python 3 Scikit-Learn Drop-In (v4)",
-    targettype: "Binary",
-  },
-];
-const tableData3 = [
-  {
-    replacementdate: "19 August 2020",
-    review: "Waiting to be reviewed",
-  },
-];
+import axios from 'axios';
 
 export default {
   mounted() {
     this.$toast.success("Challengers");
   },
-  components: {
-    StatsCard,
-    ChartCard,
-    PaperTable,
-  },
-  methods: {
-    redirectAddChallenger() {
-      this.$router.push({
-        path: '/version-control',
-      }) 
-    },
-    redirectUpdateChallenger() {
-      this.$router.push({
-        path: '/updateCurrentModel',
-      }) 
-    },
-  },
-  /**
-   * Chart data used to render stats, charts. Should be replaced with server data
-   */
   data() {
     return {
-      table1: {
-        title: "Summary",
-        columns: [...tableColumns],
-        data: [...tableData],
-      },
-      tableDeployment: {
-        title: "Challenger",
-        columns: [...tableColumnsDeployment],
-        data: [...tableDataDeployment],
-      },
-      table2: {
-        title: "Content",
-        columns: [...tableColumns2],
-        data: [...tableData2],
-      },
-      table3: {
-        title: "Governance",
-        columns: [...tableColumns3],
-        data: [...tableData3],
-      },
-      statsCards: [
-        {
-          type: "warning",
-          icon: "ti-server",
-          title: "Avg Predictions / Day",
-          value: "1800",
-        },
-        {
-          type: "warning",
-          icon: "ti-pulse",
-          title: "Last Prediction",
-          value: "5 hours ago",
-        },
-      ],
-      usersChart: {
-        data: {
-          labels: [
-            "12:00AM",
-            "3:00AM",
-            "6:00AM",
-            "9:00AM",
-            "12:00PM",
-            "3:00PM",
-            "6:00PM",
-            "9:00PM",
-          ],
-          series: [
-            [1, 0, 1, 1, 1, 0, 0, 1],
-            // [67, 152, 193, 240, 387, 435, 535, 642, 744],
-            // [23, 113, 67, 108, 190, 239, 307, 410, 410],
-          ],
-        },
-        options: {
-          low: 0,
-          high: 1,
-          showArea: true,
-          height: "245px",
-          axisX: {
-            showGrid: false,
-          },
-          lineSmooth: Chartist.Interpolation.simple({
-            divisor: 3,
-          }),
-          showLine: true,
-          showPoint: false,
-        },
-      },
+      selectedDeployment: {},
+      deployments: [],
+      models: [],
+      champion_model : {},
+      showMore: true,
     };
   },
+  
+  async created() {
+      try {
+        //const response = await axios.get('http://localhost:3000/viewdeploy');
+        // Get the user object from localStorage
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        // Get the logged-in user's ID from the user object
+        const userId = user.id;
+
+        // Get the token from localStorage
+            const token = localStorage.getItem("token");
+
+        // Set up the headers for the request, including the Authorization header
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(`http://localhost:3000/deployments/`, config);
+        this.deployments = response.data;
+      } catch (error) {
+        console.error(`Error retrieving deployment information: ${error.message}`);
+      }
+    },
+    methods: {
+      toggleDetails() {
+          this.showMore = !this.showMore;
+        },
+      async onChange(event) {
+        try {
+          console.log(event.target.value);
+          const response = await axios.get(`http://localhost:3000/models_deploymentid/${this.selectedDeployment.deploymentId}`);
+          this.models = response.data
+          console.log(response)
+          for (let i = 0; i< this.models.length; i++) {
+              console.log(this.models[i])
+              if (this.models[i].deployed == true) {
+                this.champion_model = this.models[i]
+              }
+            }
+        } catch (error) {
+          console.log(error)
+        }
+      },      
+    }
 };
 </script>
-<style></style>
+
+<style scoped>
+.log-entry {
+  padding: 15px;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+.main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.extended-info {
+  margin-top: 15px;
+}
+
+</style>
