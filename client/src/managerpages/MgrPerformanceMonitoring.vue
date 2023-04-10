@@ -87,7 +87,7 @@ export default {
         requestOverMs: 0,
         responseTime: 0,
         executionTime: 0,
-        medianPeakLoad: 0,
+        //medianPeakLoad: 0,
         dataErrorRate: 0,
         systemErrorRate: 0,
         consumers: 0,
@@ -101,25 +101,36 @@ export default {
         aggregatedData.requestOverMs += metric.requestOverMs;
         aggregatedData.responseTime += metric.responseTime;
         aggregatedData.executionTime += metric.executionTime;
-        aggregatedData.medianPeakLoad += metric.medianPeakLoad;
+        //aggregatedData.medianPeakLoad += metric.medianPeakLoad;
         aggregatedData.dataErrorRate += metric.dataErrorRate;
         aggregatedData.systemErrorRate += metric.systemErrorRate;
         aggregatedData.consumers += metric.consumers;
         aggregatedData.cacheHitRate += metric.cacheHitRate;
       });
 
+      const dataLength = data.length;
+      aggregatedData.requestOverMs /= dataLength;
+      aggregatedData.responseTime /= dataLength;
+      aggregatedData.executionTime /= dataLength;
+      //aggregatedData.medianPeakLoad /= dataLength;
+      aggregatedData.dataErrorRate = (aggregatedData.dataErrorRate / dataLength);
+      aggregatedData.systemErrorRate = (aggregatedData.systemErrorRate / dataLength);
+      aggregatedData.consumers /= dataLength;
+      aggregatedData.cacheHitRate = (aggregatedData.cacheHitRate / dataLength);
+
+
       // Update the boxes array with the aggregated values
       this.boxes = [
         { id: 1, title: 'Total Predictions', value: aggregatedData.totalPredictions },
         { id: 2, title: 'Total Requests', value: aggregatedData.totalRequests },
-        { id: 3, title: 'Request Over Ms', value: aggregatedData.requestOverMs },
-        { id: 4, title: 'Response Time', value: aggregatedData.responseTime },
-        { id: 5, title: 'Execution Time', value: aggregatedData.executionTime },
-        { id: 6, title: 'Median Peak Load', value: aggregatedData.medianPeakLoad },
-        { id: 7, title: 'Data Error Rate', value: aggregatedData.dataErrorRate.toFixed(2) },
-        { id: 8, title: 'System Error Rate', value: aggregatedData.systemErrorRate.toFixed(2) },
-        { id: 9, title: 'Consumers', value: aggregatedData.consumers },
-        { id: 10, title: 'Cache Hit Rate', value: aggregatedData.cacheHitRate.toFixed(2) },
+        { id: 3, title: 'Request Over Ms', value: aggregatedData.requestOverMs.toFixed(2)  },
+        { id: 4, title: 'Response Time', value: aggregatedData.responseTime.toFixed(2)  },
+        { id: 5, title: 'Execution Time', value: aggregatedData.executionTime.toFixed(2)  },
+        //{ id: 6, title: 'Median Peak Load', value: aggregatedData.medianPeakLoad.toFixed(2)  },
+        { id: 7, title: 'Data Error Rate', value: aggregatedData.dataErrorRate.toFixed(2) + '%' },
+        { id: 8, title: 'System Error Rate', value: aggregatedData.systemErrorRate.toFixed(2) + '%' },
+        { id: 9, title: 'Consumers', value: aggregatedData.consumers.toFixed(2)  },
+        { id: 10, title: 'Cache Hit Rate', value: aggregatedData.cacheHitRate.toFixed(2) + '%' },
       ];
 
     } catch (err) {
@@ -213,5 +224,37 @@ export default {
   font-size: 1.2rem;
   font-weight: bold;
   justify-content: center;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.controls h6 {
+  margin-top: 7px;
+  margin-right: 10px;
+}
+
+.controls select {
+  appearance: none;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  color: #333333;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.controls select:hover {
+  border-color: #999999;
+}
+
+.controls select:focus {
+  border-color: #007bff;
 }
 </style>

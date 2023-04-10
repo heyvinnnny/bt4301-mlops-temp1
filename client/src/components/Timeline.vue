@@ -54,7 +54,7 @@ export default {
       }
 
       var data = {
-        labels: this.performances.map(p => p.timestamp),
+        labels: this.performances.map(p => p.timestamp.slice(0, 10)),
         datasets: [
           {
             label: "Total Predictions",
@@ -88,4 +88,35 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.model-select-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.model-select-wrapper label {
+  margin-right: 10px;
+}
+
+#modelSelect {
+  appearance: none;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  color: #333333;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+#modelSelect:hover {
+  border-color: #999999;
+}
+
+#modelSelect:focus {
+  border-color: #007bff;
+}
+</style>
